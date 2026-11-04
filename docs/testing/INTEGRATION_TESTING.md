@@ -4,7 +4,7 @@
 
 - `integration_test/app_smoke_test.dart` launches the real Yamintto app widget tree.
 - Verifies splash is the first route, startup transitions to the foundation placeholder, and the AMOLED preview applies a dark theme with true-black surfaces.
-- Flutter CI provisions an Android API 35 emulator and runs `flutter test integration_test`.
+- The test is retained for owner-run validation on a connected physical Android device; it is not run in GitHub Actions.
 - This is app-shell smoke coverage only. It does not validate physical-device installation, OEM behavior, iOS native compilation, persistence, or product workflows.
 
 ## Device/end-to-end scenarios by phase
