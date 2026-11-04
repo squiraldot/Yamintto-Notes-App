@@ -6,8 +6,8 @@
     <key>CFBundleIdentifier</key><string>com.merrmist.yamintto</string>
     <key>CFBundleName</key><string>yamintto</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>0.1.0</string>
-    <key>CFBundleVersion</key><string>1</string>
+    <key>CFBundleShortVersionString</key><string>$(FLUTTER_BUILD_NAME)</string>
+    <key>CFBundleVersion</key><string>$(FLUTTER_BUILD_NUMBER)</string>
     <key>LSRequiresIPhoneOS</key><true/>
     <key>UIApplicationSupportsIndirectInputEvents</key><true/>
     <key>UILaunchScreen</key><dict/>
