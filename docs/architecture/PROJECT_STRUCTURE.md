@@ -1,10 +1,39 @@
 # Project structure
 
-## Current source shape
-`lib/main.dart`; `lib/app/{bootstrap.dart,app.dart,configuration/app_configuration.dart,router/app_router.dart}`; `lib/core/{errors/app_exception.dart,theme/app_theme.dart}`; `lib/features/foundation/presentation/foundation_screen.dart`; `test/app/app_test.dart`; `integration_test/README.md`. Other core/shared/features/providers and asset folders contain README placeholders. Android/iOS host projects and docs exist. No feature-first product modules are populated.
+## Current source shape — Phase 01
+
+lib/
+  main.dart
+  app/
+    app.dart
+    bootstrap.dart
+    configuration/app_configuration.dart
+    router/app_router.dart
+    providers/                 # root provider composition guidance
+  core/
+    errors/
+    theme/
+      app_theme.dart
+      tokens/
+        app_colors.dart
+        app_radii.dart
+        app_spacing.dart
+        app_typography.dart
+    widgets/
+      app_button.dart
+      app_card.dart
+      app_dialog.dart
+      app_text_field.dart
+  features/
+    foundation/presentation/
+      foundation_screen.dart
+      splash_screen.dart
+  shared/
+
+The foundation feature is a temporary shell, not a product feature. Existing Android/iOS host projects and root tests remain in place. Cross-cutting tests live under test/app/ and test/core/; future product tests should mirror their owning feature.
 
 ## Target shape (planned)
-```text
+
 lib/
   main.dart
   app/                 # bootstrap, app widget, config, root DI, router
@@ -17,5 +46,5 @@ lib/
     attachments/{presentation,domain,data}/
     backup/{presentation,domain,data}/
   shared/              # genuinely shared UI/value types only
-```
-Tests mirror features: `test/features/<feature>/{domain,data,presentation}/`; cross-cutting tests in `test/core/`; device flows in `integration_test/`. Do not create future feature modules before their phase. Native code stays in Android/iOS hosts and is called through Dart adapters. Keep generated Drift files adjacent to schema and follow the chosen deterministic codegen/commit policy.
+
+Do not create future feature modules before their phase. Native code stays in Android/iOS hosts and is called through Dart adapters. Keep generated Drift files adjacent to schema and follow the chosen deterministic codegen/commit policy.
