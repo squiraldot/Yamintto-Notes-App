@@ -1,0 +1,40 @@
+name: Flutter CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flutter-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Format, analyze, and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Verify Dart formatting
+        run: dart format --output=none --set-exit-if-changed lib test integration_test
+      - name: Run Flutter analyzer
+        run: flutter analyze --fatal-infos
+      - name: Run unit and widget tests
+        run: flutter test
+      - name: Run integration tests when present
+        shell: bash
+        run: |
+          if find integration_test -type f -name '*_test.dart' -print -quit | grep -q .; then
+            flutter test integration_test
+          else
+            echo "No integration tests are defined yet; skipping device-level integration tests."
+          fi
