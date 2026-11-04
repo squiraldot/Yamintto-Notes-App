@@ -17,9 +17,11 @@
 - Baseline Flutter CI run #66 passed repository-wide Dart formatting, flutter analyze --fatal-infos and all 15 Flutter tests.
 - Baseline Debug APK workflow run #63 built and uploaded the Debug APK successfully. Physical Android/iOS launch verification remains pending.
 
-## Phase 01 integration audit follow-up — 2026-11-04
+## Phase 01 integration audit and CI repair — 2026-11-04
 - Added an Android app-shell integration smoke test for splash -> foundation -> AMOLED preview.
-- Replaced the conditional no-device integration test command with an Android API 35 emulator runner in the existing Flutter CI workflow; the repository still has exactly two workflows.
-- The first integration CI attempt exposed that the runner had no connected device; the workflow was corrected to provision an emulator.
-- Emulator-backed Flutter CI run #68 is pending; do not treat it as passed until the integration step completes.
-- Updated integration, platform, roadmap, status and agent guidance docs. Physical Android device and iOS macOS/Xcode acceptance remain pending.
+- Configured the existing Flutter CI workflow to provision an Android API 35 emulator.
+- CI run #68 exposed the exact root cause: the runner user lacked permissions for /dev/kvm, so the emulator timed out during boot.
+- Applied the official Android Emulator Runner KVM udev permission setup before emulator startup; added /dev/kvm visibility check and increased boot timeout to 900 seconds.
+- Latest Flutter CI run #69 passed formatting, analyzer, all 15 unit/widget tests and the KVM setup step; emulator integration is still running and must not be marked passed until the workflow completes.
+- Debug APK workflow runs following failed CI attempts were skipped by design, not failed; the build workflow is gated on successful Flutter CI.
+- The repository still has exactly two workflows. Physical Android device and iOS macOS/Xcode acceptance remain pending.
