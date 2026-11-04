@@ -97,7 +97,7 @@
     AA0000000000000000000001 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {IPHONEOS_DEPLOYMENT_TARGET = 13.0; SDKROOT = iphoneos;}; name = Debug; };
     AA0000000000000000000002 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {IPHONEOS_DEPLOYMENT_TARGET = 13.0; SDKROOT = iphoneos;}; name = Release; };
     AA0000000000000000000003 /* Debug */ = {isa = XCBuildConfiguration; baseConfigurationReference = A20000000000000000000003 /* Debug.xcconfig */; buildSettings = {CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)"; INFOPLIST_FILE = Runner/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.merrmist.yamintto; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h"; TARGETED_DEVICE_FAMILY = "1,2";}; name = Debug; };
-    AA0000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; baseConfigurationReference = A20000000000000000000004 /* Release.xcconfig */; buildSettings = {CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)"; INFOPLIST_FILE = Runner/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.merrmist.yamintto; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";}; name = Release; };
+    AA0000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; baseConfigurationReference = A20000000000000000000004 /* Release.xcconfig */; buildSettings = {CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)"; INFOPLIST_FILE = Runner/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.merrmist.yamintto; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";}; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
