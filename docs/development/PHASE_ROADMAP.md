@@ -7,10 +7,10 @@ This is an ordered plan, not authorization. Phase 01 is the only authorized phas
 - Dependencies: repository/toolchain baseline.
 - Prerequisites: explicit authorization; verify Android and iOS host prerequisites.
 - Acceptance: app launches; identity correct; approved base tokens documented; root routing/splash work; no product features silently added.
-- Unit: configuration/theme-token tests. Widget: splash/theme/route/unknown route. Integration: Android cold launch/back; iOS macOS/Xcode/device smoke (pending).
+- Unit: configuration/theme-token tests. Widget: splash/theme/route/unknown route. Integration: Android app-shell startup/theme smoke on API 35 emulator; physical Android cold launch/back/relaunch and iOS macOS/Xcode/device smoke remain separate owner/platform gates.
 - Docs: architecture, structure, routing, design system, platform support, ADRs.
-- Checklist: [x] scope [x] identity [x] tokens/themes/components [x] splash/root/unknown route [x] unit/widget tests [x] docs [x] repository-wide format [x] analyzer [x] Flutter tests (15) [x] CI [x] Debug APK build/artifact [ ] Android physical-device launch [ ] iOS build (macOS/Xcode unavailable) [x] final acceptance evidence/commit SHA.
-- Status: Implementation and automated checks pass. Physical Android launch remains owner/device validation; iOS native build is blocked by the unavailable macOS/Xcode environment. Phase is not fully accepted until the Android smoke test is recorded.
+- Checklist: [x] scope [x] identity [x] tokens/themes/components [x] splash/root/unknown route [x] unit/widget tests [x] docs [x] repository-wide format [x] analyzer [x] Flutter tests (15) [x] integration smoke source [x] emulator CI configuration [ ] verify emulator CI run #68 [x] baseline CI [x] Debug APK build/artifact [ ] Android physical-device launch [ ] iOS build (macOS/Xcode unavailable) [x] final acceptance evidence/commit SHA.
+- Status: Foundation implementation and baseline checks pass. Emulator-backed integration run #68 is pending. Physical Android launch remains owner/device validation; iOS native build is blocked by unavailable macOS/Xcode. Phase is not fully accepted until required platform acceptance gates are recorded.
 
 ## Phase 02 — Core Management
 - Scope: Drift database/migrations; folder management; notes CRUD.
