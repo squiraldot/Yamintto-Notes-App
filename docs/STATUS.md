@@ -81,3 +81,9 @@ Production readiness is not achieved. Beta policy remains Debug APK only.
 - [x] Final diff review and commit SHA recorded.
 
 Phase 02–09 work has not been started.
+
+## Current CI and device-testing policy
+- Flutter CI runs locked dependency installation, formatting, analyzer and unit/widget tests only.
+- Emulator/KVM runner configuration was removed from Flutter CI by owner instruction. The temporary emulator run (ID 41848892025) had passed host checks and KVM setup, but its emulator integration step remained in progress; it is not counted as a passed integration test.
+- Integration tests remain in integration_test/ for owner-run execution on real physical devices only: flutter devices, then flutter test integration_test -d <physical-device-id>.
+- AI agents must not add/configure/run emulators or simulators, virtual-device CI, KVM or emulator-runner actions. Ask the owner before any exception.
