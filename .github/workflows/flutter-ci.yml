@@ -24,17 +24,6 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
-      - name: Export normalized bootstrap files (temporary)
-        shell: bash
-        run: |
-          echo APP_THEME_BASE64_BEGIN
-          dart format --output=show lib/core/theme/app_theme.dart | base64 --wrap=0
-          echo
-          echo APP_THEME_BASE64_END
-          echo ANALYSIS_OPTIONS_BASE64_BEGIN
-          base64 --wrap=0 analysis_options.yaml
-          echo
-          echo ANALYSIS_OPTIONS_BASE64_END
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
