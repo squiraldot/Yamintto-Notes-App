@@ -5,8 +5,8 @@
 .pub/
 build/
 coverage/
-*.freezed.dart
-*.g.dart
+.flutter-plugins
+.flutter-plugins-dependencies
 
 # Android
 android/.gradle/
