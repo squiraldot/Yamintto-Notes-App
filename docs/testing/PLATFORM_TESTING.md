@@ -1,7 +1,7 @@
 # Platform testing matrix
 
 ## CI versus device evidence
-Flutter CI runs on Ubuntu with Flutter 3.47.9: locked dependency resolution, Dart format, analyzer, Flutter unit/widget tests only. Integration/E2E and hardware-specific checks are owner-run on real physical devices. The emulator does not validate physical OEM behavior, iOS native compilation or hardware security. Debug APK workflow builds the Android debug artifact after CI; build success is not device validation.
+Flutter CI runs on Ubuntu with Flutter 3.47.9: locked dependency resolution, Dart format, analyzer, Flutter unit/widget tests only. Integration/E2E and hardware-specific checks are owner-run on real physical devices. Host CI does not validate physical OEM behavior, iOS native compilation or hardware security. Debug APK workflow builds the Android debug artifact after CI; build success is not device validation.
 
 ## Android
 | Area | Required evidence |
@@ -15,7 +15,7 @@ Flutter CI runs on Ubuntu with Flutter 3.47.9: locked dependency resolution, Dar
 CI covers only host-runnable unit/widget checks. Test representative supported API levels and OEMs on physical hardware before platform acceptance. Do not promise StrongBox/TEE universally.
 
 ## iOS
-**Native build validation is pending: no macOS/Xcode build has been verified.** After macOS runner is available, verify Flutter iOS Debug build, CocoaPods, Runner scheme, simulator launch, then physical iPhone/iPad.
+**Native build validation is pending: no macOS/Xcode build has been verified.** After macOS/Xcode is available, the owner should verify Flutter iOS Debug build, CocoaPods, Runner scheme, then install/launch on a physical iPhone/iPad.
 | Area | Required evidence |
 |---|---|
 | Build/install | Xcode/Flutter Debug build and install on physical device |
