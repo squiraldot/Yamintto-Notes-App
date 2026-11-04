@@ -12,11 +12,15 @@ class FoundationScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text('Yamintto',
-                    style: Theme.of(context).textTheme.headlineMedium),
+                Text(
+                  'Yamintto',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
                 const SizedBox(height: 8),
-                Text('Application foundation is ready.',
-                    style: Theme.of(context).textTheme.bodyMedium),
+                Text(
+                  'Application foundation is ready.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ],
             ),
           ),
