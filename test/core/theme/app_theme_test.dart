@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yamintto/core/theme/app_theme.dart';
+import 'package:yamintto/core/theme/tokens/app_sizes.dart';
 import 'package:yamintto/core/theme/tokens/app_spacing.dart';
 
 void main() {
@@ -27,5 +28,10 @@ void main() {
     expect(AppSpacing.md, 16);
     expect(AppSpacing.lg, 24);
     expect(AppSpacing.xl, 32);
+  });
+
+  test('sizing tokens preserve minimum touch target guidance', () {
+    expect(AppSizes.buttonMinHeight, 48);
+    expect(AppSizes.minimumTouchTarget, 48);
   });
 }
