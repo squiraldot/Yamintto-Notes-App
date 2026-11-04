@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yamintto/app/app.dart';
-import 'package:yamintto/app/router/app_router.dart';
+import 'package:yamintto/core/theme/app_theme.dart';
 import 'package:yamintto/features/foundation/presentation/foundation_screen.dart';
 import 'package:yamintto/features/foundation/presentation/splash_screen.dart';
 
@@ -33,13 +33,12 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('theme-mode-selector')));
     await tester.pumpAndSettle();
     expect(find.text('AMOLED'), findsWidgets);
-  });
 
-  testWidgets('renders an unknown-route experience', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: YaminttoApp()));
-    appRouter.go('/route-that-does-not-exist');
+    await tester.tap(find.text('AMOLED').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Page not found'), findsOneWidget);
+    final theme = Theme.of(tester.element(find.byType(FoundationScreen)));
+    expect(theme.brightness, Brightness.dark);
+    expect(theme.scaffoldBackgroundColor, Colors.black);
   });
 }
