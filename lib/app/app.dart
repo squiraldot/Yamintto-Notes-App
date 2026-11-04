@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:yamintto/app/router/app_router.dart';
 import 'package:yamintto/core/theme/app_theme.dart';
 
@@ -25,7 +26,9 @@ class _YaminttoAppState extends State<YaminttoApp> {
   }
 
   ThemeData _darkTheme(YaminttoThemeMode mode) {
-    return mode == YaminttoThemeMode.amoled ? AppTheme.amoled() : AppTheme.dark();
+    return mode == YaminttoThemeMode.amoled
+        ? AppTheme.amoled()
+        : AppTheme.dark();
   }
 
   ThemeMode _materialThemeMode(YaminttoThemeMode mode) {
