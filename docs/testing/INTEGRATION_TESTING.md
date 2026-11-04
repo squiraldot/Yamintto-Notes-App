@@ -8,7 +8,7 @@
 - This is app-shell smoke coverage only. It does not validate physical-device installation, OEM behavior, iOS native compilation, persistence, or product workflows.
 
 ## Device/end-to-end scenarios by phase
-1. Phase 01: cold app launch -> splash -> foundation route -> theme preview; Android emulator CI. Owner physical-device cold launch/back and iOS build/smoke remain pending.
+1. Phase 01: cold app launch -> splash -> foundation route -> theme preview; owner physical-device run. Physical Android and iOS smoke remain pending.
 2. Fresh launch -> create folder/note -> edit -> autosave -> force stop/relaunch -> content intact.
 3. Rapid consecutive edits/background/foreground/process kill -> latest acknowledged revision survives.
 4. Search results update on create/edit/move/trash/restore; pin order survives restart.
@@ -24,4 +24,11 @@
 14. Phase 08 legacy ZIP golden fixtures; malformed/path traversal/decompression bomb; imported/skipped report.
 15. Phase 09 settings/theme/font persistence after restart; OS theme changes and system text scaling.
 
-Use isolated DB/files and deterministic fixtures. Run Android emulator/physical and iOS simulator/physical suites separately. Biometric/secure-storage assertions require real supported devices; simulator is supplementary.
+Use isolated DB/files and deterministic fixtures. Run on owner-provided physical Android and iOS devices. Biometric/secure-storage assertions require real supported devices; no virtual-device fallback.
+
+## Owner-run physical-device execution
+The owner connects and authorizes a real physical Android/iOS device. Run flutter devices, identify the physical device ID, then run:
+
+    flutter test integration_test -d <physical-device-id>
+
+Record device model, OS version, app/build SHA, command and actual result. Do not use an emulator or simulator as a fallback. If no physical device is available, mark the test pending and ask the owner to run it. AI agents must not create/configure virtual devices, add emulator-runner/KVM steps, or change CI to use virtual devices.
