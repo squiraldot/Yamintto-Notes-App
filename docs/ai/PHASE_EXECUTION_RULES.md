@@ -1,7 +1,7 @@
 # Phase execution rules
 
 ## Authorization
-Roadmap is an ordered plan, not permission. User must explicitly authorize phase and scope. Current: no phase authorized; Phase 01 is next planned and not started/accepted.
+Roadmap is an ordered plan, not permission. User must explicitly authorize phase and scope. **Phase 01 was explicitly authorized and implemented.** Its repository-wide format check, analyzer, 15 unit/widget tests, Flutter CI and Debug APK build/artifact are verified. Android physical-device launch remains pending; iOS native build requires macOS/Xcode, unavailable in this execution. Phases 02–09 are not authorized or started.
 
 ## Rules
 1. One phase at a time; maximum 2–3 major features.

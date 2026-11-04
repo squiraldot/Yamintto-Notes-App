@@ -3,7 +3,7 @@
 For a new coding agent with no previous chat context.
 
 ## Begin with evidence
-Read [AGENTS.md](../../AGENTS.md), [index](../README.md), [status](../STATUS.md), [phase rules](PHASE_EXECUTION_RULES.md) and [roadmap](../development/PHASE_ROADMAP.md). Inspect branch/head, relevant complete tree, source/tests, pubspec/lockfile, Android/iOS, two workflows and recent Actions job steps. Read phase Feature Catalog entries and linked specs. Current code is only bootstrap + ProviderScope + MaterialApp + one GoRouter route/screen + one widget test; Drift is a dependency, not a database. No phase is authorized; Phase 01 is planned next, not authorized.
+Read AGENTS.md, the docs index, status, phase rules and roadmap. Inspect branch/head, relevant complete tree, source/tests, pubspec/lockfile, Android/iOS, two workflows and recent Actions job steps. Read phase Feature Catalog entries and linked specs. Current code includes bootstrap + ProviderScope + YaminttoApp + theme tokens/themes + reusable app-shell components + GoRouter splash/foundation route + widget tests. Drift is a dependency, not a database. Phase 01 was explicitly authorized; its automated CI and Debug APK build/artifact pass. Physical Android launch and native iOS build remain unverified. Phases 02–09 are not authorized or started.
 
 ## Plan before editing
 Record phase authorization, feature IDs, scope, exact expected paths, forbidden paths, acceptance criteria, data/schema impact, platform requirements, unit/widget/integration/device tests and docs/ADR changes. Stop and ask when product/security decisions are missing.
