@@ -1,7 +1,7 @@
 # Phase execution rules
 
 ## Authorization
-Roadmap is an ordered plan, not permission. User must explicitly authorize phase and scope. **Phase 01 was explicitly authorized and implemented.** Baseline repository-wide format, analyzer, 15 unit/widget tests, Flutter CI and Debug APK build/artifact are verified. An Android app-shell integration smoke test and emulator-backed CI step have now been added; latest run #68 is pending verification. Physical Android device launch/back remains pending; iOS native build requires macOS/Xcode, unavailable in this execution. Phases 02–09 are not authorized or started.
+Roadmap is an ordered plan, not permission. User must explicitly authorize phase and scope. **Phase 01 was explicitly authorized and implemented.** Baseline repository-wide format, analyzer, 15 unit/widget tests, Flutter CI and Debug APK build/artifact are verified. The Android app-shell integration smoke test is retained for owner-run physical-device validation; emulator CI is prohibited. Physical Android device launch/back remains pending; iOS native build requires macOS/Xcode, unavailable in this execution. Phases 02–09 are not authorized or started.
 
 ## Rules
 1. One phase at a time; maximum 2–3 major features.
@@ -17,3 +17,10 @@ Roadmap is an ordered plan, not permission. User must explicitly authorize phase
 
 ## Gate
 Before: confirm explicit authorization, prerequisites, feature IDs, source state, scope and exclusions. During: stop for unresolved architecture/schema/security decisions. After: test every criterion, inspect migration/data-loss behavior, update docs/ADR/status, review diff/links, report SHA and evidence. Do not start next phase before acceptance.
+
+## Physical-device testing rule
+- CI is host-only: locked dependencies, formatting, analyzer, unit and widget tests.
+- Do not provision or run Android emulators or iOS simulators in CI. Do not add emulator-runner, KVM, virtualization or virtual-device boot steps.
+- AI agents must not create/use virtual devices as a substitute for owner testing.
+- Integration/E2E tests are owner-run on real physical devices only. Preserve integration_test source; owner can run flutter devices followed by flutter test integration_test -d <physical-device-id>.
+- If no owner-provided physical device is available, report integration tests as pending. Ask before any exception.
