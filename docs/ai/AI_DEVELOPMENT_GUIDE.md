@@ -16,3 +16,6 @@ Test success, invalid input, empty/error states, concurrency, lifecycle, rollbac
 
 ## Git and report
 Use only authorized branch. Never touch YRNotes. Keep exactly two workflows and Debug APK-only beta. Review diff and links. Report branch/SHA, exact checks/results, skipped/pending tests, Android/iOS evidence, unresolved decisions and risks. Never claim unrun validation.
+
+## Mandatory device-testing boundary
+The owner will test integration and end-to-end behavior on real physical Android/iOS devices. Do not add, configure, boot or run Android emulators or iOS simulators in CI. Do not add emulator-runner actions, KVM/virtualization setup, virtual-device boot steps, simulator CI or related dependencies. Do not independently create/use a virtual device as a substitute for owner testing. Keep CI host-only: dependency resolution, format, analyzer and unit/widget tests. Preserve integration_test source where useful; run it only on an owner-provided physical device after coordination (flutter devices, then flutter test integration_test -d <physical-device-id>). Never report device integration tests as passed without real execution evidence. Ask the owner before any proposed exception.
