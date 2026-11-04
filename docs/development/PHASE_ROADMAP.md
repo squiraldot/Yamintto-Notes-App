@@ -9,8 +9,8 @@ This is an ordered plan, not authorization. **No phase is currently authorized. 
 - Acceptance: app launches; identity correct; approved base tokens documented; root routing/splash work; no product features silently added.
 - Unit: configuration/theme-token tests. Widget: splash/theme/route/unknown route. Integration: Android cold launch/back; iOS macOS/Xcode/device smoke (pending).
 - Docs: architecture, structure, routing, design system, platform support, ADRs.
-- Checklist: [ ] scope [ ] identity [ ] Android build/device [ ] iOS build/device or blocker [ ] unit [ ] widget [ ] integration [ ] docs [ ] review/SHA.
-- Status: Not started/accepted; existing bootstrap/app/theme/route/screen/test are partial scaffolding only.
+- Checklist: [x] explicit scope approval [x] identity retained [x] initial design tokens/themes [x] splash/root/unknown route [x] unit/widget tests added [x] docs updated [ ] Android build/device [ ] iOS build/device or blocker [ ] format/analyze/test evidence [ ] CI [ ] Debug APK [ ] review/SHA.
+- Status: In progress; implementation exists, but build/test/CI/platform acceptance remains pending.
 
 ## Phase 02 — Core Management
 - Scope: Drift database/migrations; folder management; notes CRUD.
