@@ -24,6 +24,12 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get
+      - name: Export resolved lockfile for initial repository bootstrap
+        run: |
+          echo PUBSPEC_LOCK_BASE64_BEGIN
+          base64 --wrap=0 pubspec.lock
+          echo
+          echo PUBSPEC_LOCK_BASE64_END
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test integration_test
       - name: Run Flutter analyzer
