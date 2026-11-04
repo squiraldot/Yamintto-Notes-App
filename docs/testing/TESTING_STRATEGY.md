@@ -8,7 +8,7 @@ Flutter CI runs locked dependency resolution, repository-wide format, analyzer, 
 |---|---|---|---|
 | Unit | Domain rules, repositories, mapping, parser, KDF/crypto wrappers, migrations | host VM, fakes, in-memory DB | run on every CI |
 | Widget | UI state, navigation, validation, accessibility semantics | Flutter test binding, provider overrides | run on every CI |
-| Integration | Real DB/files/lifecycle/import/restore end-to-end | Android emulator in CI; simulator or attached device for platform-specific runs | Phase 01 app-shell smoke runs on Android emulator; extend by feature phase |
+| Integration | Real DB/files/lifecycle/import/restore end-to-end | owner-provided physical Android/iOS device | owner-run physical-device smoke only; no virtual-device CI |
 | Physical-device | Keystore/Keychain, biometrics, lifecycle, file provider, OS behavior | real supported Android and iOS hardware | manual/release gate; not inferred from emulator CI |
 | Security review | Protocol, dependencies, threat model and leakage review | independent reviewer + test evidence | mandatory before security/production claim |
 
@@ -33,4 +33,11 @@ Flutter CI runs locked dependency resolution, repository-wide format, analyzer, 
 Test process kill during autosave; simultaneous edits; disk full; SQLite busy/corrupt; migration interrupted before/after staged file; attachment copy interrupted; deletion cleanup interrupted; restore invalid archive; backup interrupted; device storage permission revoked; app upgrade while locked; key rotation interrupted. Original data must remain usable or failure must be explicit and recoverable.
 
 ## CI interpretation
-A successful Flutter CI run proves only its executed steps. Android emulator smoke coverage proves the app-shell integration scenario on the configured API level, not physical OEM/device behavior. Android debug artifact workflow is a separate build, not test coverage. iOS requires macOS/Xcode and physical-device validation; Linux CI does not prove it.
+A successful Flutter CI run proves only its executed steps. Host-side CI does not prove integration or physical-device behavior. Android debug artifact workflow is a separate build, not test coverage. iOS requires macOS/Xcode and physical-device validation; Linux CI does not prove it.
+
+## Physical-device testing policy
+GitHub Actions is deliberately host-only and runs dependency resolution, formatting, analyzer and unit/widget tests. It must not provision Android emulators, iOS simulators, KVM or virtual-device runners. Integration/E2E tests are run by the owner on real physical devices only. After the owner connects a device, identify it with flutter devices and run:
+
+    flutter test integration_test -d <physical-device-id>
+
+If no physical device is connected, mark integration testing pending. AI agents must not create/use virtual devices or add virtual-device CI without explicit owner authorization.
