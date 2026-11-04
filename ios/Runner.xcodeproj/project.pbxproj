@@ -52,7 +52,7 @@
       hasScannedForEncodings = 0;
       knownRegions = (en, Base,);
       mainGroup = A40000000000000000000001;
-      productRefGroup = A40000000000000000000000004;
+      productRefGroup = A40000000000000000000004;
       projectDirPath = "";
       projectRoot = "";
       targets = (A50000000000000000000001 /* Runner */,);
