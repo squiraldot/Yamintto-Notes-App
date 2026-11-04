@@ -4,7 +4,9 @@ Use Riverpod provider overrides and deterministic fakes. Every screen tests load
 
 | UI area | Required widget checks |
 |---|---|
-| Startup/navigation | initial route, splash/loading, unknown route, back behavior |
+| Phase 01 startup/navigation | splash is initial route, splash advances to foundation, unknown route recovery, theme preview changes between system/light/dark/AMOLED |
+| Phase 01 theme foundation | Material 3 light/dark variants, AMOLED true-black surface, shared token values |
+| Shared components | button enabled/loading/disabled, card tap behavior, text-field validation/obscure/multiline, dialog and sheet presentation |
 | Folders/notes | create/rename/move/delete dialogs, empty list, selection, error state |
 | Editor/viewer | Markdown preview, selection, keyboard insets, unsaved state, save/saved/error indicators |
 | Search | query input, no results, result list, trashed filter, locked message, unlock transition |
