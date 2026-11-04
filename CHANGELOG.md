@@ -14,13 +14,12 @@
 - Added an in-memory theme preview; persistence remains assigned to Phase 09.
 - Added configuration, theme, splash/navigation, route and reusable-widget tests.
 - Updated architecture, routing, design, platform, testing and implementation status documentation.
-- Flutter CI run #66 passed repository-wide Dart formatting, flutter analyze --fatal-infos and all 15 Flutter tests. Integration tests were skipped because no integration test source exists.
-- Debug APK workflow run #63 built and uploaded the Debug APK successfully. Physical Android/iOS launch verification remains pending.
+- Baseline Flutter CI run #66 passed repository-wide Dart formatting, flutter analyze --fatal-infos and all 15 Flutter tests.
+- Baseline Debug APK workflow run #63 built and uploaded the Debug APK successfully. Physical Android/iOS launch verification remains pending.
 
-## Documentation audit — 2026-11-04
-- Expanded AI agent instructions, phase execution gates, requirements IDs, feature ownership and all nine phase acceptance/test gates.
-- Clarified Phase 05 unencrypted attachment lifecycle and Phase 06 encryption migration.
-- Defined pre-encryption Phase 04 search and Phase 06 removal of persistent plaintext indexes.
-- Assigned settings, theme/font preferences, UI/UX, accessibility, performance and full regression to Phase 09.
-- Expanded architecture, proposed DB schema/migrations, security lifecycle and testing matrices.
-- Recorded baseline CI/Debug APK evidence; iOS and legacy ZIP compatibility remain unverified.
+## Phase 01 integration audit follow-up — 2026-11-04
+- Added an Android app-shell integration smoke test for splash -> foundation -> AMOLED preview.
+- Replaced the conditional no-device integration test command with an Android API 35 emulator runner in the existing Flutter CI workflow; the repository still has exactly two workflows.
+- The first integration CI attempt exposed that the runner had no connected device; the workflow was corrected to provision an emulator.
+- Emulator-backed Flutter CI run #68 is pending; do not treat it as passed until the integration step completes.
+- Updated integration, platform, roadmap, status and agent guidance docs. Physical Android device and iOS macOS/Xcode acceptance remain pending.
