@@ -41,3 +41,6 @@ Target: feature-first modules with presentation/domain/data boundaries; shared s
 
 ## Project boundary
 YRNotes remains a separate web app and must remain untouched. Legacy ZIP import is planned, but its format is unknown until old source and real fixtures are inspected. See [AGENTS.md](AGENTS.md), [docs index](docs/README.md), [status](docs/STATUS.md), and [nine-phase roadmap](docs/development/PHASE_ROADMAP.md).
+
+## Testing policy
+GitHub CI is intentionally host-only: formatting, analysis and unit/widget tests. It does not start Android emulators or iOS simulators. The owner performs integration/E2E testing on real physical devices using flutter devices and flutter test integration_test -d <physical-device-id>. AI agents must not add virtual-device CI or create/use emulators/simulators. iOS native build requires macOS/Xcode and remains unverified.
