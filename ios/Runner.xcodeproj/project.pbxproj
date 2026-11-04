@@ -32,7 +32,7 @@
     A50000000000000000000001 /* Runner */ = {
       isa = PBXNativeTarget;
       buildConfigurationList = A90000000000000000000002 /* Build configuration list for PBXNativeTarget "Runner" */;
-      buildPhases = (A60000000000000000000001 /* Flutter Build */, A30000000000000000000001 /* Frameworks */, A70000000000000000000001 /* Sources */, A60000000000000000000002 /* Flutter Embed and Thin */,);
+      buildPhases = (A60000000000000000000001 /* Flutter Build */, A30000000000000000000001 /* Frameworks */, A70000000000000000000001 /* Sources */, A70000000000000000000002 /* Resources */, A60000000000000000000002 /* Flutter Embed and Thin */,);
       buildRules = ();
       dependencies = ();
       name = Runner;
