@@ -17,7 +17,7 @@ Read this file and relevant `docs/` references before changing code. Inspect exi
 - No release signing, release APK/AAB, production publishing, or automatic deployment without explicit authorization.
 
 ## Validation
-Run `flutter pub get`, `dart format --output=none --set-exit-if-changed lib test integration_test`, `flutter analyze --fatal-infos`, and `flutter test`. Run platform builds when toolchains are available. Report every unrun check honestly.
+Run `flutter pub get --enforce-lockfile`, `dart format --output=none --set-exit-if-changed lib test integration_test`, `flutter analyze --fatal-infos`, and `flutter test`. Run platform builds when toolchains are available. Report every unrun check honestly.
 
 ## Scope
 The foundation does not authorize notes CRUD, folders, Markdown editing, encryption, biometrics, attachments, trash, history, search, or backup. Wait for an explicitly scoped feature task.

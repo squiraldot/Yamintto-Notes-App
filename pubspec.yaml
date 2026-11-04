@@ -2,9 +2,11 @@ name: yamintto
 description: An offline-first cross-platform notes application.
 publish_to: none
 version: 0.1.0-beta.1+1
+
 environment:
-  sdk: '>=3.9.0 <4.0.0'
-  flutter: '>=3.35.0'
+  sdk: '>=3.13.0 <4.0.0'
+  flutter: '>=3.38.4'
+
 dependencies:
   flutter:
     sdk: flutter
@@ -14,6 +16,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.39
   path: ^1.9.1
   path_provider: ^2.1.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -22,5 +25,6 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.7.1
   drift_dev: ^2.28.0
+
 flutter:
   uses-material-design: true

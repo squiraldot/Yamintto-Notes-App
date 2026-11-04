@@ -6,6 +6,7 @@ Cross-platform, offline-first notes application built with Flutter. Shared appli
 - Flutter project: `yamintto`
 - Android application ID / iOS bundle ID: `com.merrmist.yamintto`
 - Platforms: Android and iOS only
+- SDK baseline: Dart 3.13.0+, Flutter 3.38.4+ (CI pinned to Flutter 3.47.9)
 
 This foundation does not implement notes/folders CRUD, Markdown editing, encryption, biometrics, attachments, trash, history, search, or backup.
 
@@ -13,14 +14,14 @@ This foundation does not implement notes/folders CRUD, Markdown editing, encrypt
 
 ```sh
 flutter doctor
-flutter pub get
+flutter pub get --enforce-lockfile
 dart format --output=none --set-exit-if-changed lib test integration_test
 flutter analyze --fatal-infos
 flutter test
 flutter build apk --debug
 ```
 
-iOS development requires macOS, Xcode, and CocoaPods.
+iOS development requires macOS, Xcode, and CocoaPods. Run `cd ios && pod install` after `flutter pub get` when preparing the Xcode workspace.
 
 ## Architecture
 

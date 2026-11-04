@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 abstract final class AppTheme {
   static ThemeData light() {
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF5267D8),
-      ),
+      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5267D8)),
       useMaterial3: true,
     );
   }
@@ -20,3 +18,4 @@ abstract final class AppTheme {
     );
   }
 }
+Formatted 1 file (1 changed) in 0.00 seconds.
