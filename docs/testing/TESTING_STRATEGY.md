@@ -1,15 +1,15 @@
 # Testing strategy and execution matrix
 
 ## Current evidence
-One foundation widget test exists. CI runs locked dependency resolution, format, analyzer and `flutter test`. It conditionally invokes `flutter test integration_test` only if a `*_test.dart` file exists; current integration_test contains README only, so the integration suite is skipped, not passed. No physical-device security suite exists.
+Flutter CI runs locked dependency resolution, repository-wide format, analyzer, `flutter test`, and the Phase 01 integration smoke test on an Android API 35 emulator. The emulator suite is app-shell coverage only. Physical Android/iOS device evidence and iOS native compilation remain separate gates.
 
 ## Test layers
 | Layer | Purpose | Environment | CI expectation |
 |---|---|---|---|
 | Unit | Domain rules, repositories, mapping, parser, KDF/crypto wrappers, migrations | host VM, fakes, in-memory DB | run on every CI |
 | Widget | UI state, navigation, validation, accessibility semantics | Flutter test binding, provider overrides | run on every CI |
-| Integration | Real DB/files/lifecycle/import/restore end-to-end | emulator/simulator or attached device | CI only when test files/device setup exists; otherwise explicit skip |
-| Physical-device | Keystore/Keychain, biometrics, lifecycle, file provider, OS behavior | real supported Android and iOS hardware | manual/release gate; not inferred from Linux CI |
+| Integration | Real DB/files/lifecycle/import/restore end-to-end | Android emulator in CI; simulator or attached device for platform-specific runs | Phase 01 app-shell smoke runs on Android emulator; extend by feature phase |
+| Physical-device | Keystore/Keychain, biometrics, lifecycle, file provider, OS behavior | real supported Android and iOS hardware | manual/release gate; not inferred from emulator CI |
 | Security review | Protocol, dependencies, threat model and leakage review | independent reviewer + test evidence | mandatory before security/production claim |
 
 ## Feature matrix
@@ -33,4 +33,4 @@ One foundation widget test exists. CI runs locked dependency resolution, format,
 Test process kill during autosave; simultaneous edits; disk full; SQLite busy/corrupt; migration interrupted before/after staged file; attachment copy interrupted; deletion cleanup interrupted; restore invalid archive; backup interrupted; device storage permission revoked; app upgrade while locked; key rotation interrupted. Original data must remain usable or failure must be explicit and recoverable.
 
 ## CI interpretation
-A successful Flutter CI run proves only its executed steps. The conditional integration step can succeed by printing a skip message. Android debug artifact workflow is a separate build, not test coverage. iOS requires macOS/Xcode and physical-device validation; Linux CI does not prove it.
+A successful Flutter CI run proves only its executed steps. Android emulator smoke coverage proves the app-shell integration scenario on the configured API level, not physical OEM/device behavior. Android debug artifact workflow is a separate build, not test coverage. iOS requires macOS/Xcode and physical-device validation; Linux CI does not prove it.
