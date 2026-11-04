@@ -4,7 +4,7 @@ Snapshot: 2026-11-04; branch main.
 
 ## Phase 01 — Foundation
 
-Status: **Foundation implementation and baseline automated build gates passed; emulator-backed integration verification is pending, and physical-device/iOS acceptance remains open.**
+Status: **Foundation implementation and host-side automated checks passed on an earlier baseline; owner-run physical-device integration and iOS acceptance remain open.**
 
 Implemented:
 - Existing Flutter package identity and beta version retained: yamintto, 0.1.0-beta.1+1.
@@ -24,7 +24,7 @@ Configured / retained:
 - Android and iOS host projects and identity metadata retained.
 - Exactly two workflows: .github/workflows/flutter-ci.yml and .github/workflows/yamintto-debug-apk.yml.
 - Flutter CI format check covers the repository with dart format --output=none --set-exit-if-changed ..
-- Flutter CI provisions an Android API 35 emulator and configures Linux KVM permissions before emulator startup.
+- Flutter CI is host-only: locked dependencies, formatting, analyzer and unit/widget tests. Emulator/KVM setup was removed; physical-device integration is owner-run.
 
 ## Verification evidence
 
@@ -72,9 +72,9 @@ Production readiness is not achieved. Beta policy remains Debug APK only.
 - [x] Implement splash, initial route, foundation route and unknown-route handling.
 - [x] Add configuration, theme, splash/navigation, route and reusable-widget tests.
 - [x] Add Android app-shell integration smoke test.
-- [x] Configure CI to provision Android API 35 emulator and grant KVM permissions.
+- [x] Configure host-only CI for dependency resolution, formatting, analyzer and unit/widget tests.
 - [x] Run repository-wide formatting, analyzer and 15 unit/widget tests on the latest CI attempt.
-- [ ] Verify emulator-backed integration CI run #69.
+- [ ] Run integration smoke test on an owner-provided physical Android device.
 - [x] Verify baseline Flutter CI and Debug APK artifact workflow.
 - [ ] Install/cold-launch/back/relaunch on physical Android device.
 - [ ] iOS macOS/Xcode build; environment blocker documented.
