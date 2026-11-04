@@ -44,10 +44,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: AppCard(
-            onTap: () => taps++,
-            child: const Text('Card content'),
-          ),
+          body: AppCard(onTap: () => taps++, child: const Text('Card content')),
         ),
       ),
     );
@@ -63,10 +60,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: AppTextField(
-            controller: controller,
-            label: 'Title',
-          ),
+          body: AppTextField(controller: controller, label: 'Title'),
         ),
       ),
     );
@@ -97,5 +91,27 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Confirm'), findsOneWidget);
     expect(find.text('Continue?'), findsOneWidget);
+  });
+
+  testWidgets('AppDialog presents a modal sheet', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () => AppDialog.showSheet<void>(
+                context: context,
+                builder: (_) => const Text('Sheet content'),
+              ),
+              child: const Text('Open sheet'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open sheet'));
+    await tester.pumpAndSettle();
+    expect(find.text('Sheet content'), findsOneWidget);
   });
 }
