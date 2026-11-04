@@ -1,3 +1,52 @@
-# PRODUCT_REQUIREMENTS
+# Product requirements specification
 
-Planned functional requirements: notes/folders CRUD, Markdown editor/viewer, autosave, search, pinned notes, trash/restore, revision history, attachments, encryption, password and recovery-key recovery, app/vault biometric locks, encrypted backup/restore, legacy ZIP import, statistics, settings, themes and font sizes. None of these product flows is implemented in the audited baseline. NFRs: offline operation, transactional integrity, no plaintext persistent note content after encryption ships, no secrets in logs, accessible/responsive UI, tested Android/iOS parity, versioned backups/migrations. Open decisions: Markdown dialect, folder deletion semantics, search semantics, retention limits, attachment limits, metrics, backup envelope and visual system.
+Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](../STATUS.md). Priority: P0 = data integrity/security gate; P1 = core workflow; P2 = productivity/polish. All rows are Planned unless marked otherwise.
+
+## Functional requirements
+
+| ID | Description / user behavior | Priority | Primary phase | Dependencies | Acceptance criteria | Test expectations | Status |
+|---|---|---|---:|---|---|---|---|
+| FR-01 | Create, rename, move, navigate and delete nested folders | P1 | 02 | DB, routing, deletion policy | No cycles; references safe; transaction rollback | hierarchy/DAO unit; widget CRUD; integration restart/rollback | Planned |
+| FR-02 | Create, view, edit and delete notes | P0 | 02 | DB, FR-01 | Validated CRUD; survives restart; references consistent | repository unit; list/detail widget; persistence integration | Planned |
+| FR-03 | Edit Markdown source | P1 | 03 | FR-02, approved dialect | Supported syntax documented; source round-trip | parser unit; editor widget; fixture integration | Planned |
+| FR-04 | Render Markdown safely | P1 | 03 | FR-03, renderer | Output matches dialect; unsafe content handled; semantics accessible | renderer unit; preview widget; fixture integration | Planned |
+| FR-05 | Automatically save edits | P0 | 03 | FR-02/03, lifecycle | Latest revision wins; pending edits flush; errors retain text | race unit; status widget; lifecycle/restart integration | Planned |
+| FR-06 | Search notes offline | P1 | 04 | FR-02/03, index strategy | Correct results; trash excluded by default; Phase 06 removes persistent plaintext content index | matcher unit; query widget; update/restart + migration integration | Planned |
+| FR-07 | Pin/unpin and prioritize notes | P2 | 04 | FR-02 | Stable order and persistence | sort unit; widget action; restart integration | Planned |
+| FR-08 | Trash/restore notes and folders | P1 | 04 | FR-01/02, retention | Restore valid location; permanent deletion explicit; atomic cleanup | lifecycle unit; widget; transaction/cascade integration | Planned |
+| FR-09 | Browse and restore note revisions | P2 | 05 | FR-02/05, retention | Restore creates new current revision | revision unit; history widget; restore integration | Planned |
+| FR-10 | Import/open/export/remove local attachments | P1 | 05 | FR-02, file adapters | Validate type/size; atomic association/cleanup; bytes local but unencrypted in Phase 05 | file unit; picker widget; round-trip/deletion/storage-full integration | Planned; not encrypted until FR-11 |
+| FR-11 | Encrypt note bodies/revisions and attachments | P0 | 06 | FR-02/09/10, reviewed crypto | AES-256-GCM, unique nonce, 256-bit master key; tamper fails; no plaintext content/index persists after migration | vectors/tamper; at-rest scan; migration/recovery integration; independent review | Planned |
+| FR-12 | Password-based master-key recovery | P0 | 06 | FR-11, Argon2id/wrapping review | Correct credential recovers; wrong fails safely; KDF metadata versioned | KDF unit; recovery widget; clean-device integration | Planned |
+| FR-13 | Independent recovery-key path | P0 | 06 | FR-11, CSPRNG/wrapping review | Recovery key independently recovers; safe reveal/confirm/rotation | format/rotation unit; reveal widget; clean-device integration | Planned |
+| FR-14 | App biometric lock | P1 | 07 | FR-11–13, native adapters | Timeout/fallback/unavailable/lockout/invalidation safe | policy unit; widget states; physical Android/iOS tests | Planned |
+| FR-15 | Separate vault biometric lock | P1 | 07 | FR-11/14, separate key policy | App unlock does not implicitly unlock vault; invalidation cannot expose key | policy unit; vault widget; physical-device tests | Planned |
+| FR-16 | Export encrypted versioned backup | P1 | 08 | FR-11, attachments, snapshot | Integrity checked; no plaintext/raw master key; consistent snapshot | parser unit; progress widget; round-trip integration | Planned |
+| FR-17 | Validate and restore backup | P1 | 08 | FR-16, transactions | Validate before mutation; rollback; preserve relationships | validation unit; restore widget; corruption/rollback integration | Planned |
+| FR-18 | Import verified YRNotes ZIP variants | P1 | 08 | Old source and real fixtures inspected | Only verified variants accepted; malformed archives rejected; report explicit | golden fixtures; preview widget; Android/iOS picker integration | Planned; compatibility unknown |
+| FR-19 | Display agreed statistics | P2 | 05 | FR-01/02, metric definitions | Counts/time buckets reconcile with records | aggregation unit; widget; dataset integration | Planned |
+| FR-20 | Manage app settings | P2 | 09 | preference storage | Defaults, validation, persistence, reset/migration; no secrets in plain settings | unit; settings widget; restart/migration integration | Planned |
+| FR-21 | Choose/persist system, light, dark, AMOLED theme | P2 | 09 | Phase 01 tokens, FR-20 | Persists; system follows OS; AMOLED/status bars/contrast correct | selection unit; theme widget; device persistence | Partially configured: system + seeded light/dark only |
+| FR-22 | Choose/persist note/editor font size | P2 | 09 | typography tokens, FR-20 | Bounded values; no clipping; accessible scaling | bounds unit; widget scale matrix; persistence integration | Planned |
+| FR-23 | UI/UX polish | P2 | 09 | feature-complete UI | Approved review; consistent states; no blocking UX defects | widget/golden/manual regression | Planned |
+| FR-24 | Accessibility | P0 | 09 | all screens | TalkBack/VoiceOver, semantics, contrast, focus, text scale, touch targets verified | semantics/widget + physical-device audits | Planned |
+| FR-25 | Performance | P1 | 09 | feature-complete app | Measured budgets defined and met; no data loss under load | benchmarks, stress integration, device profiling | Planned |
+| FR-26 | Full regression/readiness | P0 | 09 | FR-01–25 | All phase criteria, platform matrix, security review and release gates pass | full unit/widget/integration/security/device matrix | Planned |
+
+## Non-functional requirements
+
+| ID | Description | User/system behavior | Priority | Primary phase | Dependencies | Acceptance criteria | Test expectations | Status |
+|---|---|---|---:|---:|---|---|---|---|
+| NFR-01 | Offline-first operation | User can create/read/edit/organize/search core notes without network | P0 | 02 | Local DB, repositories, no mandatory remote service | Core workflows succeed in airplane mode; no network dependency in data path | Offline CRUD/search integration; inspect network calls | Planned |
+| NFR-02 | Transactional integrity | User never sees partially applied multi-record changes | P0 | 02 | Drift schema, FK policy, transactions | Interrupted writes roll back or recover without orphaned records | FK, rollback, crash/restart and corruption tests | Planned |
+| NFR-03 | Encrypted persistence | User's note/revision/attachment content is not stored plaintext after encryption rollout | P0 | 06 | Reviewed crypto/key design, Phase 05 data/files | No plaintext content remains in DB/files/temp/cache/logs/backups after migration | Automated at-rest scan, interrupted migration and tamper tests | Planned |
+| NFR-04 | Search privacy | User searches only while unlocked after encryption; persistent plaintext index is absent | P0 | 06 | Phase 04 index, Phase 06 migration and unlock lifecycle | Migration removes FTS/token/snippet/cache; transient in-memory index cleared on lock | Index migration, locked/unlocked behavior, memory lifecycle and storage scan | Planned |
+| NFR-05 | Secret handling | User credentials and keys are never exposed in ordinary settings/logs | P0 | 06 | Key manager, logging/error policy | No password/recovery secret/raw key in preferences, logs, crash output or backup | Redaction unit, log/storage scan and review | Planned |
+| NFR-06 | Cross-platform parity | User can complete equivalent core workflows on Android and iOS | P1 | 09 | Shared Dart layers, native adapters, both host builds | Same acceptance scenarios pass; native exceptions documented | Android and iOS integration/device matrix; iOS macOS/Xcode build | Planned; iOS build pending |
+| NFR-07 | Accessibility/responsive UX | User can use app with assistive tech, large text and different screen sizes | P1 | 09 | Design tokens, semantics and responsive layouts | TalkBack/VoiceOver, contrast, focus, text scaling and target-size checklist passes | Widget semantics/layout matrix and physical-device audits | Planned |
+| NFR-08 | Versioned data formats | User data survives supported app upgrades and backup format evolution | P0 | 02 | DB migration framework; later encryption/backup versioning | Every supported DB/envelope/backup version has explicit migration or safe rejection | Fresh/upgrade/unknown-version fixtures and rollback tests | Planned |
+| NFR-09 | Honest recovery guarantees | User is informed when recovery is possible or permanently lost | P0 | 06 | Both independent recovery routes and reviewed key lifecycle | Password and recovery-key paths independently recover; total loss of both plus all valid key copies is documented unrecoverable | Clean-device recovery matrix, wrong credentials, rotation and key-loss tests | Planned |
+| NFR-10 | Beta distribution control | Testers receive only debug artifacts during beta | P0 | All phases | Two existing workflows and beta policy | Only Debug APK; no release APK/AAB/signing/publishing; 1.0.0 is first production target | Inspect workflow files and artifact type for each release run | Configured policy |
+
+## Decisions requiring approval
+Markdown dialect; folder move/delete semantics; title/body limits; autosave debounce/flush; search matching/ranking; trash/revision retention; attachment limits/types; statistics/timezone; theme/font bounds; backup replace/merge; legacy ZIP compatibility; performance budgets. Security choices are tracked in [Security Overview](../security/SECURITY_OVERVIEW.md).

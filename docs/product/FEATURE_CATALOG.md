@@ -1,237 +1,65 @@
-# Feature catalog
+# Feature catalog and phase ownership
 
-Every feature below describes target behavior. Status reflects the audited baseline, not the desired future implementation.
+Each feature has exactly one primary implementation phase. Cross-phase obligations are explicit. Current source is a foundation shell; all product workflows below are Planned unless noted.
 
-## Notes
-- **Purpose:** Capture and manage personal notes.
-- **User-facing behavior:** Create, view, edit, and delete notes; preserve title/body and folder relationship.
-- **Expected data:** Title, body, folder ID, timestamps, pin/trash state.
-- **Dependencies:** Phase 02 database, repository, folder model.
-- **Acceptance criteria:** CRUD round-trip; validation; ordering; persistence after restart.
-- **Testing requirements:** Unit repository/domain; widget list/detail/editor; integration persistence.
-- **Platform considerations:** Android/iOS shared behavior.
-- **Implementation phase:** 02
-- **Current status:** **Planned / Not implemented**
+## Phase 02 — Core Management
+### Notes CRUD (primary 02)
+Behavior: create/view/edit/delete. Data: ID, title, body, folder ID, timestamps, pin/trash. Dependencies: Drift schema/repository and folders. Acceptance: validated CRUD, transactional relationships, restart persistence. Tests: repository unit, list/detail widget, persistence integration. Platforms: shared Dart + Android/iOS lifecycle. Status: Not implemented.
+### Folders (primary 02)
+Behavior: create/rename/move/navigate/delete nested folders. Data: ID, parent ID, name, order, timestamps. Dependencies: DB, routing, approved deletion semantics. Acceptance: no cycles, safe note handling, atomic moves/deletes. Tests: hierarchy unit, navigation widget, transaction/rollback integration. Status: Not implemented.
 
-## Folders
-- **Purpose:** Organize notes into a navigable hierarchy.
-- **User-facing behavior:** Create, rename, move and delete folders under approved child-note policy.
-- **Expected data:** Folder ID, name, parent ID, timestamps, sort order.
-- **Dependencies:** Phase 02 database and navigation.
-- **Acceptance criteria:** Prevent cycles; preserve/reassign notes safely; maintain references.
-- **Testing requirements:** Unit hierarchy; widget navigation/dialogs; integration transactions.
-- **Platform considerations:** Shared; IDs must not depend on filesystem paths.
-- **Implementation phase:** 02
-- **Current status:** **Planned / Not implemented**
+## Phase 03 — Editor
+### Markdown editor/viewer (primary 03)
+Behavior: edit source and render documented dialect. Data: Markdown source and format version. Dependencies: notes repository, approved dialect/safe renderer. Acceptance: source round-trip, safe rendering, accessible semantics. Tests: parser/serializer unit, editor/preview widget, fixture integration. Platforms: shared; test selection/keyboard/typography both. Status: Not implemented.
+### Autosave (primary 03)
+Behavior: save edits automatically; show saving/saved/error. Data: note ID, edit revision, dirty state, save time. Dependencies: editor, repository transaction, lifecycle policy. Acceptance: stale save cannot overwrite newer edit; pending edits flush on defined lifecycle; errors retain text. Tests: race unit, status widget, rapid edit/background/kill/restart integration. Status: Not implemented.
 
-## Markdown
-- **Purpose:** Write structured notes using Markdown.
-- **User-facing behavior:** Edit source and view rendered content.
-- **Expected data:** Markdown source and renderer/format version.
-- **Dependencies:** Phase 03 notes repository and approved renderer.
-- **Acceptance criteria:** Document supported syntax; preserve source round-trip; safely handle unsafe content.
-- **Testing requirements:** Unit parser/serializer; widget editor/preview; integration round-trip.
-- **Platform considerations:** Shared renderer; test text selection/typography on both.
-- **Implementation phase:** 03
-- **Current status:** **Planned / Not implemented**
+## Phase 04 — Organization
+### Search (primary 04; privacy migration 06)
+Phase 04: offline search against pre-encryption local records; a persisted plaintext content index is temporary pre-encryption design only, after verifying DB engine support. Phase 06: remove persistent plaintext full-text/token/snippet/cache/temp copies. While unlocked, decrypt via repository and build/use transient in-memory index; clear on lock. Content search unavailable while locked. No encrypted-search protocol approved. Data: query, result IDs, transient index; pre-06 index only. Acceptance: correct results, trash excluded by default, mutations reflected, migration proves no plaintext index, lock clears memory. Tests: matcher/index unit, query widget, update/restart integration, migration/storage scan, lock/unlock lifecycle. Platforms: benchmark low-memory devices. Status: Not implemented.
+### Pinned notes (primary 04)
+Behavior: pin/unpin, deterministic order. Data: note ID, flag, pin time/order. Dependencies: notes/list. Acceptance: persists; trash policy defined. Tests: sort unit, widget action, restart integration. Status: Not implemented.
+### Trash/restore (primary 04)
+Behavior: soft-delete/restore notes/folders, explicit permanent deletion. Data: entity type/ID, deletion time, original location/order, expiry. Dependencies: DB transactions and retention. Acceptance: restore valid location; explicit permanent delete; atomic related cleanup. Tests: lifecycle unit, confirmation widget, cascade/rollback integration. Status: Not implemented.
 
-## Autosave
-- **Purpose:** Prevent loss of in-progress edits.
-- **User-facing behavior:** Save edits automatically and show save/error state.
-- **Expected data:** Note ID, dirty revision, save timestamp, pending status.
-- **Dependencies:** Phase 03 editor state and repository transactions.
-- **Acceptance criteria:** No stale write overwrites newer text; debounce/flush policy; lifecycle persistence.
-- **Testing requirements:** Unit race/order; widget status; integration rapid edits/restart.
-- **Platform considerations:** Lifecycle behavior differs; validate Android/iOS.
-- **Implementation phase:** 03
-- **Current status:** **Planned / Not implemented**
+## Phase 05 — Productivity
+### Note history (primary 05)
+Behavior: browse and restore revisions. Data: revision ID, note ID, snapshot, sequence/time. Dependencies: notes/autosave/retention. Acceptance: restore creates new current revision; bounded deterministic retention. Tests: ordering unit, history widget, restore integration. Status: Not implemented.
+### Local attachments (primary 05; encryption migration 06)
+Phase 05: import, associate, list, open/export/remove files in app-private local storage; validate type/size/name, atomic metadata and cleanup. **Bytes are not encrypted by Phase 05. This temporary beta state is not production-ready.** Phase 06 encrypts existing/future bytes and removes plaintext originals, staging, previews and temp copies after verified migration. Data: attachment ID, note ID, display name, media type, size, storage reference, timestamps; envelope metadata after 06. Dependencies: file picker/store, note relation; later reviewed crypto. Tests: Phase 05 validation/path/storage-full/lifecycle; Phase 06 vectors/tamper/migration interruption/rollback/plaintext scan. Platforms: Android SAF/content URI and iOS document picker. Status: Not implemented.
+### Statistics (primary 05)
+Behavior: agreed counts/activity metrics. Data: aggregates/date buckets. Dependencies: note/folder timestamps and metric definitions. Acceptance: reconcile source records; timezone/deletion policy explicit. Tests: aggregation unit, widget, dataset integration. Status: Not implemented.
 
-## Search
-- **Purpose:** Find relevant notes quickly while offline.
-- **User-facing behavior:** Search approved fields/content and present matching notes.
-- **Expected data:** Query, normalized tokens/index, note references.
-- **Dependencies:** Phase 04 notes data and indexes.
-- **Acceptance criteria:** Correct results; stable empty/no-match; trashed notes excluded by default.
-- **Testing requirements:** Unit matching/ranking; widget results; integration index updates.
-- **Platform considerations:** Offline on both platforms.
-- **Implementation phase:** 04
-- **Current status:** **Planned / Not implemented**
+## Phase 06 — Encryption and recovery
+### Notes, revisions and attachment encryption (primary 06)
+Requirements: AES-256-GCM, fresh unique nonce per operation, random 256-bit master key, Argon2id password KDF; no plaintext content/index persisted after migration; tamper fails closed. Dependencies: Phase 05 data, reviewed protocol/key manager. Tests: vectors, nonce/tamper, migration, at-rest scan, recovery integration and independent review. Platforms: reviewed Dart/native adapters. Status: Not implemented.
+### Password recovery (primary 06)
+Behavior: independently recover master key via Argon2id password path. Data: versioned salt/KDF metadata and wrapped-key data; never password. Acceptance: correct succeeds, wrong fails safely, versioning/rotation documented. Tests: KDF unit, recovery widget, clean-device integration. Status: Not implemented.
+### Recovery key (primary 06)
+Behavior: independent high-entropy recovery secret, safe reveal/confirmation/rotation. Acceptance: independently restores key; rotation interruption-safe; loss limits clear. Tests: format/rotation unit, reveal widget, clean-device integration. Status: Not implemented.
 
-## Pinned notes
-- **Purpose:** Keep important notes easy to reach.
-- **User-facing behavior:** Pin/unpin notes and display deterministic pinned ordering.
-- **Expected data:** Note ID, pinned flag, pin timestamp/order.
-- **Dependencies:** Phase 04 notes CRUD and list sorting.
-- **Acceptance criteria:** Pin state persists; ordering deterministic; trash behavior defined.
-- **Testing requirements:** Unit ordering; widget control; integration restart.
-- **Platform considerations:** Shared.
-- **Implementation phase:** 04
-- **Current status:** **Planned / Not implemented**
+## Phase 07 — Authentication
+### App biometric lock (primary 07)
+Behavior: gate app access; device credential fallback per approved policy. Data: app-lock policy and device-bound key reference. Acceptance: timeout/unavailable/cancel/lockout/invalidation safe. Tests: policy unit, widget states, physical Android/iOS. Status: Not implemented.
+### Vault biometric lock (primary 07)
+Behavior: separately authorize vault; app unlock does not implicitly unlock vault. Data: separate vault policy/key reference. Acceptance: invalidation never exposes key; recovery path clear. Tests: policy unit, widget, physical-device enrollment-change/fallback. Status: Not implemented.
 
-## Trash
-- **Purpose:** Protect against accidental deletion.
-- **User-facing behavior:** Soft-delete and restore notes/folders; offer explicit permanent deletion.
-- **Expected data:** Entity ID/type, deletion time, original parent/order, expiry policy.
-- **Dependencies:** Phase 04 transactions and retention policy.
-- **Acceptance criteria:** Restore valid location; permanent delete explicit; related records consistent.
-- **Testing requirements:** Unit lifecycle; widget trash/restore/confirm; integration restore/cascade.
-- **Platform considerations:** Shared.
-- **Implementation phase:** 04
-- **Current status:** **Planned / Not implemented**
+## Phase 08 — Backup
+### New encrypted backup (primary 08)
+Behavior: export versioned encrypted snapshot. Data: manifest, encrypted DB/attachment payload, integrity/version metadata. Dependencies: encryption, attachments, snapshot consistency. Acceptance: no plaintext/raw master key, integrity checked, consistent snapshot. Tests: parser unit, progress widget, round-trip/corruption integration. Status: Not implemented.
+### Restore (primary 08)
+Behavior: validate, preview and restore with approved replace/merge policy. Acceptance: validate before mutation, atomic commit/rollback, relationships preserved. Tests: validation unit, restore widget, corruption/rollback/clean-device integration. Status: Not implemented.
+### Legacy ZIP import (primary 08)
+Behavior: import only verified YRNotes variants. Dependencies: inspect separate YRNotes source and real golden fixtures; never modify YRNotes. Acceptance: compatibility matrix, safe parser, explicit imported/skipped report, no silent loss. Tests: golden fixtures, traversal/decompression/corruption, preview widget, platform file-picker integration. Status: Planned; compatibility unverified.
 
-## History
-- **Purpose:** Recover earlier versions of notes.
-- **User-facing behavior:** Browse revisions and restore a prior version.
-- **Expected data:** Revision ID, note ID, encrypted snapshot/reference, timestamp.
-- **Dependencies:** Phase 05 notes and retention.
-- **Acceptance criteria:** Restore creates a new current revision; retention bounded by approved policy.
-- **Testing requirements:** Unit ordering; widget history; integration restore.
-- **Platform considerations:** Shared.
-- **Implementation phase:** 05
-- **Current status:** **Planned / Not implemented**
+## Phase 09 — Final Polish and preferences
+### Settings (primary 09)
+Behavior: manage app preferences/settings. Data: typed non-secret values/version. Acceptance: defaults, validation, persistence, reset/migration; secrets excluded. Tests: unit, widget, restart/migration. Status: Not implemented.
+### Theme preference/persistence (primary 09)
+Behavior: choose system/light/dark/AMOLED. Dependencies: Phase 01 base tokens + settings. Acceptance: persist; system follows OS; approved AMOLED surfaces; accessible contrast/system bars. Tests: unit, widget matrix, restart/device. Phase 01 owns initial tokens/theme foundation only. Current: system mode and seeded light/dark themes configured; no user preference or AMOLED.
+### Font-size preference (primary 09)
+Behavior: choose/persist note/editor size. Acceptance: approved bounds, no clipping, respects OS scaling. Tests: bounds unit, widget matrix, persistence/device. Status: Not implemented.
+### UI/UX polish, accessibility, performance, full regression (primary 09)
+Acceptance: approved design review; TalkBack/VoiceOver, semantics, contrast, focus, large text, touch targets; performance budgets measured then met; complete unit/widget/integration/security/platform regression. Status: Not implemented.
 
-## Attachments
-- **Purpose:** Keep files alongside related notes.
-- **User-facing behavior:** Import, view/open, export and remove note attachments.
-- **Expected data:** Attachment ID, note ID, metadata, size, encrypted blob reference.
-- **Dependencies:** Phase 05 file storage and security design.
-- **Acceptance criteria:** Type/size validation; encrypted-at-rest; no orphan blobs; safe lifecycle.
-- **Testing requirements:** Unit validation/storage; widget attachment states; integration round-trip/deletion.
-- **Platform considerations:** Platform pickers via adapters; scoped storage/document providers.
-- **Implementation phase:** 05
-- **Current status:** **Planned / Not implemented**
-
-## Encryption
-- **Purpose:** Protect persisted note data confidentiality and integrity.
-- **User-facing behavior:** Enable encryption and transparently read/write encrypted content.
-- **Expected data:** Ciphertext, nonce, authentication tag, envelope/version metadata.
-- **Dependencies:** Phase 06 reviewed crypto package/protocol and key manager.
-- **Acceptance criteria:** AES-256-GCM; unique nonce; 256-bit random master key; tamper fails closed; no plaintext persistence.
-- **Testing requirements:** Unit vectors/tamper/nonce; integration at-rest inspection; security review.
-- **Platform considerations:** Validate Dart/native package behavior on both OSes.
-- **Implementation phase:** 06
-- **Current status:** **Planned / Not implemented**
-
-## Password recovery
-- **Purpose:** Provide one recovery route for the encrypted master key.
-- **User-facing behavior:** Use password-derived key wrapping to regain access.
-- **Expected data:** Argon2id salt/parameters, wrapped key, verifier/version metadata.
-- **Dependencies:** Phase 06 KDF and approved wrapping design.
-- **Acceptance criteria:** Correct password recovers; wrong password fails safely; parameters versioned.
-- **Testing requirements:** Unit KDF/wrong password; widget recovery; integration clean install.
-- **Platform considerations:** Validate KDF performance/package on both platforms.
-- **Implementation phase:** 06
-- **Current status:** **Planned / Not implemented**
-
-## Recovery key
-- **Purpose:** Provide independent recovery if password is unavailable.
-- **User-facing behavior:** Generate and securely display a recovery secret; confirm saving and support rotation.
-- **Expected data:** Random recovery secret, wrapped key, version/rotation metadata.
-- **Dependencies:** Phase 06 secure random and key wrapping.
-- **Acceptance criteria:** High entropy; one-time reveal; confirmation; rotation safe; loss limitations explicit.
-- **Testing requirements:** Unit format/rotation; widget reveal/confirm; integration recovery.
-- **Platform considerations:** Clipboard/screenshot exposure reviewed per platform.
-- **Implementation phase:** 06
-- **Current status:** **Planned / Not implemented**
-
-## App biometric lock
-- **Purpose:** Restrict opening Yamintto using device biometrics.
-- **User-facing behavior:** Lock/unlock app with documented fallback and timeout.
-- **Expected data:** Lock preference, auth policy, platform-protected key references.
-- **Dependencies:** Phase 07 native biometric APIs and secure storage.
-- **Acceptance criteria:** Enable/disable, timeout, fallback, lockout, unavailable and invalidation safe.
-- **Testing requirements:** Unit policy; widget prompts/settings; real-device integration.
-- **Platform considerations:** Android BiometricPrompt/Keystore; iOS LocalAuthentication/Keychain.
-- **Implementation phase:** 07
-- **Current status:** **Planned / Not implemented**
-
-## Vault biometric lock
-- **Purpose:** Separately protect an encrypted vault.
-- **User-facing behavior:** Require a separate biometric policy to open vault content.
-- **Expected data:** Vault state and wrapped vault key/reference.
-- **Dependencies:** Phase 07 encryption and app-level security.
-- **Acceptance criteria:** Separate from app lock; invalidation/fallback cannot expose key.
-- **Testing requirements:** Unit policy; widget vault UX; real-device integration.
-- **Platform considerations:** Platform-bound key semantics differ.
-- **Implementation phase:** 07
-- **Current status:** **Planned / Not implemented**
-
-## Backup
-- **Purpose:** Create a portable encrypted copy of app data.
-- **User-facing behavior:** Export a versioned archive to user-selected storage.
-- **Expected data:** Manifest, format version, encrypted DB and attachment payloads.
-- **Dependencies:** Phase 08 encryption, attachments, snapshot semantics.
-- **Acceptance criteria:** Integrity checked, encrypted, consistent snapshot; no plaintext or raw master key.
-- **Testing requirements:** Unit manifest/validation; widget progress/errors; integration round-trip.
-- **Platform considerations:** Platform document providers and temp-file cleanup.
-- **Implementation phase:** 08
-- **Current status:** **Planned / Not implemented**
-
-## Restore
-- **Purpose:** Restore Yamintto data from a backup safely.
-- **User-facing behavior:** Validate, preview and restore backup with clear replace/conflict policy.
-- **Expected data:** Manifest, validated records, conflict/replace policy.
-- **Dependencies:** Phase 08 backup parser and database transactions.
-- **Acceptance criteria:** Validate before mutation; rollback on failure; preserve references.
-- **Testing requirements:** Unit validation/rollback; widget restore; integration clean restore.
-- **Platform considerations:** Android/iOS file selection differs.
-- **Implementation phase:** 08
-- **Current status:** **Planned / Not implemented**
-
-## Legacy ZIP import
-- **Purpose:** Bring supported YRNotes backups into Yamintto.
-- **User-facing behavior:** Select legacy ZIP, inspect contents, import verified data and report outcomes.
-- **Expected data:** ZIP entries, legacy metadata, source version and import report.
-- **Dependencies:** Phase 08 inspection of YRNotes source and real fixtures.
-- **Acceptance criteria:** Only verified variants accepted; malformed archives fail safely; golden fixtures pass.
-- **Testing requirements:** Unit golden fixtures; widget preview/report; integration import.
-- **Platform considerations:** Offline; test platform file pickers.
-- **Implementation phase:** 08
-- **Current status:** **Planned / Compatibility unverified**
-
-## Statistics
-- **Purpose:** Summarize note activity and content.
-- **User-facing behavior:** Display defined counts and time-based activity metrics.
-- **Expected data:** Aggregates and date buckets derived from local records.
-- **Dependencies:** Phase 05 note/folder timestamps.
-- **Acceptance criteria:** Metric definitions/timezone/deleted-item policy explicit; values match source.
-- **Testing requirements:** Unit aggregation/time boundaries; widget stats; integration dataset.
-- **Platform considerations:** Shared; chart alternatives accessible.
-- **Implementation phase:** 05
-- **Current status:** **Planned / Not implemented**
-
-## Settings
-- **Purpose:** Let users configure app behavior.
-- **User-facing behavior:** View/change preferences, security and storage options.
-- **Expected data:** Typed key/value settings, defaults and schema version.
-- **Dependencies:** Phase-specific features; persistence.
-- **Acceptance criteria:** Defaults, validation, persistence, reset and migration defined; no secrets in settings.
-- **Testing requirements:** Unit validation; widget controls; integration persistence.
-- **Platform considerations:** System settings and biometric controls platform-specific.
-- **Implementation phase:** 09
-- **Current status:** **Planned / Not implemented**
-
-## Themes
-- **Purpose:** Let users choose a comfortable appearance.
-- **User-facing behavior:** System, light, dark and AMOLED theme modes.
-- **Expected data:** Theme preference and semantic design tokens.
-- **Dependencies:** Phase 01/09 design system and preference persistence.
-- **Acceptance criteria:** All modes consistent; accessible contrast and states.
-- **Testing requirements:** Unit selection; widget theme; integration persistence.
-- **Platform considerations:** Shared Flutter UI; verify system bars on devices.
-- **Implementation phase:** 01 / 09
-- **Current status:** **Partially configured: system light/dark seeded themes only**
-
-## Font sizes
-- **Purpose:** Improve reading comfort and accessibility.
-- **User-facing behavior:** Choose a supported note/editor text size.
-- **Expected data:** Font scale or semantic size token and preference.
-- **Dependencies:** Phase 09 typography tokens/settings.
-- **Acceptance criteria:** Approved range; no clipping; Markdown hierarchy remains legible.
-- **Testing requirements:** Unit bounds; widget text scaling/layout; integration persistence.
-- **Platform considerations:** Test Android/iOS system scaling.
-- **Implementation phase:** 09
-- **Current status:** **Planned / Not implemented**
-
-## Status rule
-A dependency, placeholder folder, design document or workflow does not make a feature implemented. Change status only with source and test evidence.
+Ownership summary: 02 folders/notes; 03 Markdown/autosave; 04 search/pin/trash; 05 history/local attachments/statistics; 06 encryption/password/recovery key/search-index migration; 07 app/vault biometrics; 08 legacy/new backup/restore; 09 settings/theme preference/font size/polish/accessibility/performance/regression.

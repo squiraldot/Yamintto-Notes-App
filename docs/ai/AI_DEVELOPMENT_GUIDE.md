@@ -1,5 +1,18 @@
 # AI development guide
 
-A new agent must not depend on prior chat context. Read root AGENTS.md and [phase rules](PHASE_EXECUTION_RULES.md), identify authorized phase/scope, inspect branch/tree/status, then read relevant docs and source/tests. Current implementation is a foundation shell only: bootstrap, root ProviderScope, Material 3 theme, one GoRouter route, foundation screen, one widget test. Drift/SQLite are dependencies only; no database schema, repositories, feature providers or product flows exist.
+For a new coding agent with no previous chat context.
 
-Plan exact files, acceptance criteria, tests, migration impact and exclusions before editing. Use presentation/domain/data boundaries when implemented; keep native services behind Dart interfaces. Ask before changing architecture, data format, crypto, platform minimums, dependency choices or workflows. Add unit/widget/integration tests for the affected behavior and failure paths. Update feature status, architecture/security/database docs and ADRs. Run documented checks, inspect diff/links, never claim unrun platform checks. Report scope, changed files, branch, commit SHA, exact validation, unrun checks and unresolved risks.
+## Begin with evidence
+Read [AGENTS.md](../../AGENTS.md), [index](../README.md), [status](../STATUS.md), [phase rules](PHASE_EXECUTION_RULES.md) and [roadmap](../development/PHASE_ROADMAP.md). Inspect branch/head, relevant complete tree, source/tests, pubspec/lockfile, Android/iOS, two workflows and recent Actions job steps. Read phase Feature Catalog entries and linked specs. Current code is only bootstrap + ProviderScope + MaterialApp + one GoRouter route/screen + one widget test; Drift is a dependency, not a database. No phase is authorized; Phase 01 is planned next, not authorized.
+
+## Plan before editing
+Record phase authorization, feature IDs, scope, exact expected paths, forbidden paths, acceptance criteria, data/schema impact, platform requirements, unit/widget/integration/device tests and docs/ADR changes. Stop and ask when product/security decisions are missing.
+
+## Boundaries
+Presentation renders UI and calls Riverpod controllers; no SQL, crypto or native APIs in widgets. Controllers coordinate use cases. Domain owns entities, validation, business rules and repository interfaces, independent of Flutter. Data owns Drift DAOs, repository implementations, serialization, local files and error translation. Native capabilities are behind narrow interfaces. Dependencies point inward; features do not import each other's private data implementation. Transactions protect multi-record operations. Do not silently decide folder deletion, Markdown dialect, search ranking, retention, attachment limits, backup format, crypto parameters or biometric fallback.
+
+## Tests and docs
+Test success, invalid input, empty/error states, concurrency, lifecycle, rollback and data-loss cases at the right layer. Device-only behavior is unverified until physical-device tests. Update requirements, feature status, architecture/DB/security/testing docs, phase checklist, ADR and changelog as appropriate. UI presence alone does not mean a feature is implemented.
+
+## Git and report
+Use only authorized branch. Never touch YRNotes. Keep exactly two workflows and Debug APK-only beta. Review diff and links. Report branch/SHA, files, exact commands/results, skipped/unavailable tests, Android/iOS evidence, unresolved decisions and risks. Never claim unrun validation.

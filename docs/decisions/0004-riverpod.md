@@ -1,18 +1,16 @@
-# ADR -riv: Riverpod
+# ADR-0004: Riverpod
 
 - Status: Accepted
 - Date: 2026-11-04
 
 ## Context
-Need explicit state and dependency wiring.
+The app needs testable state management and dependency injection.
 
 ## Decision
 Use Riverpod/flutter_riverpod.
 
 ## Alternatives
-Bloc; Provider; GetX; local-only state.
+Bloc; Provider; GetX; ad hoc local state.
 
 ## Consequences
-Root ProviderScope exists; feature providers do not.
-
-This ADR is a decision record, not evidence that the capability is implemented.
+Root ProviderScope exists. Feature providers/controllers do not yet exist. Generator strategy remains undecided.

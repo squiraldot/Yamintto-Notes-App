@@ -1,18 +1,16 @@
-# ADR -off: Offline-first architecture
+# ADR-0002: Offline-first architecture
 
 - Status: Accepted
 - Date: 2026-11-04
 
 ## Context
-Core note use must work without connectivity.
+Core note creation, reading, editing and organization must work without network connectivity.
 
 ## Decision
-Local-first persistence; no mandatory network for core workflows.
+Local-first persistence; no mandatory network dependency for core workflows.
 
 ## Alternatives
-Cloud-first or mandatory account.
+Cloud-first or mandatory account/network for core notes.
 
 ## Consequences
-Local integrity, encryption and backups are essential; DB not yet implemented.
-
-This ADR is a decision record, not evidence that the capability is implemented.
+Local integrity, migration, encryption and user-controlled backup are critical. Database is not yet implemented.

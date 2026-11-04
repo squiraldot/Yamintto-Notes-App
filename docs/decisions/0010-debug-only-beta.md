@@ -1,18 +1,16 @@
-# ADR -deb: Debug-only beta distribution
+# ADR-0010: Debug-only beta distribution
 
 - Status: Accepted
 - Date: 2026-11-04
 
 ## Context
-Product is beta.
+Yamintto remains beta until production readiness is demonstrated.
 
 ## Decision
-Debug APK only; prohibit release APK/AAB/signing/publishing; 1.0.0 first production release.
+Only Debug APK builds/artifacts are permitted during beta. No release APK, AAB, release signing or production publishing. First production release target is 1.0.0.
 
 ## Alternatives
-Release distribution during beta.
+Distribute signed release artifacts during beta.
 
 ## Consequences
-Existing artifact workflow is debug-only; production needs evidence/approval.
-
-This ADR is a decision record, not evidence that the capability is implemented.
+The existing debug artifact workflow is the only beta distribution path. Production requires all phase gates, platform/security evidence and explicit release approval.

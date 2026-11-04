@@ -1,24 +1,34 @@
 # Yamintto AI agent instructions
 
-This is the primary instruction entry point. Read it before any repository modification.
+Mandatory entry point. Read before any repository change.
 
-## Start sequence
-1. Read this file, [AI development guide](docs/ai/AI_DEVELOPMENT_GUIDE.md), and [phase rules](docs/ai/PHASE_EXECUTION_RULES.md).
-2. Read relevant product, architecture, database, security, design, testing, development, release and ADR documents via [docs index](docs/README.md).
-3. Inspect actual source, config, tests, workflows, branch and diff before assumptions.
-4. Confirm authorized phase, exact scope and allowed files. Ask if unclear.
+## Identity and verified baseline
+Repository `squiraldot/Yamintto-Notes-App`; app Yamintto; Flutter package `yamintto`; Android ID and iOS bundle ID `com.merrmist.yamintto`; version `0.1.0-beta.1+1`; first production target `1.0.0`. CI pins Flutter 3.47.9; pubspec requires Dart >=3.13.0 and Flutter >=3.38.4. Only Flutter 3.47.9 is verified; do not claim all lower pubspec-allowed Flutter versions are compatible.
 
-## Source of truth and statuses
-Actual code/configuration determine current implementation. Docs define target intent, not proof. Classify as Implemented, Configured, Planned, In progress, Not implemented, or Requires verification. Report code/doc conflicts; never silently change architecture.
+Actual source: main/bootstrap, root Riverpod ProviderScope, YaminttoApp, Material 3 system light/dark themes, one GoRouter '/' route/foundation screen, one widget test and native host scaffolds. Riverpod/GoRouter/Drift/SQLite packages are configured; no Drift DB/schema/DAO, feature repository/provider, notes workflow, encryption, biometrics, attachment or backup implementation exists. **No phase is currently authorized. Phase 01 is next planned, not started/accepted.**
 
-## Architecture
-Target feature-first structure: `lib/features/<feature>/{data,domain,presentation}/`; shared infrastructure `lib/core/`; composition/providers/routing/config `lib/app/`. Riverpod is selected for state/DI, GoRouter for navigation, Drift/SQLite for local persistence. Current implementation is only bootstrap, ProviderScope, one route, theme and foundation screen. No schema, repository, feature provider, encryption or product feature exists.
+## Mandatory start sequence
+1. Read [docs index](docs/README.md), [status](docs/STATUS.md), [AI guide](docs/ai/AI_DEVELOPMENT_GUIDE.md), [phase rules](docs/ai/PHASE_EXECUTION_RULES.md) and [roadmap](docs/development/PHASE_ROADMAP.md).
+2. Confirm explicit user authorization for phase and scope. Roadmap position is not authorization; if absent, do not modify app code.
+3. Read the phase's Feature Catalog, product requirements, architecture, database, security, design and testing docs.
+4. Inspect current branch/head, relevant complete tree, actual source/config/tests, pubspec/lockfile, Android/iOS, both workflows, recent Actions results and diff.
+5. Plan exact files, exclusions, acceptance criteria, tests, migration/data-loss risks and docs updates before implementation.
 
-## Scope and safety
-Work only in authorized scope; one phase at a time; no scope expansion, skipped phases, premature future features, unrelated refactors or breaking changes without documented migration and approval. Preserve all features and tests. Never modify YRNotes. Do not start Phase 01 without explicit authorization. No secrets/plaintext note content in source, logs or commits. Do not invent cryptographic protocols.
+## Truth and architecture
+Actual source/config/tests are the truth. Status labels: Implemented (source + evidence), Configured (scaffold/dependency only), In progress, Planned, Not implemented, Requires verification. Never infer implementation from folders, dependencies, ADRs or CI that skipped a suite.
+Target: feature-first `lib/features/<feature>/{presentation,domain,data}/`; shared services in `lib/core/`; composition/providers/routing/config in `lib/app/`. Presentation calls Riverpod controllers; domain owns rules/use cases/repository contracts; data owns Drift DAOs, repository implementations, file storage and native adapters. Features do not import another feature's private data layer. Current source is not this full architecture.
 
-## Repository restrictions
-Exactly two workflows: `.github/workflows/flutter-ci.yml` and `.github/workflows/yamintto-debug-apk.yml`. Never add a third. Do not change workflows unless specifically authorized. Beta permits debug APK only: no release APK/AAB, signing or production publishing. For documentation-only tasks do not modify app source, dependencies, Android/iOS config or workflows.
+## Scope and restrictions
+One phase at a time; max 2–3 major features. No unrelated work, scope expansion, skipped phases, premature future work, silent architecture changes or breaking data changes without approved migration. Preserve behavior and add regression tests. Never modify separate YRNotes.
+Docs-only tasks may change Markdown docs/indexes/status/ADRs only; never app source/tests, dependencies, pubspec/lockfile, Android, iOS or workflows.
+Exactly two workflows: `.github/workflows/flutter-ci.yml` and `.github/workflows/yamintto-debug-apk.yml`. Never add a third; do not modify either in docs-only work. Beta is Debug APK only: no release APK/AAB, release signing or production publishing.
 
-## Validation and report
-Run lockfile-enforced pub get, Dart format check, fatal analyzer and flutter test; run integration/platform checks when available. Do not claim unrun checks. iOS native build remains pending until macOS/Xcode validation. Update docs with behavior/architecture changes. Report changed files, branch, commit SHA, checks/results, unrun checks, platform evidence and unresolved risks.
+## Security boundaries
+Requirements, not implemented protocol: AES-256-GCM; unique nonce per encryption; random 256-bit master key; Argon2id password KDF; Android Keystore/iOS Keychain; independent password and recovery-key recovery; separate app and vault biometric protection. Do not invent nonce/AAD/KDF/wrapping/native flags. Validate current authoritative package/platform documentation and independent security review before implementation. Never log note content, secrets, keys or attachment bytes. Phase 05 attachments are locally stored but unencrypted until Phase 06; this temporary beta state is not production-ready. If both recovery paths and every valid key copy are lost, recovery cannot be promised.
+
+## Search privacy lifecycle
+Phase 04 search targets the pre-encryption local model. Phase 06 must remove every persistent plaintext content index/cache/snippet/temp copy. While unlocked, search may use a transient in-memory index of decrypted records; clear it on lock. Content search is unavailable while locked. Do not invent encrypted-search cryptography.
+
+## Verification and report
+Use Flutter 3.47.9 commands: `flutter pub get --enforce-lockfile`, Dart format check, `flutter analyze --fatal-infos`, `flutter test`; add relevant unit/widget/integration/device tests. CI skips integration tests when no `*_test.dart` exists; skipped is not passed. Physical devices are required for biometric/secure-storage evidence. iOS native build remains pending macOS/Xcode.
+Before completion inspect diff/links, verify forbidden paths unchanged, update docs/status, and report phase authorization, scope, files, branch, SHA, exact checks/results, skipped tests, platform evidence, workflow count and unresolved risks.

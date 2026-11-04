@@ -1,3 +1,3 @@
-# ACCESSIBILITY
+# Accessibility
 
-Requirements: semantics/labels, screen-reader order, keyboard/focus support, text scaling, contrast, non-color status, reduced motion, accessible errors and destructive confirmation, semantic Markdown headings/links. Test TalkBack and VoiceOver, large text, focus, touch targets and contrast. No complete audit exists.
+Phase 09 primary ownership. Requirements: semantics/labels and reading order; TalkBack/VoiceOver; keyboard/focus; large text and font preferences; contrast; non-color status; reduced motion; accessible errors/destructive confirmation; Markdown heading/link semantics; touch targets. Test widget semantics and physical Android/iOS assistive technology. No complete audit exists.

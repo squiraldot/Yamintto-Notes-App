@@ -1,18 +1,16 @@
-# ADR -bio: App and vault biometrics
+# ADR-0008: App and vault biometric protection
 
 - Status: Accepted
 - Date: 2026-11-04
 
 ## Context
-Need app access and separate vault protection.
+Yamintto needs both application access control and a distinct vault authorization boundary.
 
 ## Decision
-Both app-level lock and distinct vault biometric lock.
+Provide APP + VAULT biometric protection. App unlock must not implicitly unlock vault.
 
 ## Alternatives
-Only app lock; only vault lock; password only.
+App lock only; vault lock only; password-only protection.
 
 ## Consequences
-Native behavior and invalidation need physical-device validation. Not implemented.
-
-This ADR is a decision record, not evidence that the capability is implemented.
+Both policies and key scopes must be separately defined. Android/iOS native invalidation and fallback require current platform review and physical-device tests. Neither integration exists yet.

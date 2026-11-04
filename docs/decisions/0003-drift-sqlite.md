@@ -1,18 +1,16 @@
-# ADR -dri: Drift and SQLite
+# ADR-0003: Drift and SQLite
 
 - Status: Accepted
 - Date: 2026-11-04
 
 ## Context
-Need relational local persistence, transactions and migrations.
+The app requires relational local persistence, transactions and schema migrations.
 
 ## Decision
-Use Drift over SQLite.
+Use Drift over SQLite for typed local data access and migration support.
 
 ## Alternatives
-Raw SQLite; alternative ORM; remote DB.
+Raw SQLite; another ORM; remote database as primary store.
 
 ## Consequences
-Dependencies configured; no schema/DAOs/migrations exist.
-
-This ADR is a decision record, not evidence that the capability is implemented.
+Drift/SQLite packages are configured. No schema, DAOs, generated code or migrations currently exist. Proposed schema is in [DATABASE_SCHEMA](../database/DATABASE_SCHEMA.md).

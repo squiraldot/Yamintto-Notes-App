@@ -1,14 +1,14 @@
 # Architecture Decision Records
 
-ADRs record durable choices; status does not prove implementation. Format: Context, Decision, Alternatives, Consequences, Status, Date.
-
-- [Flutter native application](0001-flutter-native-app.md)
-- [Offline-first architecture](0002-offline-first.md)
-- [Drift and SQLite](0003-drift-sqlite.md)
-- [Riverpod](0004-riverpod.md)
-- [GoRouter](0005-go-router.md)
-- [AES-256-GCM and key requirements](0006-encryption.md)
-- [Password and recovery key](0007-recovery.md)
-- [App and vault biometrics](0008-biometrics.md)
-- [Exactly two workflows](0009-two-workflows.md)
-- [Debug-only beta distribution](0010-debug-only-beta.md)
+ADRs capture decisions, not implementation proof. Format: Context, Decision, Alternatives, Consequences, Status, Date.
+- [ADR-0001 Flutter native app](0001-flutter-native-app.md)
+- [ADR-0002 Offline-first](0002-offline-first.md)
+- [ADR-0003 Drift/SQLite](0003-drift-sqlite.md)
+- [ADR-0004 Riverpod](0004-riverpod.md)
+- [ADR-0005 GoRouter](0005-go-router.md)
+- [ADR-0006 Encryption requirements](0006-encryption.md)
+- [ADR-0007 Both recovery paths](0007-recovery.md)
+- [ADR-0008 App and vault biometrics](0008-biometrics.md)
+- [ADR-0009 Exactly two workflows](0009-two-workflows.md)
+- [ADR-0010 Debug-only beta](0010-debug-only-beta.md)
+- [ADR-0011 Search index privacy lifecycle](0011-search-index-privacy.md)
