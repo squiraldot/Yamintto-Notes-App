@@ -5,11 +5,12 @@ allprojects {
     }
 }
 
-val sharedBuildDir = rootProject.layout.buildDirectory.dir("../build").get()
-rootProject.layout.buildDirectory.value(sharedBuildDir)
+val sharedBuildDir = rootProject.layout.projectDirectory.dir("../build")
+rootProject.layout.buildDirectory.set(sharedBuildDir)
 
 subprojects {
-    project.layout.buildDirectory.value(sharedBuildDir.dir(project.name))
+    val subprojectBuildDir = sharedBuildDir.dir(project.name)
+    project.layout.buildDirectory.set(subprojectBuildDir)
 }
 
 tasks.register<Delete>("clean") {
