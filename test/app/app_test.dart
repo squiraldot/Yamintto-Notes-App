@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yamintto/app/app.dart';
-import 'package:yamintto/core/theme/app_theme.dart';
 import 'package:yamintto/features/foundation/presentation/foundation_screen.dart';
 import 'package:yamintto/features/foundation/presentation/splash_screen.dart';
 
