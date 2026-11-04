@@ -2,6 +2,19 @@
 
 Each feature has exactly one primary implementation phase. Cross-phase obligations are explicit. Current source is a foundation shell; all product workflows below are Planned unless noted.
 
+## Phase 01 — Foundation
+
+### Flutter project and identity (primary 01)
+Behavior: configure the Flutter app identity and preserve Android/iOS host identity, dependency lock, linting and bootstrap. Acceptance: package name yamintto; Android application ID and iOS bundle ID com.merrmist.yamintto; beta version; app launches from the configured entry point. Tests: configuration unit tests and Android/iOS build/device validation. Current: existing foundation configuration retained; Android/iOS build verification pending.
+
+### Base design system (primary 01)
+Behavior: centralized provisional color, typography, spacing and radius tokens; Material 3 light, dark and true-black AMOLED theme variants; reusable app-shell button, card, text field, dialog and sheet primitives. Acceptance: tokens centralized, theme variants construct, AMOLED surfaces are true black, shared components compile and remain accessible. Tests: token/theme unit tests and component widget tests. Current: implemented in app shell; final brand system and detailed screen design remain subject to approval.
+
+### Splash and navigation foundation (primary 01)
+Behavior: splash as initial route, navigation to temporary foundation placeholder, unknown-route recovery. Acceptance: app opens on splash, transitions to root route, route errors recover to home. Tests: splash/navigation and unknown-route widget tests; Android/iOS cold launch on devices. Current: implemented in Dart; native/device launch behavior pending verification.
+
+Phase 01 does not include notes, folders, editor, search, database, security, attachments, backups, settings or persisted theme/font preferences. Theme preference persistence belongs to Phase 09. Status: **In progress; verification pending.**
+
 ## Phase 02 — Core Management
 ### Notes CRUD (primary 02)
 Behavior: create/view/edit/delete. Data: ID, title, body, folder ID, timestamps, pin/trash. Dependencies: Drift schema/repository and folders. Acceptance: validated CRUD, transactional relationships, restart persistence. Tests: repository unit, list/detail widget, persistence integration. Platforms: shared Dart + Android/iOS lifecycle. Status: Not implemented.
