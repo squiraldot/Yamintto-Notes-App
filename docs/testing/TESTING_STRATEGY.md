@@ -1,7 +1,7 @@
 # Testing strategy and execution matrix
 
 ## Current evidence
-Flutter CI runs locked dependency resolution, repository-wide format, analyzer, `flutter test`, and the Phase 01 integration smoke test on an Android API 35 emulator. The emulator suite is app-shell coverage only. Physical Android/iOS device evidence and iOS native compilation remain separate gates.
+Flutter CI runs locked dependency resolution, repository-wide format, analyzer and `flutter test` (unit/widget tests) only. It does not provision emulators or simulators. Integration and E2E tests are run by the owner on real physical devices.
 
 ## Test layers
 | Layer | Purpose | Environment | CI expectation |
@@ -9,7 +9,7 @@ Flutter CI runs locked dependency resolution, repository-wide format, analyzer, 
 | Unit | Domain rules, repositories, mapping, parser, KDF/crypto wrappers, migrations | host VM, fakes, in-memory DB | run on every CI |
 | Widget | UI state, navigation, validation, accessibility semantics | Flutter test binding, provider overrides | run on every CI |
 | Integration | Real DB/files/lifecycle/import/restore end-to-end | owner-provided physical Android/iOS device | owner-run physical-device smoke only; no virtual-device CI |
-| Physical-device | Keystore/Keychain, biometrics, lifecycle, file provider, OS behavior | real supported Android and iOS hardware | manual/release gate; not inferred from emulator CI |
+| Physical-device | Keystore/Keychain, biometrics, lifecycle, file provider, OS behavior | real supported Android and iOS hardware | manual/release gate; not inferred from host CI |
 | Security review | Protocol, dependencies, threat model and leakage review | independent reviewer + test evidence | mandatory before security/production claim |
 
 ## Feature matrix
