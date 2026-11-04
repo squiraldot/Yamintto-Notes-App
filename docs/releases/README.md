@@ -1,3 +1,3 @@
-# Releases
+# README
 
-Store beta release notes and release-readiness procedures here. Production release configuration is intentionally absent.
+[Versioning](VERSIONING.md) · [Beta policy](BETA_POLICY.md) · [Production readiness](PRODUCTION_READINESS.md)

@@ -1,0 +1,3 @@
+# PROJECT_STRUCTURE
+
+Current tree: .github/{ISSUE_TEMPLATE,workflows}; android host; assets/{branding,fonts,icons,images}; docs; integration_test README only; ios Runner project; lib/{app/{configuration,providers,router},core/{constants,database,errors,files,logging,markdown,navigation,security,storage,theme,widgets},features/foundation/presentation,shared}; test/app/app_test.dart and helpers. Most categorized folders contain placeholders. Target feature module: lib/features/<feature>/{data,domain,presentation}; add only when authorized. Tests mirror feature paths; device tests in integration_test.

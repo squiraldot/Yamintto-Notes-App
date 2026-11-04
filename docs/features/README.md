@@ -1,3 +1,3 @@
-# Feature specifications
+# README
 
-Store approved feature specifications here. A planned feature name is not authorization to implement it.
+Canonical per-feature acceptance and status lives in [product feature catalog](../product/FEATURE_CATALOG.md).

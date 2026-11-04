@@ -1,0 +1,5 @@
+# AI development guide
+
+A new agent must not depend on prior chat context. Read root AGENTS.md and [phase rules](PHASE_EXECUTION_RULES.md), identify authorized phase/scope, inspect branch/tree/status, then read relevant docs and source/tests. Current implementation is a foundation shell only: bootstrap, root ProviderScope, Material 3 theme, one GoRouter route, foundation screen, one widget test. Drift/SQLite are dependencies only; no database schema, repositories, feature providers or product flows exist.
+
+Plan exact files, acceptance criteria, tests, migration impact and exclusions before editing. Use presentation/domain/data boundaries when implemented; keep native services behind Dart interfaces. Ask before changing architecture, data format, crypto, platform minimums, dependency choices or workflows. Add unit/widget/integration tests for the affected behavior and failure paths. Update feature status, architecture/security/database docs and ADRs. Run documented checks, inspect diff/links, never claim unrun platform checks. Report scope, changed files, branch, commit SHA, exact validation, unrun checks and unresolved risks.

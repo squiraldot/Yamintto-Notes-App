@@ -1,3 +1,3 @@
-# Database
+# README
 
-Store Drift/SQLite schema, data ownership, migration policy, indexes, and persistence decisions here.
+[Schema](DATABASE_SCHEMA.md) · [Migrations](DATABASE_MIGRATIONS.md) · [Retention](DATA_RETENTION.md)

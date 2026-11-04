@@ -1,0 +1,3 @@
+# THREAT_MODEL
+
+Assets: note content/metadata, attachments, master key, password/recovery secret, wrapped keys and backups. Boundaries: Dart runtime, SQLite/filesystem, Android Keystore, iOS Keychain, document providers and legacy ZIP parser. Threats: device theft, database extraction, malware/root, backup theft, tampering, nonce reuse, weak randomness/KDF, biometric invalidation, plaintext logs/temp files, ZIP traversal/decompression bombs and interrupted migration/restore. Mitigate with authenticated crypto, reviewed key wrapping, secure storage, strict parser, transactions and secret redaction. A compromised unlocked device and total key loss remain residual risks.

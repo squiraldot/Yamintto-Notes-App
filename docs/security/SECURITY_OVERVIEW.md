@@ -1,0 +1,3 @@
+# SECURITY_OVERVIEW
+
+Approved requirements: AES-256-GCM, unique nonce per encryption operation, 256-bit random master key, Argon2id password KDF, Android Keystore, iOS Keychain, secure key wrapping, both password and independent recovery-key recovery, app + separate vault biometrics, encrypted attachments/backups, no plaintext note content in persistent storage, no secrets in logs. None is implemented. Validate package versions, parameters, platform guarantees and protocol with authoritative docs before coding. If both recovery routes and all valid key copies are lost, recovery cannot be promised.

@@ -1,0 +1,3 @@
+# DEVELOPMENT_WORKFLOW
+
+Use Flutter 3.47.9 (CI pinned). pubspec declares Dart >=3.13.0 and Flutter >=3.38.4; lower Flutter versions are not verified. Commands: `flutter doctor`; `flutter pub get --enforce-lockfile`; `dart format --output=none --set-exit-if-changed lib test integration_test`; `flutter analyze --fatal-infos`; `flutter test`; `flutter test integration_test` when device tests exist; Android `flutter build apk --debug`. iOS on macOS only: `cd ios && pod install && cd ..`, then `flutter build ios --debug --no-codesign`; no Xcode validation currently. Never release build during beta.

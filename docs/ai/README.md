@@ -1,3 +1,3 @@
-# AI instructions
+# README
 
-Store agent workflows and task prompts here. The sole root instruction entry point is `/AGENTS.md`; do not duplicate it.
+[AI guide](AI_DEVELOPMENT_GUIDE.md) · [Phase rules](PHASE_EXECUTION_RULES.md) · [Root AGENTS](../../AGENTS.md)

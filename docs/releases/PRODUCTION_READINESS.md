@@ -1,0 +1,3 @@
+# Production readiness
+
+Not achieved. Required before 1.0.0: all nine phases accepted; offline CRUD and data integrity on Android/iOS; migration tests; encrypted backup/restore and rollback; legacy ZIP fixtures verified; independent crypto review and vectors/tamper/nonce/key rotation/recovery tests; app/vault biometric real-device validation; no plaintext leakage; Android matrix; macOS/Xcode/iOS simulator and physical-device validation; accessibility/performance audit; docs/privacy/security review; no critical/high security or data-loss defects; explicit release approval. CI success alone is insufficient.

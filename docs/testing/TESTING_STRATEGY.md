@@ -1,0 +1,3 @@
+# TESTING_STRATEGY
+
+Current: one foundation widget test. CI runs format, analyze, flutter test; integration tests run only if *_test.dart exists, but integration_test currently has README only and is skipped. Planned pyramid: unit domain/data/crypto/migrations; widget UI states/accessibility; integration persistence/files/lifecycle/import/export; device/security tests for biometrics and secure storage. Cover DB/migrations, folder/note CRUD, Markdown, autosave races/lifecycle, search, trash restore, history, attachment encryption, password/recovery keys, biometric fallback, backup round-trip, legacy ZIP fixtures and both platforms.

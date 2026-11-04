@@ -1,3 +1,3 @@
-# Design system
+# README
 
-Store design tokens, typography, reusable component guidance, responsive behavior, and accessibility requirements here.
+[Design system](DESIGN_SYSTEM.md) · [Themes](THEMING.md) · [Accessibility](ACCESSIBILITY.md) · [Responsive](RESPONSIVE_LAYOUT.md)

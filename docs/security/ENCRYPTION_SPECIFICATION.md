@@ -1,0 +1,3 @@
+# ENCRYPTION_SPECIFICATION
+
+Requirements: AES-256-GCM authenticated encryption; fresh unique nonce per operation; random 256-bit master key; Argon2id password KDF; tampering fails closed; no plaintext note persistence. Do not invent protocol. Still requires review: nonce encoding/length, AAD, tag representation, Argon2id memory/time/parallelism, salt size, wrapping construction, password normalization, envelope version, rotation, package choice and memory exposure. Before implementation specify versioned envelope, CSPRNG, nonce strategy, KDF parameters, key wrapping, test vectors, migration and independent security review.

@@ -1,18 +1,28 @@
 # Yamintto
 
-Cross-platform, offline-first notes application built with Flutter. Shared application code lives in Dart; Android and iOS hosts remain independently maintained.
+Native Flutter notes application for Android and iOS; offline-first by design. This is a new independent app, not a conversion/replacement of the separate YRNotes web app.
 
-- Version: `0.1.0-beta.1+1`
-- Flutter project: `yamintto`
-- Android application ID / iOS bundle ID: `com.merrmist.yamintto`
-- Platforms: Android and iOS only
-- SDK baseline: Dart 3.13.0+, Flutter 3.38.4+ (CI pinned to Flutter 3.47.9)
-- Android Gradle wrapper: 8.14.3 (AGP 8.11.1, Kotlin 2.2.20)
+| Identity | Value |
+|---|---|
+| App / package | Yamintto / `yamintto` |
+| Android ID | `com.merrmist.yamintto` |
+| iOS bundle ID | `com.merrmist.yamintto` |
+| Version | `0.1.0-beta.1+1` |
+| Production target | `1.0.0` |
+| Platforms | Android, iOS |
+| CI Flutter | **3.47.9** |
+| Dart constraint | `>=3.13.0 <4.0.0` |
 
-This foundation does not implement notes/folders CRUD, Markdown editing, encryption, biometrics, attachments, trash, history, search, or backup.
+## Current status
+The repository implements only the Flutter foundation shell: bootstrap, root Riverpod ProviderScope, Material 3 seeded light/dark themes, one GoRouter route, foundation screen, and one widget test. Riverpod/GoRouter/Drift/SQLite packages are configured; feature providers, product routes, database class/schema/migrations, repositories, encryption, biometrics, attachments, backup and notes workflows are not implemented.
 
-## Setup
+## SDK baseline
+CI pins Flutter 3.47.9. pubspec declares Flutter `>=3.38.4`, but that lower bound is not verified compatibility. Use Flutter 3.47.9; its bundled Dart must satisfy Dart >=3.13.0. Do not claim lower Flutter versions are tested.
 
+## Native configuration
+Android: AGP 8.11.1, Kotlin 2.2.20, Gradle 8.14.3, Java 17; Flutter supplies SDK defaults. iOS: deployment target 13.0 and CocoaPods/Xcode project configured. **No macOS/Xcode build has been verified; iOS native build validation is pending.**
+
+## Setup and checks
 ```sh
 flutter doctor
 flutter pub get --enforce-lockfile
@@ -21,11 +31,13 @@ flutter analyze --fatal-infos
 flutter test
 flutter build apk --debug
 ```
+iOS requires macOS, Xcode and CocoaPods; use `cd ios && pod install` after dependency resolution, then verify a Debug build on macOS. Not yet validated here.
 
-iOS development requires macOS, Xcode, and CocoaPods. Run `cd ios && pod install` after `flutter pub get` when preparing the Xcode workspace.
+## Debug APK
+Only debug APK builds are allowed during beta. The existing debug workflow runs after successful Flutter CI on main/dev, checks out the tested SHA, builds `flutter build apk --debug`, and uploads an artifact for 14 days. GitHub Actions -> Yamintto Debug APK -> successful run -> Artifacts. No release APK, AAB, signing or publishing.
 
 ## Architecture
+Target: feature-first modules with presentation/domain/data boundaries; shared services in `lib/core/`; composition/providers/routing in `lib/app/`; Drift/SQLite local persistence. Current code is only the shell, not the complete target architecture.
 
-Feature-first modules live in `lib/features/`; app composition is in `lib/app/`; shared infrastructure is in `lib/core/`. Riverpod handles state/dependency injection, GoRouter handles navigation, and Drift/SQLite is the selected persistence foundation. Platform-specific behavior must be isolated behind Dart-facing adapters.
-
-See [AGENTS.md](AGENTS.md) and [docs/README.md](docs/README.md). Beta builds only; no release signing, AAB, or production publishing.
+## Project boundary
+YRNotes remains a separate web app and must remain untouched. Legacy ZIP import is planned, but its format is unknown until old source and real fixtures are inspected. See [AGENTS.md](AGENTS.md), [docs index](docs/README.md), [status](docs/STATUS.md), and [nine-phase roadmap](docs/development/PHASE_ROADMAP.md).
