@@ -1,16 +1,16 @@
 # Nine-phase development roadmap
 
-This is an ordered plan, not authorization. **No phase is currently authorized. Phase 01 is next and is not started/accepted.** Each feature has one primary phase; cross-phase work is separated.
+This is an ordered plan, not authorization. Phase 01 is the only authorized phase in the current execution. Each feature has one primary phase; cross-phase work is separated.
 
 ## Phase 01 — Foundation
-- Scope: Flutter project setup verification; app identity; base design system/tokens and initial system light/dark theme; navigation and splash.
+- Scope: Flutter project setup verification; app identity; base design system/tokens and initial system light/dark/AMOLED themes; navigation and splash.
 - Dependencies: repository/toolchain baseline.
 - Prerequisites: explicit authorization; verify Android and iOS host prerequisites.
 - Acceptance: app launches; identity correct; approved base tokens documented; root routing/splash work; no product features silently added.
 - Unit: configuration/theme-token tests. Widget: splash/theme/route/unknown route. Integration: Android cold launch/back; iOS macOS/Xcode/device smoke (pending).
 - Docs: architecture, structure, routing, design system, platform support, ADRs.
-- Checklist: [x] explicit scope approval [x] identity retained [x] initial design tokens/themes [x] splash/root/unknown route [x] unit/widget tests added [x] docs updated [ ] Android build/device [ ] iOS build/device or blocker [ ] format/analyze/test evidence [ ] CI [ ] Debug APK [ ] review/SHA.
-- Status: In progress; implementation exists, but build/test/CI/platform acceptance remains pending.
+- Checklist: [x] scope [x] identity [x] tokens/themes/components [x] splash/root/unknown route [x] unit/widget tests [x] docs [x] repository-wide format [x] analyzer [x] Flutter tests (15) [x] CI [ ] Debug APK artifact [ ] Android physical-device launch [ ] iOS build or documented environment waiver [ ] final acceptance/SHA.
+- Status: In progress; automated CI checks pass. Debug APK artifact and physical-device launch evidence remain outstanding; iOS native build requires macOS/Xcode.
 
 ## Phase 02 — Core Management
 - Scope: Drift database/migrations; folder management; notes CRUD.
@@ -47,7 +47,7 @@ This is an ordered plan, not authorization. **No phase is currently authorized. 
 - Dependencies: notes CRUD, editor/autosave, organization.
 - Prerequisites: approve revision retention, attachment types/size, file policy and metric definitions.
 - Acceptance: revision restore creates new current revision; attachments import/open/export/remove safely with validation, atomic metadata and cleanup; statistics reconcile.
-- **Security boundary:** Phase 05 attachment bytes are local but unencrypted. Temporary beta-only behavior, not production-ready. Phase 06 must encrypt existing/future bytes and remove plaintext originals/staging/previews before production readiness.
+- Security boundary: Phase 05 attachment bytes are local but unencrypted. Temporary beta-only behavior, not production-ready. Phase 06 must encrypt existing/future bytes and remove plaintext originals/staging/previews before production readiness.
 - Unit: revision ordering/restore, file validation/path, stats/timezone. Widget: history, attachment picker/list/progress/error, statistics. Integration: attachment round-trip, orphan cleanup, storage-full/interrupted copy, revision restore and dataset.
 - Docs: database, retention, attachment lifecycle, threat model, tests.
 - Checklist: [ ] history [ ] local attachment lifecycle [ ] stats [ ] limits [ ] unit [ ] widget [ ] integration [ ] unencrypted beta warning [ ] docs [ ] review/SHA.
@@ -78,13 +78,13 @@ This is an ordered plan, not authorization. **No phase is currently authorized. 
 - Dependencies: Phase 05 attachments and Phase 06 encryption/recovery; Phase 07 auth UX as required.
 - Prerequisites: inspect YRNotes source and golden ZIP fixtures without modifying YRNotes; approve format/version, restore policy and key portability.
 - Acceptance: encrypted consistent backup; validate before mutation; atomic restore/rollback; explicit result report; only verified legacy variants accepted; corrupt/unknown archives rejected.
-- Unit: archive parser, manifest, integrity, ZIP path/size limits, compatibility, rollback. Widget: selection/preview/progress/confirmation/errors. Integration: golden fixtures, corrupt/truncated archive, interrupted restore, clean-device/cross-platform round-trip.
+- Unit: archive parser, manifest, integrity, version, ZIP path/size limits, compatibility, rollback. Widget: selection/preview/progress/confirmation/errors. Integration: golden fixtures, corrupt/truncated archive, interrupted restore, clean-device/cross-platform round-trip.
 - Docs: backup format/security, compatibility matrix, versioning and fixtures.
 - Checklist: [ ] legacy audit [ ] fixtures [ ] format [ ] export [ ] restore [ ] rollback [ ] legacy import [ ] Android/iOS picker [ ] docs/review/SHA.
 - Status: Planned; legacy compatibility unverified.
 
 ## Phase 09 — Final Polish
-- Scope: **settings; font-size preferences; theme preferences and persistence; UI/UX polish; accessibility; performance; full regression testing.**
+- Scope: settings; font-size preferences; theme preferences and persistence; UI/UX polish; accessibility; performance; full regression testing.
 - Dependencies: Phases 01–08 accepted; stable features; measured baselines and approved design tokens.
 - Prerequisites: no critical data-loss/security defects; settings model/preference bounds approved; Android/iOS device matrix.
 - Acceptance: settings/default/reset/migration; persisted system/light/dark/AMOLED; persisted font size respects accessibility; polished consistent states; accessibility passes; measured performance budgets met; full regression and readiness evidence signed off.

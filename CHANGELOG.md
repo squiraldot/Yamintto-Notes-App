@@ -7,13 +7,15 @@
 
 ## Phase 01 foundation — 2026-11-04
 - Retained existing Flutter bootstrap, package identity, Android/iOS identifiers and dependency set.
-- Added provisional semantic color, typography, spacing and radius tokens.
+- Added provisional semantic color, typography, spacing, sizing and radius tokens.
 - Added Material 3 light, dark and true-black AMOLED theme variants.
 - Added reusable button, card, text-field, dialog and modal-sheet primitives.
 - Added splash-to-foundation navigation and unknown-route recovery.
 - Added an in-memory theme preview; persistence remains assigned to Phase 09.
-- Added configuration, theme, splash/navigation and route widget tests.
-- Updated architecture, routing, design, platform, testing and implementation status documentation. Build/test evidence remains pending until current GitHub Actions results are inspected.
+- Added configuration, theme, splash/navigation, route and reusable-widget tests.
+- Updated architecture, routing, design, platform, testing and implementation status documentation.
+- CI run #65 passed repository-wide Dart formatting, flutter analyze --fatal-infos and all 15 Flutter tests. Integration tests were skipped because no integration test source exists.
+- Debug APK artifact and physical Android/iOS launch verification remain separate acceptance gates.
 
 ## Documentation audit — 2026-11-04
 - Expanded AI agent instructions, phase execution gates, requirements IDs, feature ownership and all nine phase acceptance/test gates.
