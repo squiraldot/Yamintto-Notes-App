@@ -6,14 +6,8 @@ void main() {
     test('exposes the approved application identity', () {
       expect(AppConfiguration.applicationName, 'Yamintto');
       expect(AppConfiguration.projectName, 'yamintto');
-      expect(
-        AppConfiguration.androidApplicationId,
-        'com.merrmist.yamintto',
-      );
-      expect(
-        AppConfiguration.iosBundleIdentifier,
-        'com.merrmist.yamintto',
-      );
+      expect(AppConfiguration.androidApplicationId, 'com.merrmist.yamintto');
+      expect(AppConfiguration.iosBundleIdentifier, 'com.merrmist.yamintto');
     });
 
     test('starts with a beta version', () {

@@ -14,7 +14,10 @@ abstract final class AppTheme {
       seedColor: AppColors.lightSeed,
       surface: AppColors.lightSurface,
     );
-    return _build(colorScheme, scaffoldBackgroundColor: AppColors.lightSurface);
+    return _build(
+      colorScheme,
+      scaffoldBackgroundColor: AppColors.lightSurface,
+    );
   }
 
   static ThemeData dark() {
@@ -23,7 +26,10 @@ abstract final class AppTheme {
       brightness: Brightness.dark,
       surface: AppColors.darkSurface,
     );
-    return _build(colorScheme, scaffoldBackgroundColor: AppColors.darkSurface);
+    return _build(
+      colorScheme,
+      scaffoldBackgroundColor: AppColors.darkSurface,
+    );
   }
 
   /// True-black surfaces for OLED displays; not a persisted preference yet.

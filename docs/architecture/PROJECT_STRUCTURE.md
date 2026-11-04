@@ -17,6 +17,7 @@ lib/
       tokens/
         app_colors.dart
         app_radii.dart
+        app_sizes.dart
         app_spacing.dart
         app_typography.dart
     widgets/
@@ -30,7 +31,7 @@ lib/
       splash_screen.dart
   shared/
 
-The foundation feature is a temporary shell, not a product feature. Existing Android/iOS host projects and root tests remain in place. Cross-cutting tests live under test/app/ and test/core/; future product tests should mirror their owning feature.
+The foundation feature is a temporary shell, not a product feature. Existing Android/iOS host projects and root tests remain in place. Cross-cutting tests live under test/app/, test/core/theme/ and test/core/widgets/; future product tests should mirror their owning feature.
 
 ## Target shape (planned)
 

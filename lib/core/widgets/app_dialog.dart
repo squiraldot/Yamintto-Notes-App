@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Shared dialog and modal-sheet entry points for feature presentation layers.
+/// Shared dialog and modal sheet helpers for feature presentation.
 abstract final class AppDialog {
   static Future<T?> show<T>({
     required BuildContext context,
@@ -12,11 +12,13 @@ abstract final class AppDialog {
     return showDialog<T>(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(title),
-        content: content,
-        actions: actions,
-      ),
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(title),
+          content: content,
+          actions: actions,
+        );
+      },
     );
   }
 

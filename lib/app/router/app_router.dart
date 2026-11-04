@@ -19,14 +19,13 @@ GoRouter appRouter({
       GoRoute(
         path: '/',
         name: 'foundation',
-        builder: (context, state) =>
-            ValueListenableBuilder<YaminttoThemeMode>(
-              valueListenable: themeMode,
-              builder: (context, mode, child) => FoundationScreen(
-                themeMode: mode,
-                onThemeModeChanged: onThemeModeChanged,
-              ),
-            ),
+        builder: (context, state) => ValueListenableBuilder<YaminttoThemeMode>(
+          valueListenable: themeMode,
+          builder: (context, mode, child) => FoundationScreen(
+            themeMode: mode,
+            onThemeModeChanged: onThemeModeChanged,
+          ),
+        ),
       ),
     ],
     errorBuilder: (context, state) => const _NotFoundScreen(),

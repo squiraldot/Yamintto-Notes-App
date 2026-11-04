@@ -7,6 +7,7 @@ The approved provisional tokens are starter defaults only; they are not the fina
 - Color: semantic light/dark seed colors retain the existing indigo values (#5267D8 / #9AA8FF). Light surfaces use a soft neutral; dark surfaces use a deep neutral; AMOLED surfaces use true black.
 - Typography: platform-native font family with centralized Material text roles and explicit size/weight/line-height tokens. No unapproved brand typeface is bundled.
 - Spacing: shared four-point scale (2, 4, 8, 16, 24, 32, 48).
+- Sizing: icon sizes, 48-point minimum button height/touch target and a shared content-width limit.
 - Radius: shared 8, 12, 16, 24 and pill tokens.
 - Themes: Material 3 light, dark and true-black AMOLED.
 - Components: reusable filled action button, card, text field, dialog and modal bottom-sheet entry point.

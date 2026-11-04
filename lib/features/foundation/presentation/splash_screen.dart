@@ -32,7 +32,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       key: const ValueKey('yamintto-splash'),
       body: Center(
@@ -45,10 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
               color: theme.colorScheme.primary,
             ),
             const SizedBox(height: AppSpacing.md),
-            Text(
-              'Yamintto',
-              style: theme.textTheme.headlineMedium,
-            ),
+            Text('Yamintto', style: theme.textTheme.headlineMedium),
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Your thoughts, in one place.',
