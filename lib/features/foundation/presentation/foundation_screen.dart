@@ -47,7 +47,7 @@ class FoundationScreen extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xl),
                 DropdownButtonFormField<YaminttoThemeMode>(
                   key: const ValueKey('theme-mode-selector'),
-                  value: themeMode,
+                  initialValue: themeMode,
                   decoration: const InputDecoration(labelText: 'Theme preview'),
                   items: const <DropdownMenuItem<YaminttoThemeMode>>[
                     DropdownMenuItem(
