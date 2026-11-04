@@ -7,6 +7,7 @@ Cross-platform, offline-first notes application built with Flutter. Shared appli
 - Android application ID / iOS bundle ID: `com.merrmist.yamintto`
 - Platforms: Android and iOS only
 - SDK baseline: Dart 3.13.0+, Flutter 3.38.4+ (CI pinned to Flutter 3.47.9)
+- Android Gradle wrapper: 8.14.3
 
 This foundation does not implement notes/folders CRUD, Markdown editing, encryption, biometrics, attachments, trash, history, search, or backup.
 
