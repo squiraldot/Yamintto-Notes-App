@@ -9,8 +9,8 @@ This is an ordered plan, not authorization. Phase 01 is the only authorized phas
 - Acceptance: app launches; identity correct; approved base tokens documented; root routing/splash work; no product features silently added.
 - Unit: configuration/theme-token tests. Widget: splash/theme/route/unknown route. Integration: Android cold launch/back; iOS macOS/Xcode/device smoke (pending).
 - Docs: architecture, structure, routing, design system, platform support, ADRs.
-- Checklist: [x] scope [x] identity [x] tokens/themes/components [x] splash/root/unknown route [x] unit/widget tests [x] docs [x] repository-wide format [x] analyzer [x] Flutter tests (15) [x] CI [ ] Debug APK artifact [ ] Android physical-device launch [ ] iOS build or documented environment waiver [ ] final acceptance/SHA.
-- Status: In progress; automated CI checks pass. Debug APK artifact and physical-device launch evidence remain outstanding; iOS native build requires macOS/Xcode.
+- Checklist: [x] scope [x] identity [x] tokens/themes/components [x] splash/root/unknown route [x] unit/widget tests [x] docs [x] repository-wide format [x] analyzer [x] Flutter tests (15) [x] CI [x] Debug APK build/artifact [ ] Android physical-device launch [ ] iOS build (macOS/Xcode unavailable) [x] final acceptance evidence/commit SHA.
+- Status: Implementation and automated checks pass. Physical Android launch remains owner/device validation; iOS native build is blocked by the unavailable macOS/Xcode environment. Phase is not fully accepted until the Android smoke test is recorded.
 
 ## Phase 02 — Core Management
 - Scope: Drift database/migrations; folder management; notes CRUD.

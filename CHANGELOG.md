@@ -14,8 +14,8 @@
 - Added an in-memory theme preview; persistence remains assigned to Phase 09.
 - Added configuration, theme, splash/navigation, route and reusable-widget tests.
 - Updated architecture, routing, design, platform, testing and implementation status documentation.
-- CI run #65 passed repository-wide Dart formatting, flutter analyze --fatal-infos and all 15 Flutter tests. Integration tests were skipped because no integration test source exists.
-- Debug APK artifact and physical Android/iOS launch verification remain separate acceptance gates.
+- Flutter CI run #66 passed repository-wide Dart formatting, flutter analyze --fatal-infos and all 15 Flutter tests. Integration tests were skipped because no integration test source exists.
+- Debug APK workflow run #63 built and uploaded the Debug APK successfully. Physical Android/iOS launch verification remains pending.
 
 ## Documentation audit — 2026-11-04
 - Expanded AI agent instructions, phase execution gates, requirements IDs, feature ownership and all nine phase acceptance/test gates.
