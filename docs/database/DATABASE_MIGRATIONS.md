@@ -1,7 +1,7 @@
-# Database migration policy — IMPLEMENTATION IN PROGRESS
+# Database migration policy — SCHEMA V1 IMPLEMENTED
 
 **Architecture status:** Owner approved on 2026-11-05.  
-**Implementation status:** Schema version 1 and a Drift `GeneratedDatabase` wrapper are implemented in `lib/core/database/`; the immutable SQL definition is `schema_v1.dart`. Phase 02 repository and UI source is present. Exact-final-SHA CI and APK validation are pending. No destructive fallback or database reset path exists.
+**Implementation status:** Schema version 1 and the Drift `GeneratedDatabase` wrapper are implemented in `lib/core/database/`; the immutable SQL definition is `schema_v1.dart`. Phase 02 repositories and UI are implemented. Source revision `36a27212dadda99fbb7bb333a93a3568c967869d` passed locked dependency, format, analyzer and 67/67 test validation. The physical-device persistence smoke test remains owner-run. No destructive fallback or database reset path exists.
 
 ## Version baseline
 

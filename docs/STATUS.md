@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; current Phase 02 source implementation head before documentation reconciliation: `c970b0eed0e14d5fc84a6bad87611934b2adf1c6`.
+Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
 
 ## Phase 01 — Foundation
 
@@ -28,9 +28,9 @@ Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec
   3. `.github/workflows/yamintto-arm64-debug-apk.yml` — ARM64-only Android Debug APK build and artifact upload.
 - Both APK workflows trigger after successful Flutter CI on main/dev, check out the exact CI-tested SHA and upload artifacts. Neither performs device testing.
 
-## Latest GitHub Actions evidence
+## Phase 01 baseline GitHub Actions evidence
 
-All three successful runs below target the same audited commit `76ba10c04f0ec421f54e5d6252dd6745058611f9` on `main`.
+These historical Phase 01 baseline runs target commit `76ba10c04f0ec421f54e5d6252dd6745058611f9` on `main`; current Phase 02 evidence is recorded separately below.
 
 | Check | Run ID | Result | Verified steps |
 |---|---:|---|---|
@@ -69,6 +69,20 @@ All three successful runs below target the same audited commit `76ba10c04f0ec421
 - APK workflows build and upload APK artifacts only; they do not run device tests.
 - The owner-reported Android test result is recorded separately from automated Actions evidence.
 
+## Phase 02 current implementation evidence
+
+- Source implementation revision: `36a27212dadda99fbb7bb333a93a3568c967869d`.
+- Flutter CI run: `42040473461` — success on Flutter 3.47.9; locked dependencies, format, analyzer and **67/67 tests**.
+- Phase 02 screen widget coverage: 17 tests in `test/features/phase_02_screens_test.dart`.
+- Universal Debug APK run: `42040771830` — success; artifact `yamintto-debug-36a27212dadda99fbb7bb333a93a3568c967869d`; archive 80,051,369 bytes; SHA-256 `4e2544d8b6df7086fdb4ef1300fd8d0e0b78e2f97ee94597985dfbb71d186865`.
+- ARM64 Debug APK run: `42040772056` — success; artifact `yamintto-arm64-debug-36a27212dadda99fbb7bb333a93a3568c967869d`; archive 51,759,376 bytes; SHA-256 `2b635ecafb2a04a256a92fe4f58d10dac8346fd639d6f263f9ddb36d03f4ee15`.
+- Drift lifecycle: tests now close the in-memory fixture before opening file-backed DB instances; the latest source-revision CI log contains zero Drift multiple-database warnings.
+- Unicode 17.0 canonicalization and Dart/SQLite parity remain covered by the existing conformance tests.
+- The final documentation-only revision is separately checked on its exact SHA by all three protected workflows; see the final execution report for those run IDs.
+- Owner physical-device smoke testing is **OWNER DEVICE TEST PENDING**. The integration test source has not been executed by CI or this agent.
+
+**Phase 02 implementation and automated validation completed; owner physical-device smoke testing and final acceptance pending.** Phase 02 is not accepted; Phase 03 has not started and is not authorized.
+
 ## Phase 01 acceptance checklist
 
 - [x] Flutter bootstrap and root Riverpod ProviderScope.
@@ -87,7 +101,7 @@ All three successful runs below target the same audited commit `76ba10c04f0ec421
 
 **Phase 01 acceptance is recorded as an owner-reported Android pass, not an independent QA/device-log verification.** The owner has reported successful real-device testing, so no Android device-test failure is currently outstanding. iOS verification is not a gate. Do not describe the owner-reported result as independently verified.
 
-Phase 02 is owner-authorized. The folder/notes presentation source and widget tests are now present. Earlier CI attempts on intermediate commits failed formatting and skipped analyzer/tests; those failures are historical and must not be treated as the current final result. The final code commit `c970b0eed0e14d5fc84a6bad87611934b2adf1c6` includes formatter output for the new widget tests. This documentation commit creates a new exact final SHA; its Flutter CI and dependent universal/ARM64 Debug APK workflows must be checked before automated completion can be claimed. Phase 02 remains **in progress; exact-final-SHA validation and APK artifacts pending**. Owner physical-device smoke testing and final acceptance are pending. Phase 03 has not started and is not authorized.
+Phase 02 is owner-authorized. The folder browser, nested navigation, folder create/rename/move/empty-only soft-delete, active root/folder note lists, plain-text note create/edit/save/cancel, unsaved-change guard, note move/soft-delete, GoRouter routes and Riverpod presentation providers are implemented. Source implementation revision `36a27212dadda99fbb7bb333a93a3568c967869d` passed Flutter CI run `42040473461` on Flutter 3.47.9: locked dependency resolution, repository-wide formatting, fatal-info analysis and **67/67 unit/widget tests**. The 17 Phase 02 screen widget tests cover folder and note interactions, including root/folder creation, both root move directions, descendant-safe folder destinations, soft-delete retention and missing-folder error recovery. Universal Debug APK run `42040771830` and ARM64 Debug APK run `42040772056` both succeeded on that same source SHA and uploaded their artifacts. The final documentation-only revision is validated separately by its own exact-SHA workflows; its run IDs and artifact names are included in the final execution report. The physical-device SQLite reopen/soft-delete integration test remains source-only and owner-run. **Phase 02 implementation and automated validation completed; owner physical-device smoke testing and final acceptance pending.** Phase 02 is not accepted. Phase 03 has not started and is not authorized.
 
 ## Workflow policy
 
@@ -100,7 +114,7 @@ Beta policy remains Debug APK only: no release APK/AAB, release signing or publi
 
 ## Phase 02 — Owner-approved architecture decision freeze (2026-11-05)
 
-**Architecture decision freeze: COMPLETE. Implementation authorization: GRANTED by owner on 2026-11-05. Source implementation: present. Exact-final-SHA automated validation and APK artifacts: pending. Owner physical-device smoke testing and acceptance: pending.**
+**Architecture decision freeze: COMPLETE. Implementation authorization: GRANTED by owner on 2026-11-05. Phase 02 source implementation and automated validation completed on source revision `36a27212dadda99fbb7bb333a93a3568c967869d` (Flutter CI run `42040473461`, 67/67 tests); both source-revision Debug APK artifacts uploaded successfully. The documentation-only final revision is checked separately on its exact SHA. Owner physical-device smoke testing and final acceptance remain pending. Phase 03 has not started and is not authorized.**
 
 - Owner reviewed the Phase 02 decision register, ADR-0013, schema, migration policy and retention policy, then approved the baseline with amendments.
 - Accepted amendments: maximum folder depth 32 (virtual root level 0); folder names max 255 Unicode code points; note titles max 255 Unicode code points; case-insensitive sibling folder-name uniqueness using a Unicode NFKC_Casefold canonicalizer and root-aware DB unique constraint; unique names remain reserved while folders are soft-deleted.

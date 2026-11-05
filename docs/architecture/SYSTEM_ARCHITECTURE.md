@@ -1,8 +1,10 @@
 # System architecture
 
-## Current implementation — Phase 01
+## Current implementation — Phase 02
 
-`lib/main.dart` calls bootstrap; bootstrap initializes Flutter and runs `ProviderScope(child: YaminttoApp())`. The root app creates one GoRouter instance and an in-memory theme notifier. MaterialApp.router receives Material 3 themes. GoRouter starts at splash and then the temporary foundation route. Theme tokens and reusable app-shell widgets exist.
+`lib/main.dart` calls bootstrap; bootstrap initializes Flutter and runs `ProviderScope(child: YaminttoApp())`. `YaminttoApp` owns one GoRouter instance and an in-memory theme notifier. MaterialApp.router receives Material 3 light, dark and AMOLED themes. GoRouter starts at splash, then opens the root folder browser. `/folders/:folderId` opens nested folders; `/notes/new` and `/notes/:noteId/edit` provide explicit-save plain-text note creation/editing; `/appearance` retains the Phase 01 theme preview. The Phase 02 source includes the folder browser, active root/folder note lists, folder operations, note operations, loading/empty/error/retry states and unsaved-change protection.
+
+The app-scoped Riverpod `databaseProvider` lazily opens and memoizes one Drift/SQLite database. Feature repository providers share that instance. The approved schema v1 contains exactly `folders` and `notes`; folder-name constraints use bundled Unicode 17.0 data and deterministic SQLite functions. Source revision `36a27212dadda99fbb7bb333a93a3568c967869d` passed host Flutter CI run `42040473461` with 67/67 tests. Physical-device integration and final owner acceptance remain pending.
 
 The `drift` and SQLite packages in `pubspec.yaml` are dependencies, not a database implementation. `lib/core/database/README.md` contains guidance only. There is no DB class, schema, DAO, repository, feature provider/controller, notes/folders workflow, migration, encryption, biometrics, attachment or backup implementation.
 
@@ -27,7 +29,7 @@ The `drift` and SQLite packages in `pubspec.yaml` are dependencies, not a databa
 - Enable and test foreign keys on every connection.
 - Accepted schema v1 contains only `folders` and `notes`; see [schema](../database/DATABASE_SCHEMA.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
 
-Architecture decisions are owner-approved; application code remains not implemented and requires separate authorization.
+Phase 02 architecture decisions are owner-approved and Phase 02 implementation was explicitly authorized on 2026-11-05. The source implementation is present and host-validated; owner physical-device testing and final acceptance remain pending. Phase 03 and later phases require separate authorization.
 
 ## Data lifecycle and integrity
 

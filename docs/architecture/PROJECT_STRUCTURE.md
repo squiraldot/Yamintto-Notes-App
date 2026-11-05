@@ -1,37 +1,46 @@
 # Project structure
 
-## Current source shape — Phase 01
+## Current source shape — Phase 02
 
 lib/
   main.dart
   app/
     app.dart
     bootstrap.dart
-    configuration/app_configuration.dart
+    configuration/
     router/app_router.dart
-    providers/                 # root provider composition guidance
+    providers/database_provider.dart
   core/
+    database/schema_v1.dart
+    database/yamintto_database.dart
     errors/
+    ids/
     theme/
       app_theme.dart
       tokens/
-        app_colors.dart
-        app_radii.dart
-        app_sizes.dart
-        app_spacing.dart
-        app_typography.dart
+    unicode/
+      unicode_canonicalizer.dart
+      unicode_17_data.dart
     widgets/
-      app_button.dart
-      app_card.dart
-      app_dialog.dart
-      app_text_field.dart
   features/
     foundation/presentation/
       foundation_screen.dart
       splash_screen.dart
+    folders/
+      data/folder_providers.dart
+      data/folder_repository.dart
+      domain/folder.dart
+      presentation/folder_browser_screen.dart
+      presentation/folder_providers.dart
+    notes/
+      data/note_providers.dart
+      data/note_repository.dart
+      domain/note.dart
+      presentation/note_editor_screen.dart
+      presentation/note_providers.dart
   shared/
 
-The foundation feature is a temporary shell, not a product feature. Existing Android/iOS host projects and root tests remain in place. Cross-cutting tests live under test/app/, test/core/theme/ and test/core/widgets/; future product tests should mirror their owning feature.
+The foundation feature retains splash and appearance-preview behavior; the root route is now the folder browser. Existing Android/iOS host projects remain in place. Database/repository tests live under `test/core/` and `test/features/`; Phase 02 presentation coverage lives in `test/features/phase_02_screens_test.dart`. The physical SQLite persistence smoke source is under `integration_test/phase_02_data_smoke_test.dart` and is owner-run only.
 
 ## Target shape (planned)
 
