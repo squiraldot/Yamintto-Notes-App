@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-04; branch main.
+Snapshot: 2026-11-05; branch main.
 
 ## Phase 01 — Foundation
 
@@ -22,9 +22,14 @@ Implemented:
 Configured / retained:
 - Flutter 3.47.9 CI baseline; Dart >=3.13.0 and Flutter >=3.38.4 declared.
 - Android and iOS host projects and identity metadata retained.
-- Exactly two workflows: .github/workflows/flutter-ci.yml and .github/workflows/yamintto-debug-apk.yml.
-- Flutter CI format check covers the repository with dart format --output=none --set-exit-if-changed ..
-- Flutter CI is host-only: locked dependencies, formatting, analyzer and unit/widget tests. Emulator/KVM setup was removed; physical-device integration is owner-run.
+- Exactly three protected workflows:
+  - `.github/workflows/flutter-ci.yml` — host-only validation.
+  - `.github/workflows/yamintto-debug-apk.yml` — existing universal Debug APK artifact; unchanged by the ARM64 addition.
+  - `.github/workflows/yamintto-arm64-debug-apk.yml` — new ARM64-only Debug APK artifact.
+- Both APK artifact workflows automatically trigger after successful Flutter CI completion on main/dev, check out the exact tested SHA, build Debug APKs with Flutter 3.47.9 and upload artifacts for 14 days.
+- ARM64 workflow command: `flutter build apk --debug --target-platform android-arm64`. It targets `android-arm64` for compatible 64-bit ARM Android devices, including the owner's Redmi Note 10S.
+- Flutter CI remains host-only: locked dependencies, formatting, analyzer and unit/widget tests. No emulator/KVM/simulator setup. Physical-device integration is owner-run.
+- The new ARM64 workflow is configured in the repository, but its first successful artifact run and actual APK size have not yet been verified.
 
 ## Verification evidence
 
@@ -32,28 +37,23 @@ Configured / retained:
 - Locked dependency installation, repository-wide Dart formatting, flutter analyze --fatal-infos and all 15 Flutter tests passed.
 - Integration tests were not yet present in that historical run.
 
-**Integration follow-up CI run #67**, run ID 41845194256, commit f5449db68e2cb639736e888f8acc962f220e31d0: **failed** because no Android emulator was connected to the Ubuntu runner. Dependency install, format, analyzer and all 15 unit/widget tests passed.
+**Historical emulator attempts**:
+- Integration follow-up run #67 (41845194256) failed because no Android emulator was connected.
+- Emulator run #68 (41845417038) failed due to Linux KVM permissions and emulator boot timeout.
+- Emulator run #69 (41848892025) was cancelled while the emulator integration step was still running; it is not a passed integration test.
+- Emulator/KVM runner configuration was subsequently removed by owner instruction. These historical failures do not describe the current host-only CI configuration.
 
-**Emulator CI run #68**, run ID 41845417038, commit 9e96428656c9d92349b711d6cafd24befab58e7f: **failed** because Linux KVM device permissions were missing. Logs explicitly reported: `This user doesn't have permissions to use KVM (/dev/kvm)`, followed by `Timeout waiting for emulator to boot`. Formatting, analyzer and 15 unit/widget tests passed; emulator integration did not run.
-
-**KVM permissions fix** committed as `f2c6c5907af0030300484db77fc0cb25585b91b7`.
-- Added the upstream-recommended udev rule (KVM group, mode 0666), reload and trigger before emulator launch.
-- Added a visible /dev/kvm check.
-- Increased emulator boot timeout to 900 seconds and made headless emulator options explicit.
-
-**Emulator CI run #69**, run ID 41848892025, commit f2c6c5907af0030300484db77fc0cb25585b91b7: **in progress at this update**.
-- Locked dependency installation, formatting, analyzer, 15 unit/widget tests and the KVM setup step passed.
-- Android emulator integration step is still running. Do not report the full CI or integration test as passed until the workflow completes.
-
-**Baseline Debug APK workflow run #63**, run ID 41833556764, commit 3db552b243e64204139fa612dc87e4f465ac526d: **success**.
-- flutter build apk --debug and artifact upload passed.
-- Artifact: yamintto-debug-3db552b243e64204139fa612dc87e4f465ac526d; archive contains app-debug.apk (approximately 155 MiB).
-- Later Debug APK workflow runs were **skipped**, not failed, because their prerequisite Flutter CI runs failed. The workflow is gated on successful completion of Flutter CI and will run after a successful CI run.
+**Baseline universal Debug APK workflow run #63**, run ID 41833556764, commit 3db552b243e64204139fa612dc87e4f465ac526d: **success**.
+- `flutter build apk --debug` and artifact upload passed.
+- Artifact: `yamintto-debug-3db552b243e64204139fa612dc87e4f465ac526d`; contained `app-debug.apk` (approximately 155 MiB).
+- This historical run verifies the universal workflow only. It does not verify the new ARM64 workflow or its expected size.
 - No release APK, AAB, release signing or publishing was produced.
 
 ## Platform state and known limitations
 
-Android emulator integration coverage tests the app-shell startup/navigation/theme flow. It does not substitute for installing the final APK on a physical device and testing cold launch, system back, OEM behavior and relaunch. Physical installation and owner-device smoke verification have not been performed.
+Android emulator integration coverage was attempted historically but is prohibited in current CI. It does not substitute for installing the final APK on a physical device and testing cold launch, system back, OEM behavior and relaunch. Physical installation and owner-device smoke verification have not been performed.
+
+The ARM64 artifact is intended for the owner's Redmi Note 10S (Android 13, MIUI 14, ARM64). Installability and runtime behavior must be confirmed on that physical device. The ARM64-only build excludes other ABIs and is not a universal Android distribution artifact.
 
 iOS host identity and iOS 13.0 target were preserved. No macOS/Xcode environment is available in this execution, so native iOS build and launch remain unverified; this is an environment blocker, not a passed iOS test.
 
@@ -73,17 +73,20 @@ Production readiness is not achieved. Beta policy remains Debug APK only.
 - [x] Add configuration, theme, splash/navigation, route and reusable-widget tests.
 - [x] Add Android app-shell integration smoke test.
 - [x] Configure host-only CI for dependency resolution, formatting, analyzer and unit/widget tests.
-- [x] Run repository-wide formatting, analyzer and 15 unit/widget tests on the latest CI attempt.
+- [x] Run repository-wide formatting, analyzer and 15 unit/widget tests on the historical baseline.
 - [ ] Run integration smoke test on an owner-provided physical Android device.
-- [x] Verify baseline Flutter CI and Debug APK artifact workflow.
+- [x] Verify baseline Flutter CI and universal Debug APK artifact workflow.
+- [x] Add and document the protected ARM64-only Debug APK workflow.
+- [ ] Verify the first ARM64 workflow artifact and measure its actual APK size.
 - [ ] Install/cold-launch/back/relaunch on physical Android device.
 - [ ] iOS macOS/Xcode build; environment blocker documented.
-- [x] Final diff review and commit SHA recorded.
+- [x] Update workflow protection documentation and ADR.
 
 Phase 02–09 work has not been started.
 
 ## Current CI and device-testing policy
 - Flutter CI runs locked dependency installation, formatting, analyzer and unit/widget tests only.
-- Emulator/KVM runner configuration was removed from Flutter CI by owner instruction. The temporary emulator run (ID 41848892025) had passed host checks and KVM setup, but its emulator integration step remained in progress; it is not counted as a passed integration test.
-- Integration tests remain in integration_test/ for owner-run execution on real physical devices only: flutter devices, then flutter test integration_test -d <physical-device-id>.
+- Exactly three protected workflows must remain: Flutter CI, universal Debug APK and ARM64-only Debug APK. AI agents must not delete, rename, disable, merge or replace any without explicit owner authorization.
+- Both APK artifact workflows run automatically after successful Flutter CI on main/dev. They compile/upload APKs only; they do not run emulator, simulator or physical-device tests.
+- Integration tests remain in integration_test/ for owner-run execution on real physical devices only: `flutter devices`, then `flutter test integration_test -d <physical-device-id>`.
 - AI agents must not add/configure/run emulators or simulators, virtual-device CI, KVM or emulator-runner actions. Ask the owner before any exception.
