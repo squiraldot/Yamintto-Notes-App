@@ -1,7 +1,7 @@
 # Phase execution rules
 
 ## Authorization
-Roadmap is an ordered plan, not permission. User must explicitly authorize phase and scope. **Phase 01 source implementation is present.** Latest host-only Flutter CI and both Debug APK artifact workflows succeeded on audited SHA 76ba10c04f0ec421f54e5d6252dd6745058611f9 (run IDs 41981911424, 41982079883 and 41982079971); CI reports 15 unit/widget tests passed. Android real-device testing is owner-reported successful; detailed evidence is not attached. iOS native build/device verification is Not Verified — Environment Unavailable and is non-blocking for Android-focused phase progression. Continue iOS implementation/configuration alongside shared Flutter work. Phases 02–09 remain subject to explicit authorization.
+Roadmap is an ordered plan, not permission. Phase 01 source implementation is present. Phase 02 implementation was explicitly authorized by the owner on 2026-11-05 and is in progress: database/repository source and the folder/notes presentation layer are present; exact-HEAD Flutter CI and APK evidence must be verified before completion. Phase 03–09 remain subject to separate explicit authorization. Owner-reported Phase 01 Android testing is separate from Phase 02 owner device testing, which is pending.
 
 ## Rules
 1. One phase at a time; maximum 2–3 major features.

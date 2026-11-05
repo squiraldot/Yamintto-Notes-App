@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; current Phase 02 work head: `804769c365b329d94e6fcc7301b23a2caebc1c66`.
+Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; current Phase 02 implementation head before this documentation update: `b15e3c43c20df8f51bb7bc90ab6e384211d900f3`.
 
 ## Phase 01 — Foundation
 

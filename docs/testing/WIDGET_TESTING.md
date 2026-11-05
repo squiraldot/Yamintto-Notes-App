@@ -7,9 +7,9 @@ Use Riverpod provider overrides and deterministic fakes. Every screen tests load
 | Phase 01 startup/navigation | splash is initial route, splash advances to foundation, unknown route recovery, theme preview changes between system/light/dark/AMOLED |
 | Phase 01 theme foundation | Material 3 light/dark variants, AMOLED true-black surface, shared token values |
 | Shared components | button enabled/loading/disabled, card tap behavior, text-field validation/obscure/multiline, dialog and sheet presentation |
-| Folders/notes | create/rename/move/delete dialogs, empty list, selection, error state |
-| Editor/viewer | Markdown preview, selection, keyboard insets, unsaved state, save/saved/error indicators |
-| Search | query input, no results, result list, trashed filter, locked message, unlock transition |
+| Phase 02 folders | root and nested lists/navigation, create/rename/move, root destination, empty-folder soft-delete, non-empty deletion rejection, loading/empty/error/retry |
+| Phase 02 plain-text note editor | title/body input, explicit create/update save, validation, cancel/back, unsaved-change confirmation, retained draft on save failure |
+| Phase 02 active notes | root/folder listing, open, move between folder/root, soft-delete, active-list exclusion |\n| Search | query input, no results, result list, trashed filter, locked message, unlock transition |
 | Pin/trash/history | pin state/order, permanent delete confirmation, restore conflict, revision preview/restore |
 | Attachments | picker cancel/permission failure, progress, invalid type/size, open/export/remove |
 | Encryption/recovery | setup state, password failure, recovery-key one-time reveal/confirmation, locked/unlocked states |

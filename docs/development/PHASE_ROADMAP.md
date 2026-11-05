@@ -1,6 +1,6 @@
 # Nine-phase development roadmap
 
-This is an ordered plan, not authorization. Phase 01 is the only authorized phase in the current execution. Each feature has one primary phase; cross-phase work is separated.
+This is an ordered plan, not authorization. Phase 02 implementation is explicitly authorized by the owner on 2026-11-05. Phase 03 and later phases are not authorized. Each feature has one primary phase; cross-phase work is separated.
 
 ## Phase 01 — Foundation
 - Scope: Flutter project setup verification; app identity; base design system/tokens and initial system light/dark/AMOLED themes; navigation and splash.
@@ -25,8 +25,8 @@ This is an ordered plan, not authorization. Phase 01 is the only authorized phas
 - Retention: indefinite soft-delete retention initially; no automatic expiry or cleanup. Phase 05 extends permanent deletion to revisions/attachment data/files with durable staged cleanup and crash recovery.
 - Acceptance after authorization: fresh schema v1; CRUD; depth 32 accepted/33 rejected; no cycles/orphans; sibling name uniqueness including root and soft-deleted rows; FK checks; transaction rollback; restart persistence; soft-delete filters; typed errors.
 - Tests: schema/DAO/repository/hierarchy/depth/name canonicalization/order/FK/transaction unit; folder/note widgets; fresh install, CRUD/restart, soft-delete, rollback and migration integration on supported platforms.
-- Checklist: [x] implementation authorized [x] schema v1 source [x] Unicode 17.0 canonicalizer/data [x] folder repository CRUD source [x] note CRUD source [x] depth/name constraints source [x] unit-test source [x] physical-device integration-test source [ ] Flutter formatting [ ] analyzer [ ] unit/widget tests executed [ ] universal Debug APK [ ] ARM64 Debug APK [ ] Android/iOS/device verification [ ] final docs/review/SHA.
-- Status: **Implementation IN PROGRESS; not accepted.** Existing schema/database, Unicode, folder, notes and test source is present on `main`. Latest Flutter CI run `42012048313` on `804769c365b329d94e6fcc7301b23a2caebc1c66` failed at the Dart formatting gate on nine files; analyzer and unit/widget tests were skipped. Both Debug APK workflows were skipped. Do not mark Phase 02 complete until formatting, analyzer, tests, universal/ARM64 APK workflows and required platform/device evidence pass.
+- Checklist: [x] implementation authorized [x] schema v1 source [x] Unicode 17.0 canonicalizer/data [x] folder repository CRUD and hierarchy source [x] notes CRUD and soft-delete source [x] folder browser/create/rename/move/empty-only soft-delete UI source [x] active root/folder note lists [x] plain-text create/edit/save/cancel/unsaved-change guard source [x] GoRouter and Riverpod presentation providers [x] widget-test source [x] physical-device SQLite reopen/soft-delete integration-test source [ ] exact-final-SHA Flutter CI [ ] exact-final-SHA universal Debug APK artifact [ ] exact-final-SHA ARM64 Debug APK artifact [ ] owner physical-device smoke test [ ] final owner acceptance.
+- Status: **Implementation source present; automated validation and exact-HEAD APK artifacts pending; owner device testing pending.** Phase 02 remains in progress until the exact final commit passes locked dependency resolution, repository-wide formatting, analyzer and all unit/widget tests, and both APK workflows upload artifacts for the same SHA. The integration test is source-only and owner-run on a real physical device. No emulator or simulator is used in CI. Phase 03 has not started and is not authorized.
 
 ## Phase 03 — Editor
 - Scope: Markdown editor; viewer; autosave.

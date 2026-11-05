@@ -1,12 +1,20 @@
 # State management and dependency injection
 
-Current: flutter_riverpod is a dependency and root ProviderScope wraps app. No feature providers/controllers exist.
+## Current implementation
 
-Planned:
-- Root providers compose config, database, repositories and platform interfaces in `lib/app/providers`.
-- Feature providers expose controllers/notifiers; widgets use `ref.watch` for state and `ref.read` for commands.
-- State distinguishes loading, data, empty and failure; failed saves retain editable drafts.
-- Domain entities/use cases remain Flutter-independent. Controllers orchestrate use cases and map failures to UI-safe state.
-- Provider lifetime matches resource lifetime. Dispose streams, subscriptions, DB handles and transient decrypted search index. Do not retain decrypted content beyond unlock session.
-- Tests override providers with deterministic fakes; use in-memory Drift for DAO/repository behavior. Test disposal, overlapping commands, stale async results and cancellation.
-No Riverpod generator/codegen pattern is implemented; choose/document it before adoption.
+- `flutter_riverpod` is installed and root `ProviderScope` wraps the app.
+- `databaseProvider` is a lazy, app-scoped `FutureProvider` that owns the single Drift database instance and closes it when disposed.
+- `folderRepositoryProvider` and `noteRepositoryProvider` compose repositories from that shared database provider; they do not create separate database instances.
+- Presentation list/detail providers live under each feature's `presentation/` directory and expose folder lists/details and active note lists/details as `AsyncValue` states.
+- Screens call repository domain operations through Riverpod providers. They do not receive the raw database handle or execute SQL.
+- Mutations invalidate affected list/detail providers so the active UI refreshes after create, rename, move, delete and save.
+- Loading, empty, error/retry and populated states are represented in the folder browser and note editor.
+- Failed note saves retain the editor controllers and show UI-safe feedback.
+- The note editor owns and disposes its text controllers and guards unsaved changes on route pop.
+
+## Constraints and follow-up
+
+- Do not introduce another state-management framework or a second database owner.
+- Repositories remain the data boundary; raw Drift handles and transaction objects must never reach presentation.
+- Future controllers/use cases may be introduced only where they materially improve orchestration; do not create duplicate repository/provider layers.
+- Test provider overrides, invalidation, disposal, async races and cancellation. Integration tests remain owner-run on real physical devices.

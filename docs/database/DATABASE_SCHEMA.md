@@ -1,7 +1,7 @@
 # Phase 02 database schema — IMPLEMENTATION IN PROGRESS
 
 **Architecture status:** Accepted by owner on 2026-11-05.  
-**Implementation status:** Initial schema v1, Drift database wrapper, Unicode canonicalization and repository implementation are committed on `main`; Flutter CI and Android build verification are pending. Executable schema source: `lib/core/database/schema_v1.dart`; database/migration owner: `lib/core/database/yamintto_database.dart`. Drift + SQLite remains the accepted architecture.
+**Implementation status:** Schema v1, Drift database wrapper, Unicode canonicalization, folder/note repositories and presentation screens are committed on `main`; exact-final-SHA Flutter CI, Debug APK artifact builds and owner physical-device testing are pending. Executable schema source: `lib/core/database/schema_v1.dart`; database/migration owner: `lib/core/database/yamintto_database.dart`. Drift + SQLite remains the accepted architecture.
 
 ## Schema version 1 inventory
 
@@ -144,4 +144,4 @@ Use one app-private SQLite database for Android/iOS, opened lazily on first repo
 
 ## Explicitly out of scope
 
-Phase 02 implementation source is now present for the two-table database, folder repository, notes repository and Unicode 17.0 canonicalizer. No UI, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is included.
+Phase 02 implementation source is present for the two-table database, folder/note repositories, Unicode 17.0 canonicalizer, folder browser, note list and plain-text title/body editor. No Markdown preview/rendering/autosave, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is included. Automated validation and owner device testing remain separate pending gates.

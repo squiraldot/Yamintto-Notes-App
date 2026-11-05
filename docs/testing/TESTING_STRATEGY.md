@@ -6,7 +6,8 @@
 - Database: exactly two domain tables, schema CHECK/index execution with registered deterministic functions, foreign-key enforcement and RESTRICT behavior, UUID v4, reopening/function registration and fail-closed newer-version behavior.
 - Folders: root/nested CRUD, Unicode sibling uniqueness, case/normalization equivalents, soft-deleted name reservation, rename/move, depth 32/33, subtree depth validation, cycle prevention and empty-only soft-delete.
 - Notes: create/read/list/update/move/root placement/soft-delete, active-list filtering, data/order retention, deleted-operation rejection and title boundaries.
-- Physical-device integration source: `integration_test/phase_02_data_smoke_test.dart`; it is owner-run only and has not been executed by CI.
+- Presentation source: root/nested folder listing and navigation; folder create/rename/move/empty-only delete; active root/folder note lists; plain-text note create/edit/save/cancel; unsaved-change guard; note move/soft-delete; loading/empty/error/retry states.
+- Physical-device integration source: `integration_test/phase_02_data_smoke_test.dart`; it creates a real SQLite file, creates folder/note rows, closes/reopens the database, verifies persistence, soft-deletes a note, checks active-list exclusion and verifies retained folder/body/order fields. It is owner-run only and has not been executed by CI.
 
 ## Current evidence
 Flutter CI runs locked dependency resolution, repository-wide format, analyzer and `flutter test` (unit/widget tests) only. It does not provision emulators or simulators. The two APK artifact workflows (within the repository's three protected workflows) compile and upload universal and ARM64-only Debug APKs after successful Flutter CI; they are build/artifact jobs, not device-test jobs. Integration and E2E tests are run by the owner on real physical devices.
@@ -49,3 +50,8 @@ GitHub Actions is deliberately host-only and runs locked dependency resolution, 
     flutter test integration_test -d <physical-device-id>
 
 Record owner-reported device results separately from automated CI; do not invent device details or treat artifact builds as device tests. The owner reports successful Android real-device testing, with detailed evidence not attached. iOS source/configuration work continues phase-by-phase; native build/device verification is `Not Verified — Environment Unavailable` when macOS/Xcode is unavailable and is non-blocking for Android-focused phase progression.
+
+
+## Phase 02 implementation evidence notes
+
+The current Drift warning investigation traced the multiple-database debug messages to database unit tests that retained their group-level in-memory fixture while opening an additional file-backed database for reopen/fail-closed cases. The fixture is now explicitly closed before those file-backed instances are constructed. Each uses a distinct executor; the warning did not demonstrate that production Riverpod creates duplicate app databases. Exact-HEAD CI must still verify that the revised teardown is warning-free and that tests pass.

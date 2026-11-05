@@ -2,7 +2,7 @@
 
 ## What is retained
 
-Phase 01 includes `app_smoke_test.dart`, which exercises the real Yamintto app widget tree through startup, splash transition, foundation screen and AMOLED theme preview. Keep integration test source in this directory and add product-flow scenarios in their owning phases.
+Phase 01 includes `app_smoke_test.dart`, which exercises the real Yamintto app widget tree through startup, splash transition and theme preview. Phase 02 includes `phase_02_data_smoke_test.dart`, which creates a real SQLite file, creates a folder and note, closes/reopens the database, verifies persisted rows, soft-deletes the note, verifies active-list exclusion and confirms the retained folder/body/order fields. Both tests are source only until the owner executes them on physical hardware.
 
 ## Execution policy
 

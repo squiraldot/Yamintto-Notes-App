@@ -1,20 +1,23 @@
 # Routing and navigation
 
-## Current Phase 01 implementation
+## Current implementation
 
 - GoRouter is owned by the root app and created once per app state.
-- Initial location is /splash; SplashScreen displays the app identity and navigates to / after a short startup interval.
-- / maps to the temporary FoundationScreen placeholder.
+- Initial location is `/splash`; SplashScreen advances to `/`.
+- `/` renders the root folder browser, including root folders and root notes.
+- `/folders/:folderId` renders a folder's child folders and active notes. The app bar and parent-folder action navigate to the parent or root.
+- `/notes/new` creates a plain-text note; an optional folder ID is carried as route extra, never note content.
+- `/notes/:noteId/edit` opens an active note for editing. Missing/deleted notes render a safe error state.
+- `/appearance` retains the Phase 01 theme-preview screen without making it the app home.
 - Unknown locations use a recoverable not-found page with a home action.
-- Theme preview state is exposed to the foundation route through a ValueListenable; route state is not recreated when the theme changes.
-- There are no product routes, auth guards, nested routes or deep links.
+- The note editor uses PopScope to confirm before discarding unsaved changes. Save is explicit; no autosave or Markdown preview is present.
 
-## Planned
+## Boundaries
 
-- Centralize paths/names and typed route parameters in app router; builders compose screens only.
-- Guards derive from observable auth/lock state. Never put secrets or note content in URLs/route extras.
-- App lock and vault lock are distinct gates. Restore deep-link destination only after required unlock.
-- Domain logic stays out of builders. Controllers coordinate navigation at presentation boundary.
-- Define back stack, unsaved editor, modal and process restoration behavior.
+- Route builders compose screens only. Folder/note business rules remain in repositories.
+- Do not put note body/title or secrets in paths, query strings or route extras.
+- App lock and vault lock are future distinct gates. Restore deep-link destinations only after required unlock.
 
-Tests: initial/splash route, splash-to-home navigation, unknown route recovery. Future tests cover parameter validation, back/restore, deep link while locked, app vs vault lock and unsaved draft navigation. Verify Android system back and iOS navigation conventions on devices.
+## Tests and device checks
+
+Widget coverage includes root and nested folder navigation, note create/save, and unsaved-change confirmation. The owner must verify Android system back and iOS navigation conventions on physical devices. Integration/E2E remains owner-run only.

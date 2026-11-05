@@ -1,6 +1,6 @@
 # Feature catalog and phase ownership
 
-Each feature has exactly one primary implementation phase. Cross-phase obligations are explicit. Current source is a foundation shell; all product workflows below are Planned unless noted.
+Each feature has exactly one primary implementation phase. Cross-phase obligations are explicit. Phase 01 foundation is present. Phase 02 database/repositories and the folder/notes presentation source are implemented; automated validation and owner device verification remain pending.
 
 ## Phase 01 — Foundation
 
@@ -17,9 +17,9 @@ Phase 01 does not include notes, folders, editor, search, database, security, at
 
 ## Phase 02 — Core Management
 ### Notes CRUD (primary 02)
-Behavior: create/view/edit and soft-delete notes; no Trash UI or physical permanent deletion in Phase 02. Accepted data: canonical lowercase UUID v4 ID, title (max 255 Unicode code points), editor-independent source body, optional folder ID, explicit sort order, UTC epoch-millisecond timestamps and nullable deleted_at. Acceptance: validated CRUD, transactional relationships, restart persistence, deleted notes excluded from active queries/default search; editing/moving requires restore. Status: Not implemented; architecture decision freeze complete.
+Behavior: create/view/edit and soft-delete notes; no Trash UI or physical permanent deletion in Phase 02. Accepted data: canonical lowercase UUID v4 ID, title (max 255 Unicode code points), editor-independent source body, optional folder ID, explicit sort order, UTC epoch-millisecond timestamps and nullable deleted_at. Acceptance: validated CRUD, transactional relationships, restart persistence, deleted notes excluded from active queries/default search; editing/moving requires restore. Status: Source implementation present (repository, listing, create/edit, move and soft-delete); exact-HEAD automated validation and owner device testing pending.
 ### Folders (primary 02)
-Behavior: create/rename/move/navigate/delete nested folders. Accepted data: UUID v4 ID, nullable parent ID, trimmed name (1–255 Unicode code points), Unicode NFKC_Casefold name_key, sibling order, timestamps and nullable deleted_at. Names are unique case-insensitively within the same parent, including root and soft-deleted folders; different parents may reuse names. Maximum depth 32 (root 0); create/move validation checks entire subtree and cycles. Delete only empty folders; soft-delete. Status: Not implemented; architecture decision freeze complete.
+Behavior: create/rename/move/navigate/delete nested folders. Accepted data: UUID v4 ID, nullable parent ID, trimmed name (1–255 Unicode code points), Unicode NFKC_Casefold name_key, sibling order, timestamps and nullable deleted_at. Names are unique case-insensitively within the same parent, including root and soft-deleted folders; different parents may reuse names. Maximum depth 32 (root 0); create/move validation checks entire subtree and cycles. Delete only empty folders; soft-delete. Status: Source implementation present (nested browser, create/rename/move, empty-only soft-delete and parent navigation); exact-HEAD automated validation and owner device testing pending.
 
 **Phase 02 schema boundary (owner approved):** schema v1 contains only `folders` and `notes`. Do not add revisions, attachments, tags, trash_items, encryption_metadata or app_settings early. Search/pinning/Trash UI are Phase 04; Phase 04 Trash covers deleted notes and folders, restore and explicit permanent deletion; revisions/attachments Phase 05; encryption metadata Phase 06; settings Phase 09. Soft-delete retention is indefinite initially; no automatic cleanup. Permanent deletion is not a Phase 02 blocker. See [schema](../database/DATABASE_SCHEMA.md), [migrations](../database/DATABASE_MIGRATIONS.md), [retention](../database/DATA_RETENTION.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
 

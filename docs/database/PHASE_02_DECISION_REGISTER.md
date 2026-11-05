@@ -2,10 +2,10 @@
 
 **Owner approval:** Explicitly approved by the repository owner on 2026-11-05.  
 **Architecture status:** <strong>ACCEPTED — PHASE 02 DECISION FREEZE COMPLETE</strong>.  
-**Implementation status:** In progress under explicit owner authorization issued 2026-11-05. Unicode 17.0 canonicalization is committed; database/folder/notes implementation is in progress.  
+**Implementation status:** Schema v1, Unicode 17.0 canonicalization, folder/note repositories and Phase 02 presentation source are implemented. Exact-final-SHA automated validation, APK artifacts and owner physical-device testing remain pending.  
 **Baseline before this approval:** `main` at `9cc09c272faa9ccbb62c240113fcd89bcef046ae`.
 
-This is the authoritative Phase 02 decision register. The owner approved the proposed architecture baseline with the amendments recorded below. No Phase 02 implementation-blocking owner decision remains unresolved. The owner separately authorized Phase 02 implementation on 2026-11-05; implementation is now underway.
+This is the authoritative Phase 02 decision register. The owner approved the proposed architecture baseline with the amendments recorded below. No Phase 02 implementation-blocking owner decision remains unresolved. The owner separately authorized Phase 02 implementation on 2026-11-05; implementation source now includes the folder browser and plain-text notes management screens.
 
 ## Status vocabulary
 
