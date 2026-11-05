@@ -38,69 +38,66 @@ final class YaminttoDatabase extends GeneratedDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (_) async {
-          for (final statement in SchemaV1.createStatements) {
-            await customStatement(statement);
-          }
-        },
-        onUpgrade: (_, from, to) async {
-          throw DomainFailure(
-            DomainFailureCode.migrationUnsupported,
-            'No approved database migration exists from schema $from to $to.',
-          );
-        },
-        beforeOpen: (_) async {
-          await customStatement('PRAGMA foreign_keys = ON');
-          // These pure deterministic functions are used by CHECK constraints.
-          // sqlite3's Dart API exposes directOnly/deterministic, but not
-          // SQLITE_INNOCUOUS. Keep trusted_schema enabled for this app-private
-          // database.
-          await customStatement('PRAGMA trusted_schema = ON');
-          final trustedSchema = await customSelect(
-            'PRAGMA trusted_schema',
-          ).getSingle();
-          if (trustedSchema.data.values.single != 1) {
-            throw const DomainFailure(
-              DomainFailureCode.databaseInitialization,
-              'SQLite schema function execution could not be enabled safely.',
-            );
-          }
-          final foreignKeys = await customSelect(
-            'PRAGMA foreign_keys',
-          ).getSingle();
-          if (foreignKeys.data.values.single != 1) {
-            throw const DomainFailure(
-              DomainFailureCode.databaseInitialization,
-              'SQLite foreign-key enforcement could not be enabled.',
-            );
-          }
-
-          final functionProbe = await customSelect(
-            "SELECT yamintto_nfkc_casefold('A') AS canonical, "
-            "yamintto_unicode_trim(' x ') AS trimmed, "
-            "yamintto_folder_name_key(' A ') AS folder_key",
-          ).getSingle();
-          if (functionProbe.data['canonical'] != 'a' ||
-              functionProbe.data['trimmed'] != 'x' ||
-              functionProbe.data['folder_key'] != 'a') {
-            throw const DomainFailure(
-              DomainFailureCode.databaseInitialization,
-              'Unicode canonicalization functions are unavailable.',
-            );
-          }
-
-          final tableCount = await customSelect(
-            "SELECT COUNT(*) AS count FROM sqlite_master "
-            "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
-          ).getSingle();
-          if (tableCount.data['count'] != 2) {
-            throw const DomainFailure(
-              DomainFailureCode.databaseInitialization,
-              'The database schema does not match the approved version 1.',
-            );
-          }
-        },
+    onCreate: (_) async {
+      for (final statement in SchemaV1.createStatements) {
+        await customStatement(statement);
+      }
+    },
+    onUpgrade: (_, from, to) async {
+      throw DomainFailure(
+        DomainFailureCode.migrationUnsupported,
+        'No approved database migration exists from schema $from to $to.',
       );
+    },
+    beforeOpen: (_) async {
+      await customStatement('PRAGMA foreign_keys = ON');
+      // These pure deterministic functions are used by CHECK constraints.
+      // sqlite3's Dart API exposes directOnly/deterministic, but not
+      // SQLITE_INNOCUOUS. Keep trusted_schema enabled for this app-private
+      // database.
+      await customStatement('PRAGMA trusted_schema = ON');
+      final trustedSchema = await customSelect('PRAGMA trusted_schema')
+          .getSingle();
+      if (trustedSchema.data.values.single != 1) {
+        throw const DomainFailure(
+          DomainFailureCode.databaseInitialization,
+          'SQLite schema function execution could not be enabled safely.',
+        );
+      }
+      final foreignKeys = await customSelect('PRAGMA foreign_keys').getSingle();
+      if (foreignKeys.data.values.single != 1) {
+        throw const DomainFailure(
+          DomainFailureCode.databaseInitialization,
+          'SQLite foreign-key enforcement could not be enabled.',
+        );
+      }
+
+      final functionProbe = await customSelect(
+        "SELECT yamintto_nfkc_casefold('A') AS canonical, "
+        "yamintto_unicode_trim(' x ') AS trimmed, "
+        "yamintto_folder_name_key(' A ') AS folder_key",
+      ).getSingle();
+      if (functionProbe.data['canonical'] != 'a' ||
+          functionProbe.data['trimmed'] != 'x' ||
+          functionProbe.data['folder_key'] != 'a') {
+        throw const DomainFailure(
+          DomainFailureCode.databaseInitialization,
+          'Unicode canonicalization functions are unavailable.',
+        );
+      }
+
+      final tableCount = await customSelect(
+        "SELECT COUNT(*) AS count FROM sqlite_master "
+        "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
+      ).getSingle();
+      if (tableCount.data['count'] != 2) {
+        throw const DomainFailure(
+          DomainFailureCode.databaseInitialization,
+          'The database schema does not match the approved version 1.',
+        );
+      }
+    },
+  );
 
   static void _registerUnicodeFunctions(database) {
     database.createFunction(

@@ -11,8 +11,8 @@ class NoteRepository {
     this._database, {
     int Function()? now,
     String Function()? createId,
-  })  : _now = now ?? _utcNow,
-        _createId = createId ?? UuidV4.generate;
+  }) : _now = now ?? _utcNow,
+       _createId = createId ?? UuidV4.generate;
 
   final YaminttoDatabase _database;
   final int Function() _now;
@@ -62,15 +62,17 @@ class NoteRepository {
       }
       final sql = folderId == null
           ? 'SELECT * FROM notes WHERE folder_id IS NULL '
-              'AND deleted_at IS NULL ORDER BY sort_order, created_at, id'
+                'AND deleted_at IS NULL ORDER BY sort_order, created_at, id'
           : 'SELECT * FROM notes WHERE folder_id = ? AND deleted_at IS NULL '
-              'ORDER BY sort_order, created_at, id';
-      final rows = await _database.customSelect(
-        sql,
-        variables: folderId == null
-            ? const <Variable<Object>>[]
-            : <Variable<Object>>[Variable.withString(folderId)],
-      ).get();
+                'ORDER BY sort_order, created_at, id';
+      final rows = await _database
+          .customSelect(
+            sql,
+            variables: folderId == null
+                ? const <Variable<Object>>[]
+                : <Variable<Object>>[Variable.withString(folderId)],
+          )
+          .get();
       return rows.map((row) => Note.fromRow(row.data)).toList(growable: false);
     });
   }
@@ -138,10 +140,12 @@ class NoteRepository {
   }
 
   Future<Note> _requireActiveNote(String id) async {
-    final rows = await _database.customSelect(
-      'SELECT * FROM notes WHERE id = ?',
-      variables: <Variable<Object>>[Variable.withString(id)],
-    ).get();
+    final rows = await _database
+        .customSelect(
+          'SELECT * FROM notes WHERE id = ?',
+          variables: <Variable<Object>>[Variable.withString(id)],
+        )
+        .get();
     if (rows.isEmpty) {
       throw const DomainFailure(
         DomainFailureCode.notFound,
@@ -158,10 +162,12 @@ class NoteRepository {
   }
 
   Future<void> _requireActiveFolder(String id) async {
-    final rows = await _database.customSelect(
-      'SELECT id, deleted_at FROM folders WHERE id = ?',
-      variables: <Variable<Object>>[Variable.withString(id)],
-    ).get();
+    final rows = await _database
+        .customSelect(
+          'SELECT id, deleted_at FROM folders WHERE id = ?',
+          variables: <Variable<Object>>[Variable.withString(id)],
+        )
+        .get();
     if (rows.isEmpty || rows.single.data['deleted_at'] != null) {
       throw const DomainFailure(
         DomainFailureCode.invalidDestination,
@@ -173,15 +179,17 @@ class NoteRepository {
   Future<int> _nextOrder(String? folderId) async {
     final sql = folderId == null
         ? 'SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_order '
-            'FROM notes WHERE folder_id IS NULL AND deleted_at IS NULL'
+              'FROM notes WHERE folder_id IS NULL AND deleted_at IS NULL'
         : 'SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_order '
-            'FROM notes WHERE folder_id = ? AND deleted_at IS NULL';
-    final row = await _database.customSelect(
-      sql,
-      variables: folderId == null
-          ? const <Variable<Object>>[]
-          : <Variable<Object>>[Variable.withString(folderId)],
-    ).getSingle();
+              'FROM notes WHERE folder_id = ? AND deleted_at IS NULL';
+    final row = await _database
+        .customSelect(
+          sql,
+          variables: folderId == null
+              ? const <Variable<Object>>[]
+              : <Variable<Object>>[Variable.withString(folderId)],
+        )
+        .getSingle();
     return row.data['next_order']! as int;
   }
 }

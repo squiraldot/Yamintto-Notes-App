@@ -37,8 +37,14 @@ void main() {
     });
 
     test('preserves internal whitespace and trims before NFKC_Casefold', () {
-      expect(UnicodeCanonicalizer.canonicalizeFolderName('\u00A0A  B\u2009'), 'a  b');
-      expect(UnicodeCanonicalizer.canonicalizeFolderName('  A\u00A0B  '), 'a b');
+      expect(
+        UnicodeCanonicalizer.canonicalizeFolderName('\u00A0A  B\u2009'),
+        'a  b',
+      );
+      expect(
+        UnicodeCanonicalizer.canonicalizeFolderName('  A\u00A0B  '),
+        'a b',
+      );
     });
 
     test('performs full NFKC_Casefold rather than lowercase-only mapping', () {
@@ -71,33 +77,23 @@ void main() {
         }).toList();
         final expected = String.fromCharCodes(values[1]);
         expect(
-          UnicodeCanonicalizer.normalizeNfc(
-            String.fromCharCodes(values[0]),
-          ),
+          UnicodeCanonicalizer.normalizeNfc(String.fromCharCodes(values[0])),
           expected,
         );
         expect(
-          UnicodeCanonicalizer.normalizeNfc(
-            String.fromCharCodes(values[1]),
-          ),
+          UnicodeCanonicalizer.normalizeNfc(String.fromCharCodes(values[1])),
           expected,
         );
         expect(
-          UnicodeCanonicalizer.normalizeNfc(
-            String.fromCharCodes(values[2]),
-          ),
+          UnicodeCanonicalizer.normalizeNfc(String.fromCharCodes(values[2])),
           expected,
         );
         expect(
-          UnicodeCanonicalizer.normalizeNfc(
-            String.fromCharCodes(values[3]),
-          ),
+          UnicodeCanonicalizer.normalizeNfc(String.fromCharCodes(values[3])),
           String.fromCharCodes(values[3]),
         );
         expect(
-          UnicodeCanonicalizer.normalizeNfc(
-            String.fromCharCodes(values[4]),
-          ),
+          UnicodeCanonicalizer.normalizeNfc(String.fromCharCodes(values[4])),
           String.fromCharCodes(values[3]),
         );
         checked++;
@@ -117,10 +113,10 @@ void main() {
         final mapping = fields.length < 3 || fields[2].trim().isEmpty
             ? <int>[]
             : fields[2]
-                .trim()
-                .split(RegExp(r'\s+'))
-                .map((part) => int.parse(part, radix: 16))
-                .toList();
+                  .trim()
+                  .split(RegExp(r'\s+'))
+                  .map((part) => int.parse(part, radix: 16))
+                  .toList();
         final expected = UnicodeCanonicalizer.normalizeNfc(
           String.fromCharCodes(mapping),
         );

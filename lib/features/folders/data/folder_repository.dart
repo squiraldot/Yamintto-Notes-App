@@ -11,8 +11,8 @@ class FolderRepository {
     this._database, {
     int Function()? now,
     String Function()? createId,
-  })  : _now = now ?? _utcNow,
-        _createId = createId ?? UuidV4.generate;
+  }) : _now = now ?? _utcNow,
+       _createId = createId ?? UuidV4.generate;
 
   final YaminttoDatabase _database;
   final int Function() _now;
@@ -20,10 +20,7 @@ class FolderRepository {
 
   static int _utcNow() => DateTime.now().toUtc().millisecondsSinceEpoch;
 
-  Future<Folder> createFolder({
-    required String name,
-    String? parentId,
-  }) async {
+  Future<Folder> createFolder({required String name, String? parentId}) async {
     final displayName = _validatedName(name);
     final nameKey = UnicodeCanonicalizer.canonicalizeFolderName(displayName);
     try {
@@ -68,15 +65,17 @@ class FolderRepository {
       }
       final sql = parentId == null
           ? 'SELECT * FROM folders WHERE parent_id IS NULL '
-              'AND deleted_at IS NULL ORDER BY sort_order, created_at, id'
+                'AND deleted_at IS NULL ORDER BY sort_order, created_at, id'
           : 'SELECT * FROM folders WHERE parent_id = ? AND deleted_at IS NULL '
-              'ORDER BY sort_order, created_at, id';
-      final rows = await _database.customSelect(
-        sql,
-        variables: parentId == null
-            ? const <Variable<Object>>[]
-            : <Variable<Object>>[Variable.withString(parentId)],
-      ).get();
+                'ORDER BY sort_order, created_at, id';
+      final rows = await _database
+          .customSelect(
+            sql,
+            variables: parentId == null
+                ? const <Variable<Object>>[]
+                : <Variable<Object>>[Variable.withString(parentId)],
+          )
+          .get();
       return rows
           .map((row) => Folder.fromRow(row.data))
           .toList(growable: false);
@@ -156,15 +155,17 @@ class FolderRepository {
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
         await _requireActiveFolder(id);
-        final children = await _database.customSelect(
-          'SELECT EXISTS(SELECT 1 FROM folders WHERE parent_id = ?) '
-          'AS has_folders, '
-          'EXISTS(SELECT 1 FROM notes WHERE folder_id = ?) AS has_notes',
-          variables: <Variable<Object>>[
-            Variable.withString(id),
-            Variable.withString(id),
-          ],
-        ).getSingle();
+        final children = await _database
+            .customSelect(
+              'SELECT EXISTS(SELECT 1 FROM folders WHERE parent_id = ?) '
+              'AS has_folders, '
+              'EXISTS(SELECT 1 FROM notes WHERE folder_id = ?) AS has_notes',
+              variables: <Variable<Object>>[
+                Variable.withString(id),
+                Variable.withString(id),
+              ],
+            )
+            .getSingle();
         if (children.data['has_folders'] == 1 ||
             children.data['has_notes'] == 1) {
           throw const DomainFailure(
@@ -196,10 +197,12 @@ class FolderRepository {
   }
 
   Future<Folder> _requireActiveFolder(String id) async {
-    final rows = await _database.customSelect(
-      'SELECT * FROM folders WHERE id = ? AND deleted_at IS NULL',
-      variables: <Variable<Object>>[Variable.withString(id)],
-    ).get();
+    final rows = await _database
+        .customSelect(
+          'SELECT * FROM folders WHERE id = ? AND deleted_at IS NULL',
+          variables: <Variable<Object>>[Variable.withString(id)],
+        )
+        .get();
     if (rows.isEmpty) {
       throw const DomainFailure(
         DomainFailureCode.notFound,
@@ -226,11 +229,13 @@ class FolderRepository {
     if (exceptId != null) {
       variables.add(Variable.withString(exceptId));
     }
-    final rows = await _database.customSelect(
-      'SELECT id FROM folders WHERE $parentClause '
-      'AND name_key = ?$exceptClause LIMIT 1',
-      variables: variables,
-    ).get();
+    final rows = await _database
+        .customSelect(
+          'SELECT id FROM folders WHERE $parentClause '
+          'AND name_key = ?$exceptClause LIMIT 1',
+          variables: variables,
+        )
+        .get();
     if (rows.isNotEmpty) {
       throw const DomainFailure(
         DomainFailureCode.nameConflict,
@@ -242,15 +247,17 @@ class FolderRepository {
   Future<int> _nextFolderOrder(String? parentId) async {
     final sql = parentId == null
         ? 'SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_order '
-            'FROM folders WHERE parent_id IS NULL AND deleted_at IS NULL'
+              'FROM folders WHERE parent_id IS NULL AND deleted_at IS NULL'
         : 'SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_order '
-            'FROM folders WHERE parent_id = ? AND deleted_at IS NULL';
-    final row = await _database.customSelect(
-      sql,
-      variables: parentId == null
-          ? const <Variable<Object>>[]
-          : <Variable<Object>>[Variable.withString(parentId)],
-    ).getSingle();
+              'FROM folders WHERE parent_id = ? AND deleted_at IS NULL';
+    final row = await _database
+        .customSelect(
+          sql,
+          variables: parentId == null
+              ? const <Variable<Object>>[]
+              : <Variable<Object>>[Variable.withString(parentId)],
+        )
+        .getSingle();
     return row.data['next_order']! as int;
   }
 
@@ -265,10 +272,12 @@ class FolderRepository {
           'The stored folder hierarchy contains a cycle.',
         );
       }
-      final rows = await _database.customSelect(
-        'SELECT parent_id, deleted_at FROM folders WHERE id = ?',
-        variables: <Variable<Object>>[Variable.withString(cursor)],
-      ).get();
+      final rows = await _database
+          .customSelect(
+            'SELECT parent_id, deleted_at FROM folders WHERE id = ?',
+            variables: <Variable<Object>>[Variable.withString(cursor)],
+          )
+          .get();
       if (rows.isEmpty) {
         throw const DomainFailure(
           DomainFailureCode.invalidDestination,
@@ -294,20 +303,18 @@ class FolderRepository {
     }
   }
 
-  Future<({Set<String> ids, int height})> _collectSubtree(
-    String rootId,
-  ) async {
+  Future<({Set<String> ids, int height})> _collectSubtree(String rootId) async {
     final ids = <String>{rootId};
-    final queue = <({String id, int depth})>[
-      (id: rootId, depth: 0),
-    ];
+    final queue = <({String id, int depth})>[(id: rootId, depth: 0)];
     var height = 0;
     for (var index = 0; index < queue.length; index++) {
       final current = queue[index];
-      final rows = await _database.customSelect(
-        'SELECT id FROM folders WHERE parent_id = ?',
-        variables: <Variable<Object>>[Variable.withString(current.id)],
-      ).get();
+      final rows = await _database
+          .customSelect(
+            'SELECT id FROM folders WHERE parent_id = ?',
+            variables: <Variable<Object>>[Variable.withString(current.id)],
+          )
+          .get();
       for (final row in rows) {
         final childId = row.data['id']! as String;
         if (!ids.add(childId)) {

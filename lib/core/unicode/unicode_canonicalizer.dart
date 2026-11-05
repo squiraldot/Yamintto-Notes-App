@@ -5,9 +5,7 @@ import 'package:yamintto/core/unicode/unicode_17_data.dart';
 /// Boundary trimming uses Unicode 17.0 White_Space before NFKC_Casefold.
 /// Internal whitespace is preserved. No platform ICU or locale behavior.
 abstract final class UnicodeCanonicalizer {
-  static final Map<int, List<int>> _nfkc = _parseMappings(
-    nfkcCasefoldMappings,
-  );
+  static final Map<int, List<int>> _nfkc = _parseMappings(nfkcCasefoldMappings);
   static final Map<int, List<int>> _decomposition = _parseMappings(
     canonicalDecompositionMappings,
   );
@@ -112,8 +110,7 @@ abstract final class UnicodeCanonicalizer {
       }
       var insertion = output.length;
       while (insertion > 0) {
-        final previousClass =
-            _combiningClass[output[insertion - 1]] ?? 0;
+        final previousClass = _combiningClass[output[insertion - 1]] ?? 0;
         if (previousClass == 0 || previousClass <= currentClass) {
           break;
         }
@@ -139,8 +136,7 @@ abstract final class UnicodeCanonicalizer {
       final currentClass = _combiningClass[rune] ?? 0;
       final composite = _composePair(starter, rune);
 
-      if (composite != null &&
-          (lastClass < currentClass || lastClass == 0)) {
+      if (composite != null && (lastClass < currentClass || lastClass == 0)) {
         output[starterPosition] = composite;
         starter = composite;
         continue;
@@ -171,9 +167,7 @@ abstract final class UnicodeCanonicalizer {
         first < lBase + lCount &&
         second >= vBase &&
         second < vBase + vCount) {
-      return sBase +
-          (first - lBase) * nCount +
-          (second - vBase) * tCount;
+      return sBase + (first - lBase) * nCount + (second - vBase) * tCount;
     }
 
     if (first >= sBase &&
@@ -213,10 +207,7 @@ abstract final class UnicodeCanonicalizer {
       final raw = line.substring(separator + 1);
       result[key] = raw.isEmpty
           ? const <int>[]
-          : raw
-              .split(',')
-              .map((part) => int.parse(part, radix: 16))
-              .toList();
+          : raw.split(',').map((part) => int.parse(part, radix: 16)).toList();
     }
     return result;
   }
@@ -226,8 +217,9 @@ abstract final class UnicodeCanonicalizer {
     for (final line in data.split('\n')) {
       if (line.isEmpty) continue;
       final separator = line.indexOf('=');
-      result[int.parse(line.substring(0, separator), radix: 16)] =
-          int.parse(line.substring(separator + 1));
+      result[int.parse(line.substring(0, separator), radix: 16)] = int.parse(
+        line.substring(separator + 1),
+      );
     }
     return result;
   }
@@ -248,12 +240,15 @@ abstract final class UnicodeCanonicalizer {
 
   static List<(int, int)> _parseRanges(String data) {
     if (data.isEmpty) return const <(int, int)>[];
-    return data.split(',').map((part) {
-      final bounds = part.split('-');
-      return (
-        int.parse(bounds[0], radix: 16),
-        int.parse(bounds[1], radix: 16),
-      );
-    }).toList(growable: false);
+    return data
+        .split(',')
+        .map((part) {
+          final bounds = part.split('-');
+          return (
+            int.parse(bounds[0], radix: 16),
+            int.parse(bounds[1], radix: 16),
+          );
+        })
+        .toList(growable: false);
   }
 }
