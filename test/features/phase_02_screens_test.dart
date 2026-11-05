@@ -15,7 +15,6 @@ void main() {
   late FolderRepository folders;
   late NoteRepository notes;
   late GoRouter router;
-  late WidgetTester activeTester;
 
   setUp(() {
     database = YaminttoDatabase.inMemory();
@@ -48,14 +47,11 @@ void main() {
   });
 
   tearDown(() async {
-    await activeTester.pumpWidget(const SizedBox.shrink());
     router.dispose();
     await database.close();
   });
 
-  Widget app(WidgetTester tester) {
-    activeTester = tester;
-    return ProviderScope(
+  Widget app() => ProviderScope(
       overrides: [
         folderRepositoryProvider.overrideWith((ref) async => folders),
         noteRepositoryProvider.overrideWith((ref) async => notes),
@@ -65,14 +61,14 @@ void main() {
   }
 
   testWidgets('root screen shows empty folders and notes', (tester) async {
-    await tester.pumpWidget(app(tester));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     expect(find.text('No folders here yet.'), findsOneWidget);
     expect(find.text('No notes here yet.'), findsOneWidget);
   });
 
   testWidgets('creates and opens a nested folder', (tester) async {
-    await tester.pumpWidget(app(tester));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Create folder'));
     await tester.pumpAndSettle();
@@ -86,7 +82,7 @@ void main() {
   });
 
   testWidgets('renames a folder through its action menu', (tester) async {
-    await tester.pumpWidget(app(tester));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Create folder'));
     await tester.pumpAndSettle();
@@ -107,7 +103,7 @@ void main() {
   testWidgets('moves a folder into another folder', (tester) async {
     final source = await folders.createFolder(name: 'Source');
     final destination = await folders.createFolder(name: 'Destination');
-    await tester.pumpWidget(app(tester));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Folder actions').first);
     await tester.pumpAndSettle();
@@ -127,7 +123,7 @@ void main() {
     tester,
   ) async {
     final folder = await folders.createFolder(name: 'Empty folder');
-    await tester.pumpWidget(app(tester));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Folder actions'));
     await tester.pumpAndSettle();
@@ -145,7 +141,7 @@ void main() {
   testWidgets('rejects deleting a folder containing a note', (tester) async {
     final folder = await folders.createFolder(name: 'Not empty');
     await notes.createNote(folderId: folder.id, title: 'Retained note');
-    await tester.pumpWidget(app(tester));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Folder actions'));
     await tester.pumpAndSettle();
@@ -158,7 +154,7 @@ void main() {
   });
 
   testWidgets('creates and saves a plain-text note', (tester) async {
-    await tester.pumpWidget(app(tester));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
@@ -171,7 +167,7 @@ void main() {
   });
 
   testWidgets('prompts before abandoning unsaved note changes', (tester) async {
-    await tester.pumpWidget(app(tester));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
