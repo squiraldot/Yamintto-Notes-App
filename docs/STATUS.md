@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
+Snapshot: 2026-11-06; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
 
 ## Phase 01 — Foundation
 
@@ -69,11 +69,26 @@ These historical Phase 01 baseline runs target commit `76ba10c04f0ec421f54e5d625
 - APK workflows build and upload APK artifacts only; they do not run device tests.
 - The owner-reported Android test result is recorded separately from automated Actions evidence.
 
-## Phase 02 current implementation evidence
+## Initial Phase 02 UI implementation evidence (historical source revision 36a2721)
+
+This historical section records the first complete presentation implementation and its original CI/APK evidence. The later regression fix and current source-SHA evidence are recorded above.
+
+## Latest Phase 02 follow-up fix and exact-SHA verification
+
+- Latest source revision: `745b8f589afceb783a9b39bafcd03c123e50c395`.
+- Move-dialog dismissal fix: Android Back/barrier dismissal is cancellation, never an implicit Root destination.
+- Regression tests: folder move-dialog dismissal and note move-dialog dismissal both preserve the original parent/folder; Phase 02 screen widget coverage is now **19 tests**.
+- Flutter CI run `42097059083` — **success** on Flutter 3.47.9; locked dependency resolution, repository-wide formatting, analyzer and **69/69 tests** passed. The test log contains no Drift multiple-database warnings.
+- Universal Debug APK run `42097260846` — **success**; artifact `yamintto-debug-745b8f589afceb783a9b39bafcd03c123e50c395`; archive 80,051,472 bytes; SHA-256 `e0c35176a80c4c4e88c7f23c6704b9e87fceee01c0d8782c4b561cb2f3a06153`.
+- ARM64 Debug APK run `42097260894` — **success**; artifact `yamintto-arm64-debug-745b8f589afceb783a9b39bafcd03c123e50c395`; archive 51,759,502 bytes; SHA-256 `36cb8e9a1790c55468313dd956abb1dbc30ee7a66b372ed2784babe0cda94e6f`.
+- The APK sizes above are GitHub artifact ZIP archive sizes, not extracted APK file sizes.
+- The documentation-only final revision is validated separately on its own exact SHA by all three protected workflows; its run IDs and artifact metadata are recorded in the final execution report.
+
+## Initial Phase 02 implementation evidence
 
 - Source implementation revision: `36a27212dadda99fbb7bb333a93a3568c967869d`.
 - Flutter CI run: `42040473461` — success on Flutter 3.47.9; locked dependencies, format, analyzer and **67/67 tests**.
-- Phase 02 screen widget coverage: 17 tests in `test/features/phase_02_screens_test.dart`.
+- Phase 02 screen widget coverage: 19 tests in `test/features/phase_02_screens_test.dart`.
 - Universal Debug APK run: `42040771830` — success; artifact `yamintto-debug-36a27212dadda99fbb7bb333a93a3568c967869d`; archive 80,051,369 bytes; SHA-256 `4e2544d8b6df7086fdb4ef1300fd8d0e0b78e2f97ee94597985dfbb71d186865`.
 - ARM64 Debug APK run: `42040772056` — success; artifact `yamintto-arm64-debug-36a27212dadda99fbb7bb333a93a3568c967869d`; archive 51,759,376 bytes; SHA-256 `2b635ecafb2a04a256a92fe4f58d10dac8346fd639d6f263f9ddb36d03f4ee15`.
 - Drift lifecycle: tests now close the in-memory fixture before opening file-backed DB instances; the latest source-revision CI log contains zero Drift multiple-database warnings.
