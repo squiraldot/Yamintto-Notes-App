@@ -325,7 +325,26 @@ Future<String?> _destination(
 ) async {
   final folders = await ref.read(allFoldersProvider.future);
   if (!context.mounted) return _cancel;
-  final choices = folders.where((f) => f.id != movingId).toList();
+  final excludedIds = <String>{};
+  if (movingId != null) {
+    final childrenByParent = <String, List<String>>{};
+    for (final folder in folders) {
+      final parentId = folder.parentId;
+      if (parentId != null) {
+        childrenByParent.putIfAbsent(parentId, () => <String>[]).add(folder.id);
+      }
+    }
+    final pending = <String>[movingId];
+    while (pending.isNotEmpty) {
+      final parentId = pending.removeLast();
+      for (final childId in childrenByParent[parentId] ?? const <String>[]) {
+        if (excludedIds.add(childId)) pending.add(childId);
+      }
+    }
+  }
+  final choices = folders
+      .where((folder) => folder.id != movingId && !excludedIds.contains(folder.id))
+      .toList();
   String? selected = current;
   final result = await showDialog<String>(
     context: context,
