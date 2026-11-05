@@ -15,7 +15,7 @@ This is the project knowledge base. Source/config/tests determine current implem
 [System architecture](architecture/SYSTEM_ARCHITECTURE.md) · [Project structure](architecture/PROJECT_STRUCTURE.md) · [State and DI](architecture/STATE_MANAGEMENT.md) · [Routing](architecture/ROUTING.md) · [Errors](architecture/ERROR_HANDLING.md) · [Platform architecture](architecture/PLATFORM_ARCHITECTURE.md) · [Dependency policy](architecture/DEPENDENCY_POLICY.md)
 
 ## Database
-[Schema proposal](database/DATABASE_SCHEMA.md) · [Migrations](database/DATABASE_MIGRATIONS.md) · [Retention](database/DATA_RETENTION.md)
+[Schema proposal](database/DATABASE_SCHEMA.md) · [Migrations](database/DATABASE_MIGRATIONS.md) · [Retention](database/DATA_RETENTION.md) · [Phase 02 decision register](database/PHASE_02_DECISION_REGISTER.md)
 
 ## Security
 [Overview and review register](security/SECURITY_OVERVIEW.md) · [Encryption](security/ENCRYPTION_SPECIFICATION.md) · [Key management](security/KEY_MANAGEMENT.md) · [Recovery](security/RECOVERY_SPECIFICATION.md) · [Biometrics](security/BIOMETRIC_AUTHENTICATION.md) · [Attachments](security/SECURE_ATTACHMENTS.md) · [Backups](security/SECURE_BACKUPS.md) · [Threat model](security/THREAT_MODEL.md)
