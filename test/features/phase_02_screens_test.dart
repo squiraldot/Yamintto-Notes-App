@@ -217,7 +217,10 @@ void main() {
   testWidgets('cancelling existing note edits preserves stored content', (
     tester,
   ) async {
-    final note = await notes.createNote(title: 'Original', body: 'Original body');
+    final note = await notes.createNote(
+      title: 'Original',
+      body: 'Original body',
+    );
     await mount(tester);
     await tester.tap(find.text('Original'));
     await tester.pumpAndSettle();
@@ -281,5 +284,4 @@ void main() {
     expect(find.text('Folder unavailable'), findsOneWidget);
     expect(find.text('Retry'), findsWidgets);
   });
-
 }
