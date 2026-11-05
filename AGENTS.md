@@ -5,13 +5,13 @@ Mandatory entry point. Read before any repository change.
 ## Identity and verified baseline
 Repository squiraldot/Yamintto-Notes-App; app Yamintto; Flutter package yamintto; Android ID and iOS bundle ID com.merrmist.yamintto; version 0.1.0-beta.1+1; first production target 1.0.0. CI pins Flutter 3.47.9; pubspec requires Dart >=3.13.0 and Flutter >=3.38.4. Only Flutter 3.47.9 is verified; do not claim all lower pubspec-allowed Flutter versions are compatible.
 
-Current source: main/bootstrap, root Riverpod ProviderScope, YaminttoApp, centralized provisional color/typography/spacing/sizing/radius tokens, Material 3 light/dark/AMOLED themes, reusable app-shell button/card/text-field/dialog/sheet components, GoRouter splash -> foundation placeholder, unknown-route recovery, configuration/theme/navigation/widget tests, and an Android app-shell integration smoke test. No Drift DB/schema/DAO, feature repository/provider, notes workflow, encryption, biometrics, attachment or backup implementation exists. Phase 01 is explicitly authorized and implemented. Baseline Flutter CI and Debug APK artifact passed on an earlier known-good SHA. Physical Android installation/cold-launch/back and native iOS macOS/Xcode build remain unverified. Physical Android installation/cold-launch/back and native iOS macOS/Xcode build remain unverified. Phases 02–09 are not authorized or started.
+Current source: main/bootstrap, root Riverpod ProviderScope, YaminttoApp, centralized provisional color/typography/spacing/sizing/radius tokens, Material 3 light/dark/AMOLED themes, reusable app-shell button/card/text-field/dialog/sheet components, GoRouter splash -> foundation placeholder, unknown-route recovery, configuration/theme/navigation/widget tests, and an Android app-shell integration smoke test. No Drift DB/schema/DAO, feature repository/provider, notes workflow, encryption, biometrics, attachment or backup implementation exists. Phase 01 is explicitly authorized and implemented. Baseline Flutter CI and Debug APK artifact passed on an earlier known-good SHA. Physical Android installation/cold-launch/back and native iOS macOS/Xcode build remain unverified. Phases 02–09 are not authorized or started.
 
 ## Mandatory start sequence
 1. Read docs/README.md, docs/STATUS.md, docs/ai/AI_DEVELOPMENT_GUIDE.md, docs/ai/PHASE_EXECUTION_RULES.md and docs/development/PHASE_ROADMAP.md.
 2. Confirm explicit user authorization for phase and scope. Roadmap position is not authorization; if absent, do not modify app code.
 3. Read the phase's Feature Catalog, product requirements, architecture, database, security, design and testing docs.
-4. Inspect current branch/head, relevant complete tree, actual source/config/tests, pubspec/lockfile, Android/iOS, both workflows, recent Actions results and diff.
+4. Inspect current branch/head, relevant complete tree, actual source/config/tests, pubspec/lockfile, Android/iOS, all three workflows, recent Actions results and diff.
 5. Plan exact files, exclusions, acceptance criteria, tests, migration/data-loss risks and docs updates before implementation.
 
 ## Truth and architecture
@@ -20,8 +20,12 @@ Target: feature-first lib/features/<feature>/{presentation,domain,data}/; shared
 
 ## Scope and restrictions
 One phase at a time; max 2–3 major features. No unrelated work, scope expansion, skipped phases, premature future work, silent architecture changes or breaking data changes without approved migration. Preserve behavior and add regression tests. Never modify separate YRNotes.
-Docs-only tasks may change Markdown docs/indexes/status/ADRs only; never app source/tests, dependencies, pubspec/lockfile, Android, iOS or workflows.
-Exactly two workflows: .github/workflows/flutter-ci.yml and .github/workflows/yamintto-debug-apk.yml. Never add a third; do not modify either in docs-only work. Beta is Debug APK only: no release APK/AAB, release signing or production publishing.
+Docs-only tasks may change Markdown docs/indexes/status/ADRs only; never app source/tests, dependencies, pubspec/lockfile, Android or iOS.
+Exactly three protected workflows are required:
+- .github/workflows/flutter-ci.yml — host-only validation.
+- .github/workflows/yamintto-debug-apk.yml — universal Android Debug APK artifact.
+- .github/workflows/yamintto-arm64-debug-apk.yml — ARM64-only Android Debug APK artifact.
+The two APK artifact workflows automatically run after successful Flutter CI for main/dev and build the exact CI-tested commit. Do not delete, rename, disable, merge, replace or remove either APK workflow from documentation without explicit owner authorization. Do not add further workflows without explicit owner authorization. The ARM64 workflow must remain a minimal ARM64-only debug build; do not add emulator, KVM, simulator, release, signing or publishing steps. Beta is Debug APK only: no release APK/AAB, release signing or production publishing. Workflow changes require explicit owner authorization; docs-only tasks do not edit workflows.
 
 ## Security boundaries
 Requirements, not implemented protocol: AES-256-GCM; unique nonce per encryption; random 256-bit master key; Argon2id password KDF; Android Keystore/iOS Keychain; independent password and recovery-key recovery; separate app and vault biometric protection. Do not invent nonce/AAD/KDF/wrapping/native flags. Validate current authoritative package/platform documentation and independent security review before implementation. Never log note content, secrets, keys or attachment bytes. Phase 05 attachments are locally stored but unencrypted until Phase 06; this temporary beta state is not production-ready. If both recovery paths and every valid key copy are lost, recovery cannot be promised.
@@ -37,6 +41,6 @@ Before completion inspect diff/links, verify forbidden paths unchanged, update d
 - Never add, configure, boot, install, or run tests on an Android emulator or iOS simulator in GitHub Actions or another CI workflow.
 - Never reintroduce emulator-runner actions, KVM/virtualization setup, emulator images, virtual-device boot steps, or simulator-based CI tests.
 - AI agents must not independently create or use an emulator/simulator as a substitute for testing. The project owner will perform integration and end-to-end testing on real physical devices.
-- Keep automated CI limited to host-runnable checks: locked dependency resolution, Dart formatting, Flutter analysis, and flutter test (unit/widget tests).
+- Keep automated Flutter CI limited to host-runnable checks: locked dependency resolution, Dart formatting, Flutter analysis, and flutter test (unit/widget tests). APK artifact workflows only compile/upload their respective debug APKs; they do not run device tests.
 - Preserve integration_test/ tests where relevant. Run them only on an owner-provided physical device after coordination: flutter devices, then flutter test integration_test -d <physical-device-id>. Never claim these tests passed without actual device execution evidence.
 - If a future requirement conflicts with this policy, stop and ask the owner; do not silently change it.
