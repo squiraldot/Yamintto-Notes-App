@@ -8,7 +8,7 @@ void main() {
   group('UnicodeCanonicalizer Unicode 17.0', () {
     test('pins the approved Unicode data version', () {
       expect(unicodeDataVersion, '17.0.0');
-    });
+    });;
 
     test('trims every Unicode 17.0 White_Space character at boundaries', () {
       final source = File('tool/unicode/17.0.0/PropList.txt');
@@ -34,24 +34,24 @@ void main() {
           reason: 'U+${rune.toRadixString(16).toUpperCase()}',
         );
       }
-    });
+    });;
 
     test('preserves internal whitespace and trims before NFKC_Casefold', () {
       expect(UnicodeCanonicalizer.canonicalizeFolderName('\u00A0A  B\u2009'), 'a  b');
       expect(UnicodeCanonicalizer.canonicalizeFolderName('  A\u00A0B  '), 'a b');
-    });
+    });;
 
     test('performs full NFKC_Casefold rather than lowercase-only mapping', () {
       expect(UnicodeCanonicalizer.nfkcCasefold('Straße'), 'strasse');
       expect(UnicodeCanonicalizer.nfkcCasefold('K'), 'k');
       expect(UnicodeCanonicalizer.nfkcCasefold('ＡＢＣ'), 'abc');
       expect(UnicodeCanonicalizer.nfkcCasefold('\u00AD'), '');
-    });
+    });;
 
     test('uses Unicode code points for name length', () {
       expect(UnicodeCanonicalizer.codePointLength('😀'), 1);
       expect(UnicodeCanonicalizer.codePointLength('a😀b'), 3);
-    });
+    });;
 
     test('passes every row in Unicode 17.0 NormalizationTest.txt for NFC', () {
       final file = File('tool/unicode/17.0.0/NormalizationTest.txt');
@@ -103,7 +103,7 @@ void main() {
         checked++;
       }
       expect(checked, greaterThan(0));
-    });
+    });;
 
     test('matches every explicit NFKC_CF source mapping', () {
       final file = File('tool/unicode/17.0.0/DerivedNormalizationProps.txt');
@@ -134,6 +134,6 @@ void main() {
         }
       }
       expect(checked, 10583);
-    });
+    });;
   });
 }
