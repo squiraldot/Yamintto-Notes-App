@@ -61,7 +61,8 @@ void main() {
       router.dispose();
       await database.close();
     });
-    await mount(tester);
+    await tester.pumpWidget(app());
+    await tester.pumpAndSettle();
   }
 
   testWidgets('root screen shows empty folders and notes', (tester) async {
