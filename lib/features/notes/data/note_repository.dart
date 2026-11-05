@@ -11,7 +11,7 @@ class NoteRepository {
     this._database, {
     int Function()? now,
     String Function()? createId,
-  }) : _now = now ?? _utcNow,
+  })  : _now = now ?? _utcNow,
         _createId = createId ?? UuidV4.generate;
 
   final YaminttoDatabase _database;
