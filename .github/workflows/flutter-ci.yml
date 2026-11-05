@@ -26,6 +26,8 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
+      - name: Temporary Phase 02 test formatter output
+        run: dart format --output=show test/features/phase_02_screens_test.dart
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed .
       - name: Run Flutter analyzer
