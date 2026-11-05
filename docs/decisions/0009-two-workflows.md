@@ -1,16 +1,16 @@
 # ADR-0009: Exactly two GitHub Actions workflows
 
-- Status: Accepted
+- Status: Superseded by [ADR-0012](0012-arm64-debug-apk-workflow.md)
 - Date: 2026-11-04
 
 ## Context
-The project permits one validation workflow and one beta debug-artifact workflow.
+The original CI design permitted one validation workflow and one universal beta debug-artifact workflow.
 
 ## Decision
-Exactly these workflows are allowed: `.github/workflows/flutter-ci.yml` and `.github/workflows/yamintto-debug-apk.yml`.
+This was the original decision: exactly these workflows were allowed: `.github/workflows/flutter-ci.yml` and `.github/workflows/yamintto-debug-apk.yml`.
 
 ## Alternatives
 Additional release, platform or deployment workflows.
 
 ## Consequences
-Never add a third workflow. Current repository contains exactly these two. Workflow changes require explicit authorization and are prohibited in docs-only work.
+This two-workflow limit is historical and no longer describes the repository. The current protected three-workflow set is documented in ADR-0012. The two original workflows remain unchanged.
