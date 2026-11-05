@@ -183,8 +183,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       if (widget.noteId != null) {
         ref.invalidate(noteDetailProvider(widget.noteId!));
       }
-      _dirty = false;
-      context.pop();
+      setState(() {
+        _dirty = false;
+        _saving = false;
+      });
+      await WidgetsBinding.instance.endOfFrame;
+      if (mounted) context.pop();
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context)

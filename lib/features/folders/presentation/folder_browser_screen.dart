@@ -125,8 +125,7 @@ class FolderBrowserScreen extends ConsumerWidget {
                           .map(
                             (n) => _NoteRow(
                               note: n,
-                              open: () =>
-                                  context.push('/notes/${n.id}/edit'),
+                              open: () => context.push('/notes/${n.id}/edit'),
                               move: () => _moveNote(context, ref, n),
                               delete: () => _deleteNote(context, ref, n),
                             ),
