@@ -96,3 +96,18 @@ Exactly three protected workflows must remain. ADR-0012 supersedes ADR-0009's or
 ## Beta and production status
 
 Beta policy remains Debug APK only: no release APK/AAB, release signing or publishing. Production readiness has not been achieved. Security, encryption, recovery, biometric, backup and data workflows remain future-phase requirements, not implemented functionality.
+
+
+## Phase 02 — Pre-implementation architecture review (2026-11-05)
+
+**Status: Documentation review recorded; decision freeze NOT complete; implementation NOT started. Owner approval is required before a separate Phase 02 implementation prompt.**
+
+- Audited starting HEAD: `e1c886ade7eb078049a6303ccfd2f6de72527e1b` on `main`.
+- Source includes Phase 01 bootstrap, Riverpod root scope, YaminttoApp, themes/widgets and foundation routes. `lib/core/database/README.md` is guidance only.
+- pubspec and lockfile contain Drift/SQLite dependencies; there is no DB class, Drift table, DAO, generated schema, repository, schema version, executable migration or notes/folders CRUD.
+- Existing three protected workflows were inspected and are unchanged.
+- ADR-0002 accepts offline-first; ADR-0003 accepts Drift/SQLite; ADR-0011 defines post-encryption search privacy; ADR-0012 protects three workflows and supersedes ADR-0009.
+- Previous schema draft mixed Phase 02 with future revisions, attachments, tags, trash, encryption metadata and settings. It also omitted exact nullability/defaults, FK actions, ID/time formats, ordering, schema version and folder deletion behavior.
+- Proposed schema v1 now contains only folders and notes. Row-level deleted_at provides soft-delete foundation; future tables remain in their owning phases. SQLite WAL/journal/temp/index plaintext migration is explicitly called out for Phase 06.
+- See [Phase 02 decision register](database/PHASE_02_DECISION_REGISTER.md). Blocking owner decisions include schema v1, UUID/timestamps, folder deletion, note soft-delete/restore, hierarchy/name rules, ordering, FK/transactions, migration policy and retention.
+- No Phase 02 application implementation is complete or started. Do not mark this phase frozen or authorize implementation until owner approval.
