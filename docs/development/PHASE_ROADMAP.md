@@ -13,15 +13,20 @@ This is an ordered plan, not authorization. Phase 01 is the only authorized phas
 - Status: Phase 01 source implementation is present. Latest host-only Flutter CI and both APK artifact workflows succeeded on commit 76ba10c04f0ec421f54e5d6252dd6745058611f9 (run IDs 41981911424, 41982079883 and 41982079971). Android real-device testing is owner-reported successful, with detailed evidence not attached. Phase 01 acceptance is recorded as an owner-reported Android pass, not independent device-log verification. No Android device-test failure is currently outstanding. iOS verification is non-gating; continue iOS implementation with applicable phases.
 
 ## Phase 02 — Core Management
-- Scope: Drift schema v1/migrations; nested folders; note CRUD with soft-delete foundation. No Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup or import implementation.
-- Dependencies: Phase 01 accepted; [Phase 02 decision register](../database/PHASE_02_DECISION_REGISTER.md) approved.
-- Prerequisites: explicit implementation authorization; owner approval of schema/IDs/timestamps, folder deletion/restore, ordering, FK/transactions, migrations and retention.
-- Proposed schema v1: only folders and notes; NULL root relationships; UUID v4 TEXT; UTC epoch-millisecond INTEGER; nullable deleted_at; explicit sort_order; FK enforcement with RESTRICT; transactional multi-record operations. All remain recommendations pending approval.
-- Recommended folder deletion: block if any child folder or any note (including soft-deleted) exists; soft-delete empty folders only. Folder moves reject self/descendant cycles. Note delete soft-deletes and retains folder/order; Trash UI is Phase 04.
-- Acceptance after authorization: fresh DB; CRUD; no cycles/orphans; FK checks; rollback; restart persistence; deleted rows excluded from active queries; typed errors.
-- Tests: schema/DAO/repository/hierarchy/order/FK/transaction unit; folder/note widget; fresh install, CRUD/restart, soft-delete, rollback and migration integration.
-- Checklist: [ ] owner decisions [ ] schema v1 [ ] migration tests [ ] folder CRUD [ ] note CRUD [ ] unit [ ] widget [ ] integration [ ] docs [ ] review/SHA.
-- Status: **Not implemented. Decision review in progress; not frozen. Owner approval required.**
+- Scope: implement approved Drift schema version 1/migrations; nested folder management; note CRUD with soft-delete foundation. No Trash UI, physical permanent deletion, search, pinning, revisions, attachments, encryption, biometrics, backup or import implementation.
+- Dependencies: Phase 01 accepted; owner-approved architecture freeze recorded in [decision register](../database/PHASE_02_DECISION_REGISTER.md) and [ADR-0013](../decisions/0013-phase-02-data-model-lifecycle.md).
+- Prerequisite: a separate explicit owner authorization for Phase 02 implementation. Architecture approval does not itself authorize code changes.
+- Accepted schema v1: only folders and notes; NULL root relationships; canonical lowercase UUID v4 TEXT; UTC epoch-millisecond INTEGER; nullable deleted_at; explicit sort_order; FK enforcement with RESTRICT; transactional multi-record operations.
+- Folder hierarchy: virtual root level 0; top-level folders level 1; maximum level 32. Domain validation and tests must check create/move subtree depth and cycle rejection.
+- Folder names: trimmed, non-empty, max 255 Unicode code points; case-insensitive unique per parent using the shared Unicode NFKC_Casefold canonicalizer and a root-aware database unique constraint. Includes soft-deleted folders; name reuse only after Phase 04 permanent deletion.
+- Note titles: max 255 Unicode code points; empty title allowed.
+- Folder deletion: reject if any child folder or any note (including soft-deleted note) exists; soft-delete only empty folders. Note delete soft-deletes and retains folder/order. Deleted notes excluded from active lists/default search; edit/move requires restore.
+- Phase 04 Trash must cover deleted notes and folders, restore and explicit permanent deletion. Note restore uses original folder/order or root with explicit conflict result if unavailable. Phase 02 does not implement Trash UI or permanent deletion.
+- Retention: indefinite soft-delete retention initially; no automatic expiry or cleanup. Phase 05 extends permanent deletion to revisions/attachment data/files with durable staged cleanup and crash recovery.
+- Acceptance after authorization: fresh schema v1; CRUD; depth 32 accepted/33 rejected; no cycles/orphans; sibling name uniqueness including root and soft-deleted rows; FK checks; transaction rollback; restart persistence; soft-delete filters; typed errors.
+- Tests: schema/DAO/repository/hierarchy/depth/name canonicalization/order/FK/transaction unit; folder/note widgets; fresh install, CRUD/restart, soft-delete, rollback and migration integration on supported platforms.
+- Checklist: [ ] implementation authorized [ ] schema v1 [ ] migration tests [ ] folder CRUD [ ] note CRUD [ ] depth/name constraints [ ] unit [ ] widget [ ] integration [ ] docs [ ] review/SHA.
+- Status: **Architecture decision freeze COMPLETE; application implementation NOT STARTED; separate owner authorization required.**
 
 ## Phase 03 — Editor
 - Scope: Markdown editor; viewer; autosave.
