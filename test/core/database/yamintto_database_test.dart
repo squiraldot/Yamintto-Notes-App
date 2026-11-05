@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yamintto/core/database/yamintto_database.dart';
 import 'package:yamintto/core/ids/uuid_v4.dart';
@@ -19,12 +18,17 @@ void main() {
       await database.close();
     });
 
-    test('creates exactly two domain tables and enables foreign keys', () async {
+    test(
+      'creates exactly two domain tables and enables foreign keys',
+      () async {
       final tables = await database.customSelect(
         "SELECT name FROM sqlite_master "
         "WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
       ).get();
-      expect(tables.map((row) => row.data['name']), <String>['folders', 'notes']);
+      expect(
+        tables.map((row) => row.data['name']),
+        <String>['folders', 'notes'],
+      );
 
       final foreignKeys =
           await database.customSelect('PRAGMA foreign_keys').getSingle();
@@ -124,7 +128,10 @@ void main() {
         ],
       );
       await expectLater(
-        database.customStatement('DELETE FROM folders WHERE id = ?', [folderId]),
+        database.customStatement(
+          'DELETE FROM folders WHERE id = ?',
+          [folderId],
+        ),
         throwsA(anything),
       );
       await expectLater(
@@ -143,8 +150,10 @@ void main() {
       final id = UuidV4.generate();
       expect(UuidV4.isCanonical(id), isTrue);
       expect(id, id.toLowerCase());
-      expect(UuidV4.isCanonical('00000000-0000-0000-0000-000000000000'),
-          isFalse);
+      expect(
+        UuidV4.isCanonical('00000000-0000-0000-0000-000000000000'),
+        isFalse,
+      );
     });
 
     test('registers functions again after reopening a database', () async {
@@ -171,7 +180,9 @@ void main() {
 
     test('does not silently downgrade a database with a newer user_version',
         () async {
-      final directory = await Directory.systemTemp.createTemp('yamintto-newer-');
+      final directory = await Directory.systemTemp.createTemp(
+        'yamintto-newer-',
+      );
       final file = File('${directory.path}/newer.sqlite');
       final initial = YaminttoDatabase.open(file);
       await initial.customSelect('SELECT 1').get();
@@ -187,8 +198,7 @@ void main() {
       await directory.delete(recursive: true);
     });
 
-    test('Dart and SQLite folder-name canonicalization remain identical',
-        () async {
+    test('Dart and SQLite folder-name canonicalization remain identical', () async {
       const values = <String>[
         'A',
         'Ａ',

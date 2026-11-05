@@ -23,7 +23,11 @@ void main() {
       nextId = 0;
       now = 1000;
       notes = NoteRepository(database, now: () => now++, createId: createId);
-      folders = FolderRepository(database, now: () => now++, createId: createId);
+      folders = FolderRepository(
+        database,
+        now: () => now++,
+        createId: createId,
+      );
     });
 
     tearDown(() async => database.close());
@@ -66,7 +70,10 @@ void main() {
         () async {
       final folder = await folders.createFolder(name: 'Folder');
       final first = await notes.createNote(title: 'First', folderId: folder.id);
-      final second = await notes.createNote(title: 'Second', folderId: folder.id);
+      final second = await notes.createNote(
+        title: 'Second',
+        folderId: folder.id,
+      );
       final rootExisting = await notes.createNote(title: 'Root');
       final moved = await notes.moveNote(first.id);
       expect(moved.folderId, isNull);
@@ -116,8 +123,7 @@ void main() {
       );
     });
 
-    test('rejects deleted destination folders and invalid title lengths',
-        () async {
+    test('rejects deleted destination folders and invalid title lengths', () async {
       final folder = await folders.createFolder(name: 'Deleted destination');
       final note = await notes.createNote();
       await folders.softDeleteFolder(folder.id);

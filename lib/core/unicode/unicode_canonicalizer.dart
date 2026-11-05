@@ -3,7 +3,7 @@ import 'package:yamintto/core/unicode/unicode_17_data.dart';
 /// Deterministic Unicode 17.0 folder-name canonicalization.
 ///
 /// Boundary trimming uses Unicode 17.0 White_Space before NFKC_Casefold.
-/// Internal whitespace is preserved. No platform ICU or locale behavior is used.
+/// Internal whitespace is preserved. No platform ICU or locale behavior.
 abstract final class UnicodeCanonicalizer {
   static final Map<int, List<int>> _nfkc = _parseMappings(
     nfkcCasefoldMappings,
@@ -55,7 +55,7 @@ abstract final class UnicodeCanonicalizer {
 
   static int codePointLength(String value) => value.runes.length;
 
-  /// Public for exhaustive conformance tests and other Unicode-aware boundaries.
+  /// Public for exhaustive conformance tests and Unicode-aware boundaries.
   static String normalizeNfc(String value) {
     return String.fromCharCodes(normalizeNfcCodePoints(value.runes));
   }

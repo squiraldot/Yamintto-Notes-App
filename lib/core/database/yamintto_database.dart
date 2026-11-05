@@ -52,17 +52,22 @@ final class YaminttoDatabase extends GeneratedDatabase {
         beforeOpen: (_) async {
           await customStatement('PRAGMA foreign_keys = ON');
           // These pure deterministic functions are used by CHECK constraints.
-          // sqlite3's Dart API exposes directOnly/deterministic but not SQLITE_INNOCUOUS.
-          // Keep trusted_schema enabled for this app-private, non-importable DB.
+          // sqlite3's Dart API exposes directOnly/deterministic, but not
+          // SQLITE_INNOCUOUS. Keep trusted_schema enabled for this app-private
+          // database.
           await customStatement('PRAGMA trusted_schema = ON');
-          final trustedSchema = await customSelect('PRAGMA trusted_schema').getSingle();
+          final trustedSchema = await customSelect(
+            'PRAGMA trusted_schema',
+          ).getSingle();
           if (trustedSchema.data.values.single != 1) {
             throw const DomainFailure(
               DomainFailureCode.databaseInitialization,
               'SQLite schema function execution could not be enabled safely.',
             );
           }
-          final foreignKeys = await customSelect('PRAGMA foreign_keys').getSingle();
+          final foreignKeys = await customSelect(
+            'PRAGMA foreign_keys',
+          ).getSingle();
           if (foreignKeys.data.values.single != 1) {
             throw const DomainFailure(
               DomainFailureCode.databaseInitialization,

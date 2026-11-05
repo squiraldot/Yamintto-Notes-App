@@ -19,14 +19,16 @@ class Folder {
   final int updatedAt;
   final int? deletedAt;
 
-  factory Folder.fromRow(Map<String, Object?> row) => Folder(
-        id: row['id']! as String,
-        parentId: row['parent_id'] as String?,
-        name: row['name']! as String,
-        nameKey: row['name_key']! as String,
-        sortOrder: row['sort_order']! as int,
-        createdAt: row['created_at']! as int,
-        updatedAt: row['updated_at']! as int,
-        deletedAt: row['deleted_at'] as int?,
-      );
+  factory Folder.fromRow(Map<String, Object?> row) {
+    return Folder(
+      id: row['id']! as String,
+      parentId: row['parent_id'] as String?,
+      name: row['name']! as String,
+      nameKey: row['name_key']! as String,
+      sortOrder: row['sort_order']! as int,
+      createdAt: row['created_at']! as int,
+      updatedAt: row['updated_at']! as int,
+      deletedAt: row['deleted_at'] as int?,
+    );
+  }
 }

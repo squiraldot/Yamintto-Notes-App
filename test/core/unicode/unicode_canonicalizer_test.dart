@@ -37,14 +37,8 @@ void main() {
     });
 
     test('preserves internal whitespace and trims before NFKC_Casefold', () {
-      expect(
-        UnicodeCanonicalizer.canonicalizeFolderName('\u00A0A  B\u2009'),
-        'a  b',
-      );
-      expect(
-        UnicodeCanonicalizer.canonicalizeFolderName('  A\u00A0B  '),
-        'a b',
-      );
+      expect(UnicodeCanonicalizer.canonicalizeFolderName('\u00A0A  B\u2009'), 'a  b');
+      expect(UnicodeCanonicalizer.canonicalizeFolderName('  A\u00A0B  '), 'a b');
     });
 
     test('performs full NFKC_Casefold rather than lowercase-only mapping', () {

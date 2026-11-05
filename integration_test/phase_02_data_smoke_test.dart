@@ -35,8 +35,14 @@ void main() {
     final reopened = YaminttoDatabase.open(file);
     final reopenedFolders = FolderRepository(reopened);
     final reopenedNotes = NoteRepository(reopened);
-    expect((await reopenedFolders.getFolder(folder.id)).name, folder.name);
-    expect((await reopenedNotes.getNote(note.id)).body, 'Persistent source body');
+    expect(
+      (await reopenedFolders.getFolder(folder.id)).name,
+      folder.name,
+    );
+    expect(
+      (await reopenedNotes.getNote(note.id)).body,
+      'Persistent source body',
+    );
 
     await reopenedNotes.softDeleteNote(note.id);
     expect(await reopenedNotes.listNotes(folderId: folder.id), isEmpty);
