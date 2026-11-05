@@ -1,7 +1,7 @@
 # Phase execution rules
 
 ## Authorization
-Roadmap is an ordered plan, not permission. User must explicitly authorize phase and scope. **Phase 01 was explicitly authorized and implemented.** Baseline repository-wide format, analyzer, 15 unit/widget tests, Flutter CI and Debug APK build/artifact are verified. The Android app-shell integration smoke test is retained for owner-run physical-device validation; emulator CI is prohibited. Physical Android device launch/back remains pending; iOS native build requires macOS/Xcode, unavailable in this execution. Phases 02–09 are not authorized or started.
+Roadmap is an ordered plan, not permission. User must explicitly authorize phase and scope. **Phase 01 source implementation is present.** Latest host-only Flutter CI and both Debug APK artifact workflows succeeded on audited SHA 76ba10c04f0ec421f54e5d6252dd6745058611f9 (run IDs 41981911424, 41982079883 and 41982079971); CI reports 15 unit/widget tests passed. Android real-device testing is owner-reported successful; detailed evidence is not attached. iOS native build/device verification is Not Verified — Environment Unavailable and is non-blocking for Android-focused phase progression. Continue iOS implementation/configuration alongside shared Flutter work. Phases 02–09 remain subject to explicit authorization.
 
 ## Rules
 1. One phase at a time; maximum 2–3 major features.
@@ -20,8 +20,10 @@ Before: confirm explicit authorization, prerequisites, feature IDs, source state
 
 ## Physical-device testing rule
 - Flutter CI is host-only: locked dependencies, formatting, analyzer, unit and widget tests.
-- The two APK workflows build universal and ARM64-only Debug APK artifacts after successful Flutter CI; they do not run tests on virtual or physical devices.
+- The two APK artifact workflows (within the three protected workflows) build universal and ARM64-only Debug APK artifacts after successful Flutter CI; they do not run tests on virtual or physical devices.
 - Do not provision or run Android emulators or iOS simulators in CI. Do not add emulator-runner, KVM, virtualization or virtual-device boot steps.
 - AI agents must not create/use virtual devices as a substitute for owner testing.
 - Integration/E2E tests are owner-run on real physical devices only. Preserve integration_test source; owner can run flutter devices followed by flutter test integration_test -d <physical-device-id>.
-- If no owner-provided physical device is available, report integration tests as pending. Ask before any exception.
+- Record owner-reported physical-device results separately from automated CI; do not invent missing evidence. The current Android Phase 01 test is owner-reported successful, with detailed evidence not attached.
+- iOS implementation/configuration continues in every applicable phase. When macOS/Xcode verification is unavailable, label iOS native build/device verification `Not Verified — Environment Unavailable`; this is not a blocker for Android-focused phase progression.
+- If a required physical-device test has not been run, report that specific test as pending. Ask before any exception.

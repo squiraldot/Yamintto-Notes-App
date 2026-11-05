@@ -6,7 +6,7 @@
 4. Keep changes focused, preserve behavior, add tests, update docs and record migration impact.
 5. Follow effective Dart/Flutter style and avoid unnecessary dependencies or speculative abstractions.
 6. Never modify the separate YRNotes web project.
-7. Exactly two workflows are permitted; never add another. During beta, debug APK only; no release APK/AAB/signing/publishing.
+7. Exactly three protected workflows must remain: flutter-ci.yml, yamintto-debug-apk.yml and yamintto-arm64-debug-apk.yml. ADR-0012 supersedes the original two-workflow decision. Do not modify workflow files without explicit owner authorization. During beta, Debug APK only; no release APK/AAB/signing/publishing.
 8. Do not commit secrets, passwords, recovery keys, certificates or signing material.
 
 Checks:
@@ -16,4 +16,4 @@ dart format --output=none --set-exit-if-changed lib test integration_test
 flutter analyze --fatal-infos
 flutter test
 ```
-Run platform/integration checks when available and report skipped checks honestly. iOS native build validation is pending macOS/Xcode verification. PRs/commits must report scope, tests, branch, SHA, risks and docs updated.
+Integration tests are owner-run on real physical devices only; never provision emulator/simulator/KVM CI. The owner reports successful Android real-device testing (detailed evidence not attached). Continue iOS implementation/configuration with each applicable phase; label native build/device verification Not Verified — Environment Unavailable and do not block Android-focused phase progression. PRs/commits must report scope, tests, branch, SHA, risks and docs updated.

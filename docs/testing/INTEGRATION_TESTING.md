@@ -3,12 +3,24 @@
 ## Current Phase 01 coverage
 
 - `integration_test/app_smoke_test.dart` launches the real Yamintto app widget tree.
-- Verifies splash is the first route, startup transitions to the foundation placeholder, and the AMOLED preview applies a dark theme with true-black surfaces.
-- The test is retained for owner-run validation on a connected physical Android device; it is not run in GitHub Actions.
-- This is app-shell smoke coverage only. It does not validate physical-device installation, OEM behavior, iOS native compilation, persistence, or product workflows.
+- It verifies splash as the initial route, startup transition to the foundation placeholder, and AMOLED preview with true-black surfaces.
+- This test source is retained for owner-run physical-device execution. It is **not** run in GitHub Actions.
+- Source presence does not prove execution. The owner reports successful real-device Android testing; detailed device evidence is not attached.
+- This app-shell smoke test does not establish iOS native compilation or validate future product workflows.
+
+## CI policy — fixed
+
+- No Android emulator in GitHub Actions.
+- No iOS simulator in GitHub Actions.
+- No KVM, virtual-device runner, emulator boot or simulator provisioning.
+- No AI-created or AI-operated virtual-device testing.
+- Flutter CI runs host-only dependency resolution, formatting, analyzer and unit/widget tests.
+- The universal and ARM64 APK workflows compile and upload artifacts only; they do not run device tests.
+- Preserve integration test source; do not delete it to reflect the CI policy.
 
 ## Device/end-to-end scenarios by phase
-1. Phase 01: cold app launch -> splash -> foundation route -> theme preview; owner physical-device run. Physical Android and iOS smoke remain pending.
+
+1. Phase 01: cold launch -> splash -> foundation route -> theme preview; owner physical Android test. Detailed evidence is not attached. iOS build/device verification is environment-unavailable and non-gating.
 2. Fresh launch -> create folder/note -> edit -> autosave -> force stop/relaunch -> content intact.
 3. Rapid consecutive edits/background/foreground/process kill -> latest acknowledged revision survives.
 4. Search results update on create/edit/move/trash/restore; pin order survives restart.
@@ -24,11 +36,19 @@
 14. Phase 08 legacy ZIP golden fixtures; malformed/path traversal/decompression bomb; imported/skipped report.
 15. Phase 09 settings/theme/font persistence after restart; OS theme changes and system text scaling.
 
-Use isolated DB/files and deterministic fixtures. Run on owner-provided physical Android and iOS devices. Biometric/secure-storage assertions require real supported devices; no virtual-device fallback.
+Use isolated DB/files and deterministic fixtures. Run applicable integration scenarios on owner-provided physical devices only. Biometric/secure-storage assertions require real supported hardware; no virtual-device fallback.
 
 ## Owner-run physical-device execution
-The owner connects and authorizes a real physical Android/iOS device. Run flutter devices, identify the physical device ID, then run:
 
-    flutter test integration_test -d <physical-device-id>
+The owner connects and authorizes a real physical device. Run:
 
-Record device model, OS version, app/build SHA, command and actual result. Do not use an emulator or simulator as a fallback. If no physical device is available, mark the test pending and ask the owner to run it. AI agents must not create/configure virtual devices, add emulator-runner/KVM steps, or change CI to use virtual devices.
+```sh
+flutter devices
+flutter test integration_test -d <physical-device-id>
+```
+
+Record device model, OS version, app/build SHA, command, tested scenarios and actual result when available. Never use an emulator or simulator as a fallback. If a physical device is unavailable, leave that particular test pending and ask the owner to run it. AI agents must not create/configure virtual devices, add emulator-runner/KVM steps, or change CI to use virtual devices.
+
+## iOS verification
+
+Continue implementing iOS-compatible shared/native code and configuration throughout applicable phases. Native iOS build/device verification is labelled **Not Verified — Environment Unavailable** when macOS/Xcode is unavailable. Do not claim success or make this unavailable verification a blocker for Android-focused phase progression.

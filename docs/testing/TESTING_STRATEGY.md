@@ -1,7 +1,7 @@
 # Testing strategy and execution matrix
 
 ## Current evidence
-Flutter CI runs locked dependency resolution, repository-wide format, analyzer and `flutter test` (unit/widget tests) only. It does not provision emulators or simulators. The two APK workflows compile and upload universal and ARM64-only Debug APKs after successful Flutter CI; they are build/artifact jobs, not device-test jobs. Integration and E2E tests are run by the owner on real physical devices.
+Flutter CI runs locked dependency resolution, repository-wide format, analyzer and `flutter test` (unit/widget tests) only. It does not provision emulators or simulators. The two APK artifact workflows (within the repository's three protected workflows) compile and upload universal and ARM64-only Debug APKs after successful Flutter CI; they are build/artifact jobs, not device-test jobs. Integration and E2E tests are run by the owner on real physical devices.
 
 ## Test layers
 | Layer | Purpose | Environment | CI expectation |
@@ -36,8 +36,8 @@ Test process kill during autosave; simultaneous edits; disk full; SQLite busy/co
 A successful Flutter CI run proves only its executed steps. Host-side CI does not prove integration or physical-device behavior. Both Android debug artifact workflows are separate builds, not test coverage. iOS requires macOS/Xcode and physical-device validation; Linux CI does not prove it.
 
 ## Physical-device testing policy
-GitHub Actions is deliberately host-only and runs dependency resolution, formatting, analyzer and unit/widget tests. It must not provision Android emulators, iOS simulators, KVM or virtual-device runners. Integration/E2E tests are run by the owner on real physical devices only. After the owner connects a device, identify it with `flutter devices` and run:
+GitHub Actions is deliberately host-only and runs locked dependency resolution, formatting, analyzer and unit/widget tests. It must not provision Android emulators, iOS simulators, KVM or virtual-device runners. AI agents must not create/use virtual devices. Integration/E2E tests are run by the owner on real physical devices only. After the owner connects a device, identify it with `flutter devices` and run:
 
     flutter test integration_test -d <physical-device-id>
 
-If no physical device is connected, mark integration testing pending. AI agents must not create/use virtual devices or add virtual-device CI without explicit owner authorization.
+Record owner-reported device results separately from automated CI; do not invent device details or treat artifact builds as device tests. The owner reports successful Android real-device testing, with detailed evidence not attached. iOS source/configuration work continues phase-by-phase; native build/device verification is `Not Verified — Environment Unavailable` when macOS/Xcode is unavailable and is non-blocking for Android-focused phase progression.

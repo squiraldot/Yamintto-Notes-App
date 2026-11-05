@@ -25,3 +25,12 @@
 - Latest Flutter CI run #69 passed formatting, analyzer, all 15 unit/widget tests and the KVM setup step; emulator integration is still running and must not be marked passed until the workflow completes.
 - Debug APK workflow runs following failed CI attempts were skipped by design, not failed; the build workflow is gated on successful Flutter CI.
 - The repository still has exactly two workflows. Physical Android device and iOS macOS/Xcode acceptance remain pending.
+
+
+## Phase 01 acceptance and testing-policy reconciliation — 2026-11-05
+- Removed the obsolete Android API 35 emulator execution instructions from the integration-test README; integration test source remains retained for owner-run physical-device execution.
+- Confirmed the current CI policy is host-only: locked dependency resolution, formatting, analyzer and unit/widget tests. No Android emulator, iOS simulator, KVM or AI-created virtual-device testing is used in CI.
+- Reconciled the current protected workflow policy to exactly three workflows under ADR-0012: Flutter CI, universal Debug APK and ARM64-only Debug APK. ADR-0009 remains historical and superseded.
+- Recorded successful Flutter CI run 41981911424, universal Debug APK run 41982079883 and ARM64 Debug APK run 41982079971, all on commit 76ba10c04f0ec421f54e5d6252dd6745058611f9. Both APK artifacts uploaded successfully.
+- Recorded Android device testing as owner-reported success; detailed evidence not attached. This is not represented as independent device-log verification.
+- iOS native build/device verification remains Not Verified — Environment Unavailable; continue iOS implementation/configuration alongside applicable phases and do not block Android-focused phase progression.

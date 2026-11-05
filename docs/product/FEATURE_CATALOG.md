@@ -5,15 +5,15 @@ Each feature has exactly one primary implementation phase. Cross-phase obligatio
 ## Phase 01 — Foundation
 
 ### Flutter project and identity (primary 01)
-Behavior: configure the Flutter app identity and preserve Android/iOS host identity, dependency lock, linting and bootstrap. Acceptance: package name yamintto; Android application ID and iOS bundle ID com.merrmist.yamintto; beta version; app launches from the configured entry point. Tests: configuration unit tests and Android/iOS build/device validation. Current: existing foundation configuration retained; Android/iOS build verification pending.
+Behavior: configure the Flutter app identity and preserve Android/iOS host identity, dependency lock, linting and bootstrap. Acceptance: package name yamintto; Android application ID and iOS bundle ID com.merrmist.yamintto; beta version; app launches from the configured entry point. Tests: configuration unit tests; Android host identity configured and owner-reported physical-device testing successful (detailed evidence not attached); iOS native build/device verification is environment-dependent. Current: implemented/configured; iOS verification is Not Verified — Environment Unavailable and non-blocking for Android-focused phase progression.
 
 ### Base design system (primary 01)
 Behavior: centralized provisional color, typography, spacing and radius tokens; Material 3 light, dark and true-black AMOLED theme variants; reusable app-shell button, card, text field, dialog and sheet primitives. Acceptance: tokens centralized, theme variants construct, AMOLED surfaces are true black, shared components compile and remain accessible. Tests: token/theme unit tests and component widget tests. Current: implemented in app shell; final brand system and detailed screen design remain subject to approval.
 
 ### Splash and navigation foundation (primary 01)
-Behavior: splash as initial route, navigation to temporary foundation placeholder, unknown-route recovery. Acceptance: app opens on splash, transitions to root route, route errors recover to home. Tests: splash/navigation and unknown-route widget tests; Android/iOS cold launch on devices. Current: implemented in Dart; native/device launch behavior pending verification.
+Behavior: splash as initial route, navigation to temporary foundation placeholder, unknown-route recovery. Acceptance: app opens on splash, transitions to root route, route errors recover to home. Tests: splash/navigation and unknown-route widget tests; owner-run physical Android cold-launch/device checks. Current: Dart implementation and widget coverage present; owner reports successful Android real-device testing (detailed evidence not attached). iOS native build/device behavior remains Not Verified — Environment Unavailable and is non-gating.
 
-Phase 01 does not include notes, folders, editor, search, database, security, attachments, backups, settings or persisted theme/font preferences. Theme preference persistence belongs to Phase 09. Status: **In progress; verification pending.**
+Phase 01 does not include notes, folders, editor, search, database, security, attachments, backups, settings or persisted theme/font preferences. Theme preference persistence belongs to Phase 09. Status: **Source implementation present; host CI and APK artifacts verified; Android device testing owner-reported successful with detailed evidence not attached; iOS verification non-gating and unavailable. Acceptance is recorded as an owner-reported Android pass, not independent device-log verification.**
 
 ## Phase 02 — Core Management
 ### Notes CRUD (primary 02)
