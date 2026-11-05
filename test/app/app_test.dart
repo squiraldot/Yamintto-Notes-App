@@ -2,15 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yamintto/app/app.dart';
+import 'package:yamintto/app/providers/database_provider.dart';
+import 'package:yamintto/core/database/yamintto_database.dart';
 import 'package:yamintto/features/folders/presentation/folder_browser_screen.dart';
 import 'package:yamintto/features/foundation/presentation/foundation_screen.dart';
 import 'package:yamintto/features/foundation/presentation/splash_screen.dart';
 
 void main() {
+  Widget app(YaminttoDatabase database) => ProviderScope(
+    overrides: [databaseProvider.overrideWith((ref) async => database)],
+    child: const YaminttoApp(),
+  );
   testWidgets('shows splash first and navigates to the folder browser', (
     tester,
   ) async {
-    await tester.pumpWidget(const ProviderScope(child: YaminttoApp()));
+    final database = YaminttoDatabase.inMemory();
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await database.close();
+    });
+    await tester.pumpWidget(app(database));
     expect(find.byType(SplashScreen), findsOneWidget);
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
@@ -18,7 +29,12 @@ void main() {
   });
 
   testWidgets('keeps the existing theme preview available', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: YaminttoApp()));
+    final database = YaminttoDatabase.inMemory();
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await database.close();
+    });
+    await tester.pumpWidget(app(database));
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Appearance preview'));

@@ -84,6 +84,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     },
     child: Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          tooltip: 'Back',
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => _handleBack(context),
+        ),
         title: Text(widget.noteId == null ? 'New note' : 'Edit note'),
         actions: [
           TextButton(
@@ -128,6 +133,16 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       ),
     ),
   );
+
+  Future<void> _handleBack(BuildContext context) async {
+    if (_saving) return;
+    if (_dirty) {
+      if (!await _confirmDiscard() || !mounted || !context.mounted) return;
+      setState(() => _dirty = false);
+      await WidgetsBinding.instance.endOfFrame;
+    }
+    if (mounted && context.mounted) context.pop();
+  }
 
   Future<bool> _confirmDiscard() async =>
       await showDialog<bool>(
