@@ -47,7 +47,7 @@ void main() {
       expect((await notes.listNotes()).single.id, rootNote.id);
       expect((await notes.listNotes(folderId: folder.id)).single.id,
           folderNote.id);
-    });;
+    });
 
     test(
       'updates title and body without changing identity, order or creation',
@@ -66,7 +66,7 @@ void main() {
         expect(updated.body, '# source text');
         expect(updated.updatedAt, 5000);
       },
-    );;
+    );
 
     test(
       'moves notes to folders and root while appending destination order',
@@ -90,7 +90,7 @@ void main() {
         expect(returned.folderId, folder.id);
         expect(returned.sortOrder, greaterThan(second.sortOrder));
       },
-    );;
+    );
 
     test(
       'soft deletion preserves data and excludes the note from active lists',
@@ -113,7 +113,7 @@ void main() {
         expect(stored.data['deleted_at'], isNotNull);
         expect(await notes.listNotes(folderId: folder.id), isEmpty);
       },
-    );;
+    );
 
     test('rejects reads, updates and moves on soft-deleted notes', () async {
       final note = await notes.createNote(title: 'Deleted');
@@ -127,7 +127,7 @@ void main() {
         notes.moveNote(note.id),
         throwsA(isA<DomainFailure>()),
       );
-    });;
+    });
 
     test(
       'rejects deleted destination folders and invalid title lengths',
@@ -157,7 +157,7 @@ void main() {
         );
         await notes.createNote(title: '😀' * 255);
       },
-    );;
+    );
 
     test('deleted notes still prevent empty-folder deletion', () async {
       final folder = await folders.createFolder(name: 'Has deleted note');
@@ -171,6 +171,6 @@ void main() {
           DomainFailureCode.folderNotEmpty,
         )),
       );
-    });;
+    });
   });
 }
