@@ -22,7 +22,7 @@ Released migration steps are immutable. Fix mistakes with a new forward migratio
 2. Destructive migrations prohibited by default. Table rebuilds must preserve and verify all data/relationships. Phase 06 plaintext removal is a security-migration exception requiring independent security review.
 3. Unknown/newer schema, corrupt DB or migration failure must fail closed; never silently create an empty replacement.
 4. Run schema/data transformations in SQLite transactions whenever possible.
-5. On failure, abort/rollback, retain the prior committed data, map to a typed migration failure and prevent normal writes until resolved. Do not blindly retry non-idempotent work.
+5. On failure before commit, abort/rollback and retain the prior committed data; map to a typed migration failure and prevent normal writes until resolved. After a migration commits, an automatic reverse migration is not promised: use a separately tested forward corrective migration or restore a verified pre-migration backup under an explicit recovery procedure. Do not blindly retry non-idempotent work.
 6. Before risky migrations require a verified app-private backup/snapshot or documented recoverable staging.
 7. SQLite and filesystem cannot share an ACID transaction. File migrations need staged writes, integrity/read-back verification, idempotent operation journal, reference switch and crash recovery before source deletion.
 8. Never log note content, attachment bytes, credentials, keys, ciphertext payloads or decrypted snippets.
