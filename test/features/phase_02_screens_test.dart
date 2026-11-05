@@ -346,6 +346,7 @@ void main() {
     await tester.pumpAndSettle();
     expect((await notes.getNote(note.id)).folderId, isNull);
   });
+  // Dismissing a destination picker must never be interpreted as Root.
   testWidgets('dismissing a folder move dialog preserves its parent', (
     tester,
   ) async {
