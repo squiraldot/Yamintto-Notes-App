@@ -1,7 +1,7 @@
 # Testing strategy and execution matrix
 
 ## Current evidence
-Flutter CI runs locked dependency resolution, repository-wide format, analyzer and `flutter test` (unit/widget tests) only. It does not provision emulators or simulators. Integration and E2E tests are run by the owner on real physical devices.
+Flutter CI runs locked dependency resolution, repository-wide format, analyzer and `flutter test` (unit/widget tests) only. It does not provision emulators or simulators. The two APK workflows compile and upload universal and ARM64-only Debug APKs after successful Flutter CI; they are build/artifact jobs, not device-test jobs. Integration and E2E tests are run by the owner on real physical devices.
 
 ## Test layers
 | Layer | Purpose | Environment | CI expectation |
@@ -33,10 +33,10 @@ Flutter CI runs locked dependency resolution, repository-wide format, analyzer a
 Test process kill during autosave; simultaneous edits; disk full; SQLite busy/corrupt; migration interrupted before/after staged file; attachment copy interrupted; deletion cleanup interrupted; restore invalid archive; backup interrupted; device storage permission revoked; app upgrade while locked; key rotation interrupted. Original data must remain usable or failure must be explicit and recoverable.
 
 ## CI interpretation
-A successful Flutter CI run proves only its executed steps. Host-side CI does not prove integration or physical-device behavior. Android debug artifact workflow is a separate build, not test coverage. iOS requires macOS/Xcode and physical-device validation; Linux CI does not prove it.
+A successful Flutter CI run proves only its executed steps. Host-side CI does not prove integration or physical-device behavior. Both Android debug artifact workflows are separate builds, not test coverage. iOS requires macOS/Xcode and physical-device validation; Linux CI does not prove it.
 
 ## Physical-device testing policy
-GitHub Actions is deliberately host-only and runs dependency resolution, formatting, analyzer and unit/widget tests. It must not provision Android emulators, iOS simulators, KVM or virtual-device runners. Integration/E2E tests are run by the owner on real physical devices only. After the owner connects a device, identify it with flutter devices and run:
+GitHub Actions is deliberately host-only and runs dependency resolution, formatting, analyzer and unit/widget tests. It must not provision Android emulators, iOS simulators, KVM or virtual-device runners. Integration/E2E tests are run by the owner on real physical devices only. After the owner connects a device, identify it with `flutter devices` and run:
 
     flutter test integration_test -d <physical-device-id>
 
