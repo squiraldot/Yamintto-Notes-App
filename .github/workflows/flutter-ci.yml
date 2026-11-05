@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
       - name: Inspect Dart formatter output for Phase 02 widget tests
-        run: dart format --output=show test/features/phase_02_screens_test.dart
+        run: dart format --output=show lib/features/folders/presentation/folder_browser_screen.dart test/features/phase_02_screens_test.dart
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed .
       - name: Run Flutter analyzer
