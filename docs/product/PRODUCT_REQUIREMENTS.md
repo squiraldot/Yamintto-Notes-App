@@ -48,16 +48,16 @@ Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](
 | NFR-09 | Honest recovery guarantees | User is informed when recovery is possible or permanently lost | P0 | 06 | Both independent recovery routes and reviewed key lifecycle | Password and recovery-key paths independently recover; total loss of both plus all valid key copies is documented unrecoverable | Clean-device recovery matrix, wrong credentials, rotation and key-loss tests | Planned |
 | NFR-10 | Beta distribution control | Testers receive only debug artifacts during beta | P0 | All phases | Two existing workflows and beta policy | Only Debug APK; no release APK/AAB/signing/publishing; 1.0.0 is first production target | Inspect workflow files and artifact type for each release run | Configured policy |
 
-## Phase 02 data lifecycle proposal — pending owner approval
+## Phase 02 data lifecycle — owner approved (2026-11-05)
 
 - Drift + SQLite remains the accepted technology (ADR-0003); dependencies are configured, but no database implementation exists.
 - Proposed schema v1 contains only `folders` and `notes`. Revisions/attachments are Phase 05, encryption metadata Phase 06, settings Phase 09; no separate polymorphic trash table is proposed.
 - Nested folders use NULL as root. Moves reject self/descendant cycles and run transactionally.
-- Recommended folder deletion: block while any child folder or note (including soft-deleted note) exists; soft-delete only an empty folder.
-- Notes use nullable `deleted_at` from schema v1, retaining folder/order. Trash UI/restore UX is Phase 04.
-- UUID v4 TEXT IDs, UTC Unix-millisecond INTEGER timestamps, explicit sort_order, enabled foreign keys with RESTRICT and transactional multi-record operations are recommendations, not approved decisions.
-- No automatic permanent deletion or retention duration is approved.
+- Folder depth is capped at 32 levels (virtual root level 0; top-level folders level 1). Validate creates and complete moved subtrees; reject cycles and any move exceeding level 32.
+- Folder names are trimmed, non-empty, maximum 255 Unicode code points, and case-insensitively unique per parent using the same Unicode NFKC_Casefold canonicalizer in app validation and the root-aware database unique constraint. The constraint includes soft-deleted folders; the name is unavailable until permanent deletion. Note titles are maximum 255 Unicode code points.
+- Empty-folder-only deletion is accepted: reject if child folders or any notes (including soft-deleted notes) exist; soft-delete only an empty folder. Notes soft-delete from schema v1, preserving folder/order. Deleted notes are excluded from active lists/default search; edit/move requires restore.
+- Phase 04 Trash includes deleted notes and folders, with restore and explicit permanent deletion. Restore notes to original folder/order when valid; otherwise restore to root and return an explicit conflict result. Soft-deleted records are retained indefinitely initially; no automatic expiry/cleanup. Permanent deletion and dependent-data cleanup are future-phase work, not Phase 02 blockers.
 - See [Phase 02 decision register](../database/PHASE_02_DECISION_REGISTER.md) for rationale and owner approval blockers.
 
-## Decisions requiring approval
-Markdown dialect; folder move/delete semantics; title/body limits; autosave debounce/flush; search matching/ranking; trash/revision retention; attachment limits/types; statistics/timezone; theme/font bounds; backup replace/merge; legacy ZIP compatibility; performance budgets. Security choices are tracked in [Security Overview](../security/SECURITY_OVERVIEW.md).
+## Decisions deferred to their owning phases
+Markdown dialect and autosave lifecycle (03); folder restore conflict UX, search matching/ranking and pin order (04); revision retention, attachment limits/types and statistics/timezone (05); cryptographic protocol and recovery details (06/07); backup replace/merge and legacy ZIP compatibility (08); theme/font bounds and performance budgets (09). These are not Phase 02 implementation blockers. Security choices are tracked in [Security Overview](../security/SECURITY_OVERVIEW.md).
