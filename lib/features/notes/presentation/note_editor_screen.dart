@@ -79,7 +79,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       if (await _confirmDiscard() && mounted) {
         setState(() => _dirty = false);
         await WidgetsBinding.instance.endOfFrame;
-        if (mounted) context.pop();
+        if (context.mounted) context.pop();
       }
     },
     child: Scaffold(
@@ -180,8 +180,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       }
       if (!mounted) return;
       ref.invalidate(noteListProvider(_activeFolderId));
-      if (widget.noteId != null)
+      if (widget.noteId != null) {
         ref.invalidate(noteDetailProvider(widget.noteId!));
+      }
       _dirty = false;
       context.pop();
     } catch (error) {

@@ -27,7 +27,7 @@ class FolderBrowserScreen extends ConsumerWidget {
         current?.when(
           data: (f) => f.name,
           loading: () => 'Loading folder…',
-          error: (_, __) => 'Folder unavailable',
+          error: (_, _) => 'Folder unavailable',
         ) ??
         'Yamintto';
     return Scaffold(
@@ -96,7 +96,7 @@ class FolderBrowserScreen extends ConsumerWidget {
                           .map(
                             (f) => _FolderRow(
                               folder: f,
-                              open: () => context.push('/folders/' + f.id),
+                              open: () => context.push('/folders/${f.id}'),
                               rename: () => _rename(context, ref, f),
                               move: () => _moveFolder(context, ref, f),
                               delete: () => _deleteFolder(context, ref, f),
@@ -126,7 +126,7 @@ class FolderBrowserScreen extends ConsumerWidget {
                             (n) => _NoteRow(
                               note: n,
                               open: () =>
-                                  context.push('/notes/' + n.id + '/edit'),
+                                  context.push('/notes/${n.id}/edit'),
                               move: () => _moveNote(context, ref, n),
                               delete: () => _deleteNote(context, ref, n),
                             ),
@@ -149,7 +149,7 @@ class FolderBrowserScreen extends ConsumerWidget {
       if (f.parentId == null) {
         context.go('/');
       } else {
-        context.go('/folders/' + f.parentId!);
+        context.go('/folders/${f.parentId!}');
       }
     } catch (_) {
       if (context.mounted) context.go('/');
@@ -410,11 +410,7 @@ class _NoteRow extends StatelessWidget {
     leading: const Icon(Icons.description_outlined),
     title: Text(note.title.isEmpty ? 'Untitled note' : note.title),
     subtitle: Text(
-      'Updated ' +
-          DateTime.fromMillisecondsSinceEpoch(
-            note.updatedAt,
-            isUtc: true,
-          ).toLocal().toString(),
+      'Updated ${DateTime.fromMillisecondsSinceEpoch(note.updatedAt, isUtc: true).toLocal()}',
     ),
     onTap: open,
     trailing: PopupMenuButton<String>(
