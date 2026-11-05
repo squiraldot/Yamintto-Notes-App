@@ -4,7 +4,7 @@ Use Riverpod provider overrides and deterministic fakes. Every screen tests load
 
 | UI area | Required widget checks |
 |---|---|
-| Phase 01 startup/navigation | splash is initial route, splash advances to foundation, unknown route recovery, theme preview changes between system/light/dark/AMOLED |
+| Phase 01 startup/navigation | splash is initial route, splash advances to the root folder browser, unknown route recovery, theme preview changes between system/light/dark/AMOLED |
 | Phase 01 theme foundation | Material 3 light/dark variants, AMOLED true-black surface, shared token values |
 | Shared components | button enabled/loading/disabled, card tap behavior, text-field validation/obscure/multiline, dialog and sheet presentation |
 | Phase 02 folders | root and nested lists/navigation, create/rename/move, root destination, empty-folder soft-delete, non-empty deletion rejection, loading/empty/error/retry |
@@ -18,6 +18,6 @@ Use Riverpod provider overrides and deterministic fakes. Every screen tests load
 | Backup/restore | preview, unsupported version, progress, cancel, rollback error |
 | Phase 09 settings | settings controls, persisted theme modes, AMOLED contrast, font size bounds and system scaling |
 
-Current Phase 02 UI coverage is in `test/features/phase_02_screens_test.dart` (17 widget tests): root empty state; nested folder navigation; folder create/rename/move/delete; move-to-root; descendant destination exclusion; empty-folder deletion; rejection when soft-deleted notes remain; root/folder note creation; note edit/save; cancel and unsaved-change protection; note movement to/from root; soft-delete retention and active-list exclusion; and missing-folder error recovery. These checks are included in the 67-test source-revision Flutter CI run `42040473461`.
+Current Phase 02 UI coverage is in `test/features/phase_02_screens_test.dart` (19 widget tests): root empty state; nested folder navigation; folder create/rename/move/delete; move-to-root; descendant destination exclusion; empty-folder deletion; rejection when soft-deleted notes remain; root/folder note creation; note edit/save; cancel and unsaved-change protection; note movement to/from root; soft-delete retention and active-list exclusion; and missing-folder error recovery. These checks are included in the 67-test source-revision Flutter CI run `42040473461`.
 
 Also test semantics labels/order, keyboard focus, screen-reader actions, large text, narrow/wide layouts, light/dark/AMOLED and reduced motion. Golden tests supplement behavior assertions; they do not replace semantics and interaction tests.

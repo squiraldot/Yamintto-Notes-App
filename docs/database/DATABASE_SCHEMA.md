@@ -1,7 +1,7 @@
 # Phase 02 database schema — IMPLEMENTED (SCHEMA VERSION 1)
 
 **Architecture status:** Accepted by owner on 2026-11-05.  
-**Implementation status:** Schema v1, Drift database wrapper, Unicode canonicalization, folder/note repositories and presentation screens are implemented. Source revision `36a27212dadda99fbb7bb333a93a3568c967869d` passed Flutter CI run `42040473461` (67/67 tests); universal and ARM64 Debug APK artifacts uploaded on runs `42040771830` and `42040772056`. Owner physical-device persistence smoke testing and final acceptance remain pending. Executable schema source: `lib/core/database/schema_v1.dart`; database/migration owner: `lib/core/database/yamintto_database.dart`. Drift + SQLite remains the accepted architecture.
+**Implementation status:** Schema v1, Drift database wrapper, Unicode canonicalization, folder/note repositories and presentation screens are implemented. Source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed Flutter CI run `42097059083` (69/69 tests); universal and ARM64 Debug APK artifacts uploaded on runs `42097260846` and `42097260894`. Owner physical-device persistence smoke testing and final acceptance remain pending. Executable schema source: `lib/core/database/schema_v1.dart`; database/migration owner: `lib/core/database/yamintto_database.dart`. Drift + SQLite remains the accepted architecture.
 
 ## Schema version 1 inventory
 
@@ -144,4 +144,4 @@ Use one app-private SQLite database for Android/iOS, opened lazily on first repo
 
 ## Explicitly out of scope
 
-Phase 02 implementation source is present for the two-table database, folder/note repositories, Unicode 17.0 canonicalizer, folder browser, note list and plain-text title/body editor. No Markdown preview/rendering/autosave, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is included. Automated validation and owner device testing remain separate pending gates.
+Phase 02 implementation source is present for the two-table database, folder/note repositories, Unicode 17.0 canonicalizer, folder browser, note list and plain-text title/body editor. No Markdown preview/rendering/autosave, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is included. Host automated validation passed on Flutter 3.47.9 with 69/69 tests; owner physical-device testing and final acceptance remain pending.

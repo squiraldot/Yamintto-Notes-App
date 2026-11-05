@@ -1,7 +1,7 @@
 # Phase execution rules
 
 ## Authorization
-Roadmap is an ordered plan, not permission. Phase 01 source implementation is present. Phase 02 implementation was explicitly authorized by the owner on 2026-11-05. Source implementation and automated validation are complete on code revision `36a27212dadda99fbb7bb333a93a3568c967869d` (Flutter CI run `42040473461`, 67/67 tests); universal and ARM64 Debug APK artifacts uploaded on runs `42040771830` and `42040772056`. The final documentation-only revision must also be verified on its exact SHA by all three protected workflows. Owner physical-device smoke testing and final acceptance remain pending. Phase 03–09 remain subject to separate explicit authorization.
+Roadmap is an ordered plan, not permission. Phase 01 source implementation is present. Phase 02 implementation was explicitly authorized by the owner on 2026-11-05. Source implementation and automated validation are complete on code revision `745b8f589afceb783a9b39bafcd03c123e50c395` (Flutter CI run `42097059083`, 69/69 tests); universal and ARM64 Debug APK artifacts uploaded on runs `42097260846` and `42097260894`. The final documentation-only revision must also be verified on its exact SHA by all three protected workflows. Owner physical-device smoke testing and final acceptance remain pending. Phase 03–09 remain subject to separate explicit authorization.
 
 ## Rules
 1. One phase at a time; maximum 2–3 major features.
