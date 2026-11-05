@@ -11,7 +11,7 @@ class NoteRepository {
     this._database, {
     int Function()? now,
     String Function()? createId,
-  })  : _now = now ?? _utcNow,
+  }) : _now = now ?? _utcNow,
         _createId = createId ?? UuidV4.generate;
 
   final YaminttoDatabase _database;
@@ -27,27 +27,29 @@ class NoteRepository {
   }) async {
     _validateTitle(title);
     return DatabaseBoundary.guard(
-      () => _database.transaction(() async {
-        if (folderId != null) {
-          await _requireActiveFolder(folderId);
-        }
-        final now = _now();
-        final id = _createId();
-        if (!UuidV4.isCanonical(id)) {
-          throw const DomainFailure(
-            DomainFailureCode.databaseConstraint,
-            'The generated note identifier is invalid.',
+      () => _database.transaction(
+        () async {
+          if (folderId != null) {
+            await _requireActiveFolder(folderId);
+          }
+          final now = _now();
+          final id = _createId();
+          if (!UuidV4.isCanonical(id)) {
+            throw const DomainFailure(
+              DomainFailureCode.databaseConstraint,
+              'The generated note identifier is invalid.',
+            );
+          }
+          final order = await _nextOrder(folderId);
+          await _database.customStatement(
+            'INSERT INTO notes '
+            '(id, folder_id, title, body, content_format_version, sort_order, '
+            'created_at, updated_at) VALUES (?, ?, ?, ?, 1, ?, ?, ?)',
+            <Object?>[id, folderId, title, body, order, now, now],
           );
-        }
-        final order = await _nextOrder(folderId);
-        await _database.customStatement(
-          'INSERT INTO notes '
-          '(id, folder_id, title, body, content_format_version, sort_order, '
-          'created_at, updated_at) VALUES (?, ?, ?, ?, 1, ?, ?, ?)',
-          <Object?>[id, folderId, title, body, order, now, now],
-        );
-        return _requireActiveNote(id);
-      }),
+          return _requireActiveNote(id);
+        },
+      ),
     );
   }
 
@@ -82,48 +84,54 @@ class NoteRepository {
   }) async {
     _validateTitle(title);
     return DatabaseBoundary.guard(
-      () => _database.transaction(() async {
-        await _requireActiveNote(id);
-        await _database.customStatement(
-          'UPDATE notes SET title = ?, body = ?, updated_at = ? '
-          'WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[title, body, _now(), id],
-        );
-        return _requireActiveNote(id);
-      }),
+      () => _database.transaction(
+        () async {
+          await _requireActiveNote(id);
+          await _database.customStatement(
+            'UPDATE notes SET title = ?, body = ?, updated_at = ? '
+            'WHERE id = ? AND deleted_at IS NULL',
+            <Object?>[title, body, _now(), id],
+          );
+          return _requireActiveNote(id);
+        },
+      ),
     );
   }
 
   Future<Note> moveNote(String id, {String? destinationFolderId}) {
     return DatabaseBoundary.guard(
-      () => _database.transaction(() async {
-        final note = await _requireActiveNote(id);
-        if (destinationFolderId != null) {
-          await _requireActiveFolder(destinationFolderId);
-        }
-        if (note.folderId == destinationFolderId) return note;
-        final order = await _nextOrder(destinationFolderId);
-        await _database.customStatement(
-          'UPDATE notes SET folder_id = ?, sort_order = ?, updated_at = ? '
-          'WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[destinationFolderId, order, _now(), id],
-        );
-        return _requireActiveNote(id);
-      }),
+      () => _database.transaction(
+        () async {
+          final note = await _requireActiveNote(id);
+          if (destinationFolderId != null) {
+            await _requireActiveFolder(destinationFolderId);
+          }
+          if (note.folderId == destinationFolderId) return note;
+          final order = await _nextOrder(destinationFolderId);
+          await _database.customStatement(
+            'UPDATE notes SET folder_id = ?, sort_order = ?, updated_at = ? '
+            'WHERE id = ? AND deleted_at IS NULL',
+            <Object?>[destinationFolderId, order, _now(), id],
+          );
+          return _requireActiveNote(id);
+        },
+      ),
     );
   }
 
   Future<void> softDeleteNote(String id) {
     return DatabaseBoundary.guard(
-      () => _database.transaction(() async {
-        await _requireActiveNote(id);
-        final now = _now();
-        await _database.customStatement(
-          'UPDATE notes SET deleted_at = ?, updated_at = ? '
-          'WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[now, now, id],
-        );
-      }),
+      () => _database.transaction(
+        () async {
+          await _requireActiveNote(id);
+          final now = _now();
+          await _database.customStatement(
+            'UPDATE notes SET deleted_at = ?, updated_at = ? '
+            'WHERE id = ? AND deleted_at IS NULL',
+            <Object?>[now, now, id],
+          );
+        },
+      ),
     );
   }
 

@@ -11,7 +11,7 @@ class FolderRepository {
     this._database, {
     int Function()? now,
     String Function()? createId,
-  })  : _now = now ?? _utcNow,
+  }) : _now = now ?? _utcNow,
         _createId = createId ?? UuidV4.generate;
 
   final YaminttoDatabase _database;
@@ -27,35 +27,37 @@ class FolderRepository {
     final displayName = _validatedName(name);
     final nameKey = UnicodeCanonicalizer.canonicalizeFolderName(displayName);
     try {
-      return await _database.transaction(() async {
-        if (parentId != null) {
-          await _requireActiveFolder(parentId);
-        }
-        final parentLevel = parentId == null ? 0 : await _folderLevel(parentId);
-        if (parentLevel + 1 > 32) {
-          throw const DomainFailure(
-            DomainFailureCode.depthExceeded,
-            'Folders cannot be nested deeper than 32 levels.',
+      return await _database.transaction(
+        () async {
+          if (parentId != null) {
+            await _requireActiveFolder(parentId);
+          }
+          final parentLevel = parentId == null ? 0 : await _folderLevel(parentId);
+          if (parentLevel + 1 > 32) {
+            throw const DomainFailure(
+              DomainFailureCode.depthExceeded,
+              'Folders cannot be nested deeper than 32 levels.',
+            );
+          }
+          await _ensureNameAvailable(parentId, nameKey);
+          final now = _now();
+          final id = _createId();
+          if (!UuidV4.isCanonical(id)) {
+            throw const DomainFailure(
+              DomainFailureCode.databaseConstraint,
+              'The generated folder identifier is invalid.',
+            );
+          }
+          final order = await _nextFolderOrder(parentId);
+          await _database.customStatement(
+            'INSERT INTO folders '
+            '(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
+            'VALUES (?, ?, ?, ?, ?, ?, ?)',
+            <Object?>[id, parentId, displayName, nameKey, order, now, now],
           );
-        }
-        await _ensureNameAvailable(parentId, nameKey);
-        final now = _now();
-        final id = _createId();
-        if (!UuidV4.isCanonical(id)) {
-          throw const DomainFailure(
-            DomainFailureCode.databaseConstraint,
-            'The generated folder identifier is invalid.',
-          );
-        }
-        final order = await _nextFolderOrder(parentId);
-        await _database.customStatement(
-          'INSERT INTO folders '
-          '(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
-          'VALUES (?, ?, ?, ?, ?, ?, ?)',
-          <Object?>[id, parentId, displayName, nameKey, order, now, now],
-        );
-        return _requireActiveFolder(id);
-      });
+          return _requireActiveFolder(id);
+        },
+      );
     } catch (error) {
       _rethrowMapped(error, nameConflict: true);
     }
@@ -91,16 +93,18 @@ class FolderRepository {
     final displayName = _validatedName(name);
     final nameKey = UnicodeCanonicalizer.canonicalizeFolderName(displayName);
     try {
-      return await _database.transaction(() async {
-        final folder = await _requireActiveFolder(id);
-        await _ensureNameAvailable(folder.parentId, nameKey, exceptId: id);
-        await _database.customStatement(
-          'UPDATE folders SET name = ?, name_key = ?, updated_at = ? '
-          'WHERE id = ?',
-          <Object?>[displayName, nameKey, _now(), id],
-        );
-        return _requireActiveFolder(id);
-      });
+      return await _database.transaction(
+        () async {
+          final folder = await _requireActiveFolder(id);
+          await _ensureNameAvailable(folder.parentId, nameKey, exceptId: id);
+          await _database.customStatement(
+            'UPDATE folders SET name = ?, name_key = ?, updated_at = ? '
+            'WHERE id = ?',
+            <Object?>[displayName, nameKey, _now(), id],
+          );
+          return _requireActiveFolder(id);
+        },
+      );
     } catch (error) {
       _rethrowMapped(error, nameConflict: true);
     }
@@ -108,45 +112,47 @@ class FolderRepository {
 
   Future<Folder> moveFolder(String id, {String? destinationParentId}) async {
     try {
-      return await _database.transaction(() async {
-        final source = await _requireActiveFolder(id);
-        if (destinationParentId != null) {
-          await _requireActiveFolder(destinationParentId);
-        }
-        if (source.parentId == destinationParentId) return source;
+      return await _database.transaction(
+        () async {
+          final source = await _requireActiveFolder(id);
+          if (destinationParentId != null) {
+            await _requireActiveFolder(destinationParentId);
+          }
+          if (source.parentId == destinationParentId) return source;
 
-        final subtree = await _collectSubtree(id);
-        if (destinationParentId != null &&
-            subtree.ids.contains(destinationParentId)) {
-          throw const DomainFailure(
-            DomainFailureCode.hierarchyCycle,
-            'A folder cannot be moved into itself or one of its descendants.',
+          final subtree = await _collectSubtree(id);
+          if (destinationParentId != null &&
+              subtree.ids.contains(destinationParentId)) {
+            throw const DomainFailure(
+              DomainFailureCode.hierarchyCycle,
+              'A folder cannot be moved into itself or one of its descendants.',
+            );
+          }
+
+          final destinationLevel = destinationParentId == null
+              ? 0
+              : await _folderLevel(destinationParentId);
+          if (destinationLevel + 1 + subtree.height > 32) {
+            throw const DomainFailure(
+              DomainFailureCode.depthExceeded,
+              'Moving this folder would exceed the 32-level hierarchy limit.',
+            );
+          }
+
+          await _ensureNameAvailable(
+            destinationParentId,
+            source.nameKey,
+            exceptId: id,
           );
-        }
-
-        final destinationLevel = destinationParentId == null
-            ? 0
-            : await _folderLevel(destinationParentId);
-        if (destinationLevel + 1 + subtree.height > 32) {
-          throw const DomainFailure(
-            DomainFailureCode.depthExceeded,
-            'Moving this folder would exceed the 32-level hierarchy limit.',
+          final order = await _nextFolderOrder(destinationParentId);
+          await _database.customStatement(
+            'UPDATE folders SET parent_id = ?, sort_order = ?, updated_at = ? '
+            'WHERE id = ?',
+            <Object?>[destinationParentId, order, _now(), id],
           );
-        }
-
-        await _ensureNameAvailable(
-          destinationParentId,
-          source.nameKey,
-          exceptId: id,
-        );
-        final order = await _nextFolderOrder(destinationParentId);
-        await _database.customStatement(
-          'UPDATE folders SET parent_id = ?, sort_order = ?, updated_at = ? '
-          'WHERE id = ?',
-          <Object?>[destinationParentId, order, _now(), id],
-        );
-        return _requireActiveFolder(id);
-      });
+          return _requireActiveFolder(id);
+        },
+      );
     } catch (error) {
       _rethrowMapped(error, nameConflict: true);
     }
@@ -154,31 +160,33 @@ class FolderRepository {
 
   Future<void> softDeleteFolder(String id) {
     return DatabaseBoundary.guard(
-      () => _database.transaction(() async {
-        await _requireActiveFolder(id);
-        final children = await _database.customSelect(
-          'SELECT EXISTS(SELECT 1 FROM folders WHERE parent_id = ?) '
-          'AS has_folders, '
-          'EXISTS(SELECT 1 FROM notes WHERE folder_id = ?) AS has_notes',
-          variables: <Variable<Object>>[
-            Variable.withString(id),
-            Variable.withString(id),
-          ],
-        ).getSingle();
-        if (children.data['has_folders'] == 1 ||
-            children.data['has_notes'] == 1) {
-          throw const DomainFailure(
-            DomainFailureCode.folderNotEmpty,
-            'Only an empty folder can be deleted.',
+      () => _database.transaction(
+        () async {
+          await _requireActiveFolder(id);
+          final children = await _database.customSelect(
+            'SELECT EXISTS(SELECT 1 FROM folders WHERE parent_id = ?) '
+            'AS has_folders, '
+            'EXISTS(SELECT 1 FROM notes WHERE folder_id = ?) AS has_notes',
+            variables: <Variable<Object>>[
+              Variable.withString(id),
+              Variable.withString(id),
+            ],
+          ).getSingle();
+          if (children.data['has_folders'] == 1 ||
+              children.data['has_notes'] == 1) {
+            throw const DomainFailure(
+              DomainFailureCode.folderNotEmpty,
+              'Only an empty folder can be deleted.',
+            );
+          }
+          final now = _now();
+          await _database.customStatement(
+            'UPDATE folders SET deleted_at = ?, updated_at = ? '
+            'WHERE id = ? AND deleted_at IS NULL',
+            <Object?>[now, now, id],
           );
-        }
-        final now = _now();
-        await _database.customStatement(
-          'UPDATE folders SET deleted_at = ?, updated_at = ? '
-          'WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[now, now, id],
-        );
-      }),
+        },
+      ),
     );
   }
 
