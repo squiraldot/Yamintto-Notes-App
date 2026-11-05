@@ -4,6 +4,8 @@
 Flutter CI runs on Ubuntu with Flutter 3.47.9: locked dependency resolution, Dart format, analyzer, Flutter unit/widget tests only. Integration/E2E and hardware-specific checks are owner-run on real physical devices. Host CI does not validate physical OEM behavior, iOS native compilation or hardware security. Debug APK workflow builds the Android debug artifact after CI; build success is not device validation.
 
 ## Android
+
+**Phase 02:** OWNER-REPORTED — PHASE 02 ANDROID PHYSICAL-DEVICE SMOKE TEST PASSED. This is based on the owner's explicit confirmation in the current project conversation; no device details or logs are asserted. The integration-test source exists, but its execution is not claimed.
 **Phase 01 physical-device testing: Owner-reported; detailed evidence not attached. The owner reports success.** This report is distinct from host CI and APK artifact build evidence. Do not invent device model, OS, date, command or scenarios.
 
 | Area | Required evidence |

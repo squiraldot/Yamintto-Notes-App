@@ -1,7 +1,7 @@
 # Data retention and deletion policy — OWNER APPROVED; PHASE 02 SOFT-DELETE SOURCE IMPLEMENTED
 
 **Architecture status:** Owner approved on 2026-11-05.  
-**Runtime status:** Phase 02 note and empty-folder soft-delete repository/UI operations are implemented in source. No Trash UI, restore, permanent-delete workflow, retention timer or cleanup job is implemented.
+**Runtime status:** Phase 02 note and empty-folder soft-delete repository/UI operations are implemented in source and Phase 02 is accepted. No Trash UI, restore, permanent-delete workflow, retention timer or cleanup job is implemented.
 
 ## Lifecycle terms
 

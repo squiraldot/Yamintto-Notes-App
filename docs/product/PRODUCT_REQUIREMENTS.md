@@ -6,8 +6,8 @@ Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](
 
 | ID | Description / user behavior | Priority | Primary phase | Dependencies | Acceptance criteria | Test expectations | Status |
 |---|---|---|---:|---|---|---|---|
-| FR-01 | Create, rename, move, navigate and delete nested folders | P1 | 02 | Accepted Drift schema, hierarchy/name validation | Max depth 32 (root 0); no cycles; max 255 Unicode code points; case-insensitive unique sibling names incl. root; empty-only soft-delete; safe references and transaction rollback | hierarchy/depth/name-key/DAO unit; widget CRUD; integration restart/rollback | Planned |
-| FR-02 | Create, view, edit and soft-delete notes | P0 | 02 | Accepted Drift schema, FR-01 | Title max 255 Unicode code points; soft-delete from schema v1 preserves folder/order; deleted notes excluded from active lists/default search and require restore before edit/move | repository unit; list/detail widget; persistence integration | Planned |
+| FR-01 | Create, rename, move, navigate and delete nested folders | P1 | 02 | Accepted Drift schema, hierarchy/name validation | Max depth 32 (root 0); no cycles; max 255 Unicode code points; case-insensitive unique sibling names incl. root; empty-only soft-delete; safe references and transaction rollback | hierarchy/depth/name-key/DAO unit; widget CRUD; integration restart/rollback | Implemented |
+| FR-02 | Create, view, edit and soft-delete notes | P0 | 02 | Accepted Drift schema, FR-01 | Title max 255 Unicode code points; soft-delete from schema v1 preserves folder/order; deleted notes excluded from active lists/default search and require restore before edit/move | repository unit; list/detail widget; persistence integration | Implemented |
 | FR-03 | Edit Markdown source | P1 | 03 | FR-02, approved dialect | Supported syntax documented; source round-trip | parser unit; editor widget; fixture integration | Planned |
 | FR-04 | Render Markdown safely | P1 | 03 | FR-03, renderer | Output matches dialect; unsafe content handled; semantics accessible | renderer unit; preview widget; fixture integration | Planned |
 | FR-05 | Automatically save edits | P0 | 03 | FR-02/03, lifecycle | Latest revision wins; pending edits flush; errors retain text | race unit; status widget; lifecycle/restart integration | Planned |
@@ -48,9 +48,9 @@ Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](
 | NFR-09 | Honest recovery guarantees | User is informed when recovery is possible or permanently lost | P0 | 06 | Both independent recovery routes and reviewed key lifecycle | Password and recovery-key paths independently recover; total loss of both plus all valid key copies is documented unrecoverable | Clean-device recovery matrix, wrong credentials, rotation and key-loss tests | Planned |
 | NFR-10 | Beta distribution control | Testers receive only debug artifacts during beta | P0 | All phases | Two existing workflows and beta policy | Only Debug APK; no release APK/AAB/signing/publishing; 1.0.0 is first production target | Inspect workflow files and artifact type for each release run | Configured policy |
 
-## Phase 02 data lifecycle — owner approved (2026-11-05)
+## Phase 02 data lifecycle — IMPLEMENTED AND ACCEPTED (2026-11-06)
 
-- Drift + SQLite remains the accepted technology (ADR-0003); dependencies are configured, but no database implementation exists.
+- Drift + SQLite is implemented: schema v1 and the Drift database wrapper are present in source; the schema contains exactly the `folders` and `notes` domain tables.
 - Accepted schema v1 contains only `folders` and `notes`. Revisions/attachments are Phase 05, encryption metadata Phase 06, settings Phase 09; no separate polymorphic trash table is proposed.
 - Nested folders use NULL as root. Moves reject self/descendant cycles and run transactionally.
 - Folder depth is capped at 32 levels (virtual root level 0; top-level folders level 1). Validate creates and complete moved subtrees; reject cycles and any move exceeding level 32.

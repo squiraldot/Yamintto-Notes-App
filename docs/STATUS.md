@@ -94,9 +94,9 @@ This historical section records the first complete presentation implementation a
 - Drift lifecycle: tests now close the in-memory fixture before opening file-backed DB instances; the latest source-revision CI log contains zero Drift multiple-database warnings.
 - Unicode 17.0 canonicalization and Dart/SQLite parity remain covered by the existing conformance tests.
 - The final documentation-only revision is separately checked on its exact SHA by all three protected workflows; see the final execution report for those run IDs.
-- Owner physical-device smoke testing is **OWNER DEVICE TEST PENDING**. The integration test source has not been executed by CI or this agent.
+- Owner device acceptance: **OWNER-REPORTED — PHASE 02 ANDROID PHYSICAL-DEVICE SMOKE TEST PASSED**. The separate integration-test source has not been executed by CI or this agent; execution is not claimed.
 
-**Phase 02 implementation and automated validation completed; owner physical-device smoke testing and final acceptance pending.** Phase 02 is not accepted; Phase 03 has not started and is not authorized.
+**Phase 02 — ACCEPTED.** Implementation, automated validation, and owner-reported Android physical-device smoke testing are complete. The integration-test source remains unexecuted unless separately evidenced. Phase 03 has not started and is not authorized.
 
 ## Phase 01 acceptance checklist
 
@@ -116,7 +116,20 @@ This historical section records the first complete presentation implementation a
 
 **Phase 01 acceptance is recorded as an owner-reported Android pass, not an independent QA/device-log verification.** The owner has reported successful real-device testing, so no Android device-test failure is currently outstanding. iOS verification is not a gate. Do not describe the owner-reported result as independently verified.
 
-Phase 02 is owner-authorized. The folder browser, nested navigation, folder create/rename/move/empty-only soft-delete, active root/folder note lists, plain-text note create/edit/save/cancel, unsaved-change guard, note move/soft-delete, GoRouter routes and Riverpod presentation providers are implemented. Latest source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed Flutter CI run `42097059083` on Flutter 3.47.9: locked dependency resolution, repository-wide formatting, fatal-info analysis and **69/69 unit/widget tests**. The 19 Phase 02 screen widget tests cover folder and note interactions, including dismissal-as-cancel regression coverage for folder and note move dialogs. Universal Debug APK run `42097260846` and ARM64 Debug APK run `42097260894` both succeeded on that same source SHA and uploaded their artifacts. The final documentation-only revision is validated separately by all three protected workflows on its exact SHA; its run IDs and artifact names are included in the final execution report. The physical-device SQLite reopen/soft-delete integration test remains source-only and owner-run. **Phase 02 implementation and automated validation completed; owner physical-device smoke testing and final acceptance pending.** Phase 02 is not accepted. Phase 03 has not started and is not authorized.
+## Phase 02 — Final acceptance
+
+**PHASE 02 — ACCEPTED**
+
+- Architecture: owner-approved frozen Phase 02 architecture (baseline `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`).
+- Implementation: complete on source revision `745b8f589afceb783a9b39bafcd03c123e50c395`.
+- Automated host validation: Flutter CI run `42097059083` passed on Flutter 3.47.9; 69/69 unit/widget tests passed, including 19 Phase 02 screen widget tests.
+- APK builds/artifacts: universal run `42097260846` and ARM64 run `42097260894` succeeded and uploaded artifacts for the same source SHA.
+- Owner device acceptance: **OWNER-REPORTED — PHASE 02 ANDROID PHYSICAL-DEVICE SMOKE TEST PASSED**. Source: explicit owner confirmation in the current project conversation. No device model, OS version, date, command, screenshots or logs are asserted.
+- Integration-test distinction: `integration_test/phase_02_data_smoke_test.dart` exists. Its execution is not independently evidenced and is not claimed as executed.
+- iOS: **NOT VERIFIED — ENVIRONMENT UNAVAILABLE**; non-blocking for Android-focused Phase 02 acceptance.
+- Previous documentation validation revision: `c32a954d49b60b64abbab3347fad5b998bf6dc90`. The final documentation revision and its exact-SHA workflow evidence are recorded in the subsequent closure commit/report.
+
+**PHASE 03 — NOT AUTHORIZED.** Separate explicit owner approval is required. No Phase 03 work may begin.
 
 ## Workflow policy
 
@@ -129,7 +142,7 @@ Beta policy remains Debug APK only: no release APK/AAB, release signing or publi
 
 ## Phase 02 — Owner-approved architecture decision freeze (2026-11-05)
 
-**Architecture decision freeze: COMPLETE. Implementation authorization: GRANTED by owner on 2026-11-05. Initial Phase 02 UI source implementation and automated validation completed on source revision `36a27212dadda99fbb7bb333a93a3568c967869d` (Flutter CI run `42040473461`, 67/67 tests); both initial source-revision Debug APK artifacts uploaded successfully. The later move-dialog dismissal fix and updated 69-test evidence are recorded in the latest follow-up section above. The documentation-only final revision is checked separately on its exact SHA. Owner physical-device smoke testing and final acceptance remain pending. Phase 03 has not started and is not authorized.**
+**Architecture decision freeze: COMPLETE. Implementation authorization: GRANTED by owner on 2026-11-05. Initial Phase 02 UI source implementation and automated validation completed on source revision `36a27212dadda99fbb7bb333a93a3568c967869d` (Flutter CI run `42040473461`, 67/67 tests); both initial source-revision Debug APK artifacts uploaded successfully. The later move-dialog dismissal fix and updated 69-test evidence are recorded in the latest follow-up section above. The documentation-only final revision is checked separately on its exact SHA. owner-reported Android physical-device smoke testing passed; Phase 02 final acceptance is recorded. Phase 03 has not started and is not authorized.**
 
 - Owner reviewed the Phase 02 decision register, ADR-0013, schema, migration policy and retention policy, then approved the baseline with amendments.
 - Accepted amendments: maximum folder depth 32 (virtual root level 0); folder names max 255 Unicode code points; note titles max 255 Unicode code points; case-insensitive sibling folder-name uniqueness using a Unicode NFKC_Casefold canonicalizer and root-aware DB unique constraint; unique names remain reserved while folders are soft-deleted.
@@ -143,5 +156,5 @@ Beta policy remains Debug APK only: no release APK/AAB, release signing or publi
 - Unicode data provenance and generation are present under `tool/unicode/17.0.0/` and `tool/unicode/generate_unicode_17_data.py`; the schema uses the same deterministic Unicode functions for Dart validation and SQLite checks.
 - The owner subsequently authorized implementation on `main`, starting from `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`. The branch already contained implementation commits after that baseline; work continued from the newer branch head without resetting history.
 - Intermediate validation history: earlier runs on implementation commits failed the format gate, so analyzer/tests were skipped on those intermediate SHAs and dependent APK workflows were skipped. Those failures were corrected; source revision `36a27212dadda99fbb7bb333a93a3568c967869d` passed Flutter CI (67/67 tests) and both Debug APK workflows uploaded artifacts for that same SHA. The documentation-only final revision is validated separately by the three protected workflows on its exact SHA. No Phase 02 physical-device integration run is verified.
-- **Phase 02 is not accepted.** Owner physical-device smoke testing and final owner acceptance remain pending. Phase 03 has not started and is not authorized.
+- **Historical acceptance reconciliation:** the earlier pending statement is superseded by the final acceptance record above. Phase 03 has not started and is not authorized.
 

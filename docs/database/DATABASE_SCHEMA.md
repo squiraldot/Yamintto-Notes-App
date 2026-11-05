@@ -144,4 +144,4 @@ Use one app-private SQLite database for Android/iOS, opened lazily on first repo
 
 ## Explicitly out of scope
 
-Phase 02 implementation source is present for the two-table database, folder/note repositories, Unicode 17.0 canonicalizer, folder browser, note list and plain-text title/body editor. No Markdown preview/rendering/autosave, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is included. Host automated validation passed on Flutter 3.47.9 with 69/69 tests; owner physical-device testing and final acceptance remain pending.
+Phase 02 implementation source is present for the two-table database, folder/note repositories, Unicode 17.0 canonicalizer, folder browser, note list and plain-text title/body editor. No Markdown preview/rendering/autosave, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is included. Host automated validation passed on Flutter 3.47.9 with 69/69 tests. Owner-reported Android physical-device smoke testing passed; Phase 02 is accepted. The integration-test source is present, but execution is not claimed.

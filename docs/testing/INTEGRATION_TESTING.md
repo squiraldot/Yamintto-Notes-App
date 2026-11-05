@@ -52,3 +52,8 @@ Record device model, OS version, app/build SHA, command, tested scenarios and ac
 ## iOS verification
 
 Continue implementing iOS-compatible shared/native code and configuration throughout applicable phases. Native iOS build/device verification is labelled **Not Verified — Environment Unavailable** when macOS/Xcode is unavailable. Do not claim success or make this unavailable verification a blocker for Android-focused phase progression.
+
+
+## Phase 02 owner acceptance record
+
+**OWNER-REPORTED — PHASE 02 ANDROID PHYSICAL-DEVICE SMOKE TEST PASSED.** Source: explicit owner confirmation in the current project conversation. This is manual owner-reported smoke testing, not an independently verified device log. No device model, Android version, test date, command output, screenshots or logs are asserted. The file `integration_test/phase_02_data_smoke_test.dart` exists; execution of that automated integration-test source is not evidenced and is not claimed. Phase 02 acceptance does not depend on claiming that source was executed.

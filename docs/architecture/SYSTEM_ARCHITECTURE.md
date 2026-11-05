@@ -4,9 +4,9 @@
 
 `lib/main.dart` calls bootstrap; bootstrap initializes Flutter and runs `ProviderScope(child: YaminttoApp())`. `YaminttoApp` owns one GoRouter instance and an in-memory theme notifier. MaterialApp.router receives Material 3 light, dark and AMOLED themes. GoRouter starts at splash, then opens the root folder browser. `/folders/:folderId` opens nested folders; `/notes/new` and `/notes/:noteId/edit` provide explicit-save plain-text note creation/editing; `/appearance` retains the Phase 01 theme preview. The Phase 02 source includes the folder browser, active root/folder note lists, folder operations, note operations, loading/empty/error/retry states and unsaved-change protection.
 
-The app-scoped Riverpod `databaseProvider` lazily opens and memoizes one Drift/SQLite database. Feature repository providers share that instance. The approved schema v1 contains exactly `folders` and `notes`; folder-name constraints use bundled Unicode 17.0 data and deterministic SQLite functions. Latest source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed host Flutter CI run `42097059083` with 69/69 tests, including 19 Phase 02 screen widget tests. Physical-device integration and final owner acceptance remain pending.
+The app-scoped Riverpod `databaseProvider` lazily opens and memoizes one Drift/SQLite database. Feature repository providers share that instance. The approved schema v1 contains exactly `folders` and `notes`; folder-name constraints use bundled Unicode 17.0 data and deterministic SQLite functions. Latest source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed host Flutter CI run `42097059083` with 69/69 tests, including 19 Phase 02 screen widget tests. Owner-reported Android physical-device smoke testing passed. The integration-test source exists; its execution is not claimed.
 
-The `drift` and SQLite packages in `pubspec.yaml` are dependencies, not a database implementation. `lib/core/database/README.md` contains guidance only. There is no DB class, schema, DAO, repository, feature provider/controller, notes/folders workflow, migration, encryption, biometrics, attachment or backup implementation.
+Drift/SQLite implementation is present under `lib/core/database/`: schema v1, database wrapper, DAOs, migration strategy, app-scoped provider and folder/note repositories are implemented. Phase 02 includes the folders/notes workflows described above. Encryption, biometrics, attachments and backup remain future-phase work and are not implemented.
 
 ## Accepted constraints
 
@@ -29,7 +29,7 @@ The `drift` and SQLite packages in `pubspec.yaml` are dependencies, not a databa
 - Enable and test foreign keys on every connection.
 - Accepted schema v1 contains only `folders` and `notes`; see [schema](../database/DATABASE_SCHEMA.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
 
-Phase 02 architecture decisions are owner-approved and Phase 02 implementation was explicitly authorized on 2026-11-05. The source implementation is present and host-validated; owner physical-device testing and final acceptance remain pending. Phase 03 and later phases require separate authorization.
+Phase 02 architecture decisions are owner-approved and Phase 02 implementation was explicitly authorized on 2026-11-05. The source implementation is present and host-validated; owner-reported Android physical-device smoke testing passed; Phase 02 final acceptance is recorded. Phase 03 and later phases require separate authorization.
 
 ## Data lifecycle and integrity
 

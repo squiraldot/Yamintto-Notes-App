@@ -51,7 +51,7 @@ GitHub Actions is deliberately host-only and runs locked dependency resolution, 
 
     flutter test integration_test -d <physical-device-id>
 
-Record owner-reported device results separately from automated CI; do not invent device details or treat artifact builds as device tests. The owner reports successful Android real-device testing, with detailed evidence not attached. iOS source/configuration work continues phase-by-phase; native build/device verification is `Not Verified — Environment Unavailable` when macOS/Xcode is unavailable and is non-blocking for Android-focused phase progression.
+Record owner-reported device results separately from automated CI; do not invent device details or treat artifact builds as device tests. **OWNER-REPORTED — PHASE 02 ANDROID PHYSICAL-DEVICE SMOKE TEST PASSED.** The owner explicitly confirmed successful testing in the current project conversation. No device details, logs, screenshots, command output or test date are asserted. iOS source/configuration work continues phase-by-phase; native build/device verification is `Not Verified — Environment Unavailable` when macOS/Xcode is unavailable and is non-blocking for Android-focused phase progression.
 
 
 ## Phase 02 implementation evidence notes
