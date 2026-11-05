@@ -2,8 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yamintto/core/theme/app_theme.dart';
+import 'package:yamintto/features/folders/presentation/folder_browser_screen.dart';
 import 'package:yamintto/features/foundation/presentation/foundation_screen.dart';
 import 'package:yamintto/features/foundation/presentation/splash_screen.dart';
+import 'package:yamintto/features/notes/presentation/note_editor_screen.dart';
 
 GoRouter appRouter({
   required ValueListenable<YaminttoThemeMode> themeMode,
@@ -19,7 +21,33 @@ GoRouter appRouter({
       ),
       GoRoute(
         path: '/',
-        name: 'foundation',
+        name: 'folders',
+        builder: (context, state) => const FolderBrowserScreen(),
+      ),
+      GoRoute(
+        path: '/folders/:folderId',
+        name: 'folder',
+        builder: (context, state) => FolderBrowserScreen(
+          folderId: state.pathParameters['folderId'],
+        ),
+      ),
+      GoRoute(
+        path: '/notes/new',
+        name: 'note-create',
+        builder: (context, state) => NoteEditorScreen(
+          folderId: state.extra as String?,
+        ),
+      ),
+      GoRoute(
+        path: '/notes/:noteId/edit',
+        name: 'note-edit',
+        builder: (context, state) => NoteEditorScreen(
+          noteId: state.pathParameters['noteId'],
+        ),
+      ),
+      GoRoute(
+        path: '/appearance',
+        name: 'appearance-preview',
         builder: (context, state) => ValueListenableBuilder<YaminttoThemeMode>(
           valueListenable: themeMode,
           builder: (context, mode, child) => FoundationScreen(
@@ -47,15 +75,8 @@ class _NotFoundScreen extends StatelessWidget {
             children: <Widget>[
               const Icon(Icons.route_outlined, size: 40),
               const SizedBox(height: 12),
-              Text(
-                'Page not found',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => context.go('/'),
-                child: const Text('Go to home'),
-              ),
+              Text('Page not found', style: Theme.of(context).textTheme.titleLarge),
+              TextButton(onPressed: () => context.go('/'), child: const Text('Go to home')),
             ],
           ),
         ),

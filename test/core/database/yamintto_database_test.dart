@@ -9,13 +9,15 @@ import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 void main() {
   group('YaminttoDatabase schema v1', () {
     late YaminttoDatabase database;
+    var fixtureClosed = false;
 
     setUp(() {
       database = YaminttoDatabase.inMemory();
+      fixtureClosed = false;
     });
 
     tearDown(() async {
-      await database.close();
+      if (!fixtureClosed) await database.close();
     });
 
     test(
@@ -146,6 +148,8 @@ void main() {
     });
 
     test('registers functions again after reopening a database', () async {
+      await database.close();
+      fixtureClosed = true;
       final directory = await Directory.systemTemp.createTemp('yamintto-db-');
       final file = File('${directory.path}/reopen.sqlite');
       final first = YaminttoDatabase.open(file);
@@ -170,6 +174,8 @@ void main() {
     test(
       'does not silently downgrade a database with a newer user_version',
       () async {
+        await database.close();
+        fixtureClosed = true;
         final directory = await Directory.systemTemp.createTemp(
           'yamintto-newer-',
         );

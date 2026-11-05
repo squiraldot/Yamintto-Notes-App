@@ -30,6 +30,7 @@ void main() {
       title: 'Phase 02 device smoke',
       body: 'Persistent source body',
     );
+    final originalOrder = note.sortOrder;
     await database.close();
 
     final reopened = YaminttoDatabase.open(file);
@@ -45,12 +46,13 @@ void main() {
     expect(await reopenedNotes.listNotes(folderId: folder.id), isEmpty);
     final retained = await reopened
         .customSelect(
-          'SELECT folder_id, body, deleted_at FROM notes WHERE id = ?',
+          'SELECT folder_id, body, sort_order, deleted_at FROM notes WHERE id = ?',
           variables: [Variable.withString(note.id)],
         )
         .getSingle();
     expect(retained.data['folder_id'], folder.id);
     expect(retained.data['body'], 'Persistent source body');
+    expect(retained.data['sort_order'], originalOrder);
     expect(retained.data['deleted_at'], isNotNull);
     await reopened.close();
   });
