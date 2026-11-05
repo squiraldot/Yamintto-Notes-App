@@ -1,5 +1,13 @@
 # Testing strategy and execution matrix
 
+## Phase 02 source coverage
+
+- Unicode 17.0 NFC conformance: all official `NormalizationTest.txt` rows; explicit NFKC_CF mapping rows; Unicode `White_Space` boundary trimming; code-point length and Dart/SQLite canonicalization parity.
+- Database: exactly two domain tables, schema CHECK/index execution with registered deterministic functions, foreign-key enforcement and RESTRICT behavior, UUID v4, reopening/function registration and fail-closed newer-version behavior.
+- Folders: root/nested CRUD, Unicode sibling uniqueness, case/normalization equivalents, soft-deleted name reservation, rename/move, depth 32/33, subtree depth validation, cycle prevention and empty-only soft-delete.
+- Notes: create/read/list/update/move/root placement/soft-delete, active-list filtering, data/order retention, deleted-operation rejection and title boundaries.
+- Physical-device integration source: `integration_test/phase_02_data_smoke_test.dart`; it is owner-run only and has not been executed by CI.
+
 ## Current evidence
 Flutter CI runs locked dependency resolution, repository-wide format, analyzer and `flutter test` (unit/widget tests) only. It does not provision emulators or simulators. The two APK artifact workflows (within the repository's three protected workflows) compile and upload universal and ARM64-only Debug APKs after successful Flutter CI; they are build/artifact jobs, not device-test jobs. Integration and E2E tests are run by the owner on real physical devices.
 

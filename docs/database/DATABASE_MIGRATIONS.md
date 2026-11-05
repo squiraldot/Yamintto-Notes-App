@@ -1,7 +1,7 @@
-# Database migration policy — OWNER APPROVED, NOT IMPLEMENTED
+# Database migration policy — IMPLEMENTATION IN PROGRESS
 
 **Architecture status:** Owner approved on 2026-11-05.  
-**Implementation status:** No database class, schema version, migration, generated schema snapshot or user database exists in current source.
+**Implementation status:** Schema version 1 and a Drift `GeneratedDatabase` wrapper are implemented in `lib/core/database/`; the immutable SQL definition is `schema_v1.dart`. CI verification is pending. No destructive fallback or database reset path exists.
 
 ## Version baseline
 
@@ -13,7 +13,7 @@
 
 ## Migration organization
 
-Keep database declarations and migration definitions under `lib/core/database/`. Store versioned Drift schema snapshots in the dedicated schema-snapshot directory (recommended `drift_schemas/`); keep migration tests/fixtures under `test/core/database/migrations/`. Use immutable adjacent version steps (for example, `v001_to_v002`). Use Drift-supported migration APIs and generated snapshots; do not hand-edit generated snapshots. These paths/names are implementation organization guidance, not files created by this task.
+Database declaration and migration callbacks live under `lib/core/database/`. Schema v1 is an immutable SQL definition in `schema_v1.dart`; Drift owns connection lifecycle, transaction boundaries, custom SQL execution and `MigrationStrategy`. Versioned migration steps must be added as explicit adjacent forward steps when a future schema version is approved. Do not replace the current database or use destructive fallback. Repository/schema tests live under `test/core/database/` and `test/features/`; physical persistence smoke source is under `integration_test/phase_02_data_smoke_test.dart`.
 
 Released migration steps are immutable. Correct a mistake with a new forward migration. Each step documents source/target versions, schema changes, data transformations, disk headroom, duration, interruption recovery and fixtures.
 
@@ -41,7 +41,7 @@ Released migration steps are immutable. Correct a mistake with a new forward mig
 - Failure injection before/during/after transformations, app kill/restart, disk full, large DB and repeated migration attempts.
 - A failed migration never reports success or exposes a partial schema.
 
-The same Unicode NFKC_Casefold canonicalizer and version must be used by application validation and the database constraint. Verify function registration on every Android/iOS SQLite connection; if unavailable, fail closed rather than falling back to SQLite ASCII-only NOCASE.
+The shared canonicalizer is pinned to Unicode 17.0: boundary trim by `White_Space`, then NFKC_CF mapping, then NFC. The same Dart code is used by validation and the SQLite functions. `NativeDatabase` setup registers all three functions on each connection with `deterministic: true` and `directOnly: false`; the latter is required for schema CHECK usage. The schema depends on these functions and fails closed if registration/probing fails. Do not set `trusted_schema=OFF` without an SQLite API that also marks this pure function innocuous; do not use NOCASE or platform ICU fallback. Host SQLite tests verify schema-level use and reopening; Android/iOS physical runtime remains separately reported.
 
 CI may run host-side DB tests; device integration tests remain owner-run on physical devices under repository policy.
 

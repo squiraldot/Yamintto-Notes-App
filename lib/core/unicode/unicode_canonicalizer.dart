@@ -167,16 +167,20 @@ abstract final class UnicodeCanonicalizer {
     const nCount = vCount * tCount;
     const sCount = lCount * nCount;
 
-    if (first >= lBase && first < lBase + lCount &&
-        second >= vBase && second < vBase + vCount) {
+    if (first >= lBase &&
+        first < lBase + lCount &&
+        second >= vBase &&
+        second < vBase + vCount) {
       return sBase +
           (first - lBase) * nCount +
           (second - vBase) * tCount;
     }
 
-    if (first >= sBase && first < sBase + sCount &&
+    if (first >= sBase &&
+        first < sBase + sCount &&
         (first - sBase) % tCount == 0 &&
-        second > tBase && second < tBase + tCount) {
+        second > tBase &&
+        second < tBase + tCount) {
       return first + second - tBase;
     }
 
@@ -209,7 +213,10 @@ abstract final class UnicodeCanonicalizer {
       final raw = line.substring(separator + 1);
       result[key] = raw.isEmpty
           ? const <int>[]
-          : raw.split(',').map((part) => int.parse(part, radix: 16)).toList();
+          : raw
+              .split(',')
+              .map((part) => int.parse(part, radix: 16))
+              .toList();
     }
     return result;
   }

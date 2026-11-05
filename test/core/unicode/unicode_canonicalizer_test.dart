@@ -76,21 +76,36 @@ void main() {
               .toList();
         }).toList();
         final expected = String.fromCharCodes(values[1]);
-        expect(UnicodeCanonicalizer.normalizeNfc(
-          String.fromCharCodes(values[0]),
-        ), expected);
-        expect(UnicodeCanonicalizer.normalizeNfc(
-          String.fromCharCodes(values[1]),
-        ), expected);
-        expect(UnicodeCanonicalizer.normalizeNfc(
-          String.fromCharCodes(values[2]),
-        ), expected);
-        expect(UnicodeCanonicalizer.normalizeNfc(
+        expect(
+          UnicodeCanonicalizer.normalizeNfc(
+            String.fromCharCodes(values[0]),
+          ),
+          expected,
+        );
+        expect(
+          UnicodeCanonicalizer.normalizeNfc(
+            String.fromCharCodes(values[1]),
+          ),
+          expected,
+        );
+        expect(
+          UnicodeCanonicalizer.normalizeNfc(
+            String.fromCharCodes(values[2]),
+          ),
+          expected,
+        );
+        expect(
+          UnicodeCanonicalizer.normalizeNfc(
+            String.fromCharCodes(values[3]),
+          ),
           String.fromCharCodes(values[3]),
-        ), String.fromCharCodes(values[3]));
-        expect(UnicodeCanonicalizer.normalizeNfc(
-          String.fromCharCodes(values[4]),
-        ), String.fromCharCodes(values[3]));
+        );
+        expect(
+          UnicodeCanonicalizer.normalizeNfc(
+            String.fromCharCodes(values[4]),
+          ),
+          String.fromCharCodes(values[3]),
+        );
         checked++;
       }
       expect(checked, greaterThan(0));

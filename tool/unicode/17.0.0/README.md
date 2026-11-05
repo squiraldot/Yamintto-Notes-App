@@ -7,8 +7,12 @@ Release: Unicode 17.0.0
 Official distribution: https://www.unicode.org/Public/17.0.0/ucd/  
 License and terms: [Unicode License v3](https://www.unicode.org/terms_of_use.html), reproduced in [LICENSE.txt](LICENSE.txt).
 
-The source files were copied byte-for-byte from the Unicode Consortium's public UCD data. The pinned source mirror and its verification notes are documented at:
+The UCD files are publisher source copies, not runtime-derived approximations. `DerivedNormalizationProps.txt`, `UnicodeData.txt` and `NormalizationTest.txt` are byte-identical to the Unicode Consortium's `unicodetools` UCD 17.0.0 release data; the pinned mirror's verification notes and publisher repository commit are documented at:
 https://github.com/UOR-Foundation/lexlean-mcp/tree/6abea22c506c7f454fa2380b520052e80ab0bcda/crates/nfc-tables/ucd
+
+`PropList.txt` is the Unicode 17.0.0 publisher file mirrored in Swift's Unicode 17 generator inputs at commit `524c8a3ac087013701326296e6972df40da9f4a1`:
+https://github.com/swiftlang/swift/blob/524c8a3ac087013701326296e6972df40da9f4a1/utils/gen-unicode-data/Data/17/PropList.txt
+Its official header identifies `PropList-17.0.0.txt`; its SHA-256 is pinned below and checked by the generator.
 
 | File | SHA-256 | Used for |
 |---|---|---|

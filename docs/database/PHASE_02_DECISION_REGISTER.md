@@ -2,10 +2,10 @@
 
 **Owner approval:** Explicitly approved by the repository owner on 2026-11-05.  
 **Architecture status:** <strong>ACCEPTED — PHASE 02 DECISION FREEZE COMPLETE</strong>.  
-**Implementation status:** Not started; separate implementation authorization is still required.  
+**Implementation status:** In progress under explicit owner authorization issued 2026-11-05. Unicode 17.0 canonicalization is committed; database/folder/notes implementation is in progress.  
 **Baseline before this approval:** `main` at `9cc09c272faa9ccbb62c240113fcd89bcef046ae`.
 
-This is the authoritative Phase 02 decision register. The owner approved the proposed architecture baseline with the amendments recorded below. No Phase 02 implementation-blocking owner decision remains unresolved. This approval does not authorize implementation.
+This is the authoritative Phase 02 decision register. The owner approved the proposed architecture baseline with the amendments recorded below. No Phase 02 implementation-blocking owner decision remains unresolved. The owner separately authorized Phase 02 implementation on 2026-11-05; implementation is now underway.
 
 ## Status vocabulary
 
@@ -32,9 +32,9 @@ This is the authoritative Phase 02 decision register. The owner approved the pro
 | Nested folders | Accepted | Nested folder hierarchy supported | Required product capability | No |
 | Maximum folder depth | Accepted — owner amendment | Root is level 0; top-level folders are level 1; maximum folder level is 32 | Prevent pathological recursion while preserving useful nesting | No |
 | Folder moves | Accepted | Moves supported; reject self/descendant cycles; validate full moved subtree depth; execute atomically | No cycles and no subtree can exceed level 32 | No |
-| Folder names | Accepted — owner amendment | Trimmed non-empty names; maximum 255 Unicode code points; case-insensitive unique name per parent; same name allowed in different parents | Consistent validation and predictable sibling identity | No |
+| Folder names | Accepted — owner amendment | Trimmed non-empty names using Unicode 17.0 `White_Space` boundary trim; internal whitespace preserved; maximum 255 Unicode code points; case-insensitive unique name per parent; same name allowed in different parents | Consistent validation and predictable sibling identity | No |
 | Folder-name uniqueness scope | Accepted — explicit schema interpretation | Uniqueness applies to active and soft-deleted folder rows; a name cannot be reused in that parent until the old folder is permanently deleted | Guarantees a deleted folder can be restored without a same-parent name collision | No |
-| Folder name canonicalization | Accepted — implementation requirement | Unicode NFKC_Casefold key; same deterministic canonicalizer used by app validation and DB constraint; unique expression index treats NULL parent as a root scope | SQLite built-in NOCASE is ASCII-only and is insufficient for full Unicode case-insensitivity | No |
+| Folder name canonicalization | Accepted — implementation requirement | Unicode 17.0 NFKC_CF mapping followed by NFC; boundary trim occurs first using Unicode 17.0 `White_Space`; internal whitespace preserved; same deterministic Dart canonicalizer used by app validation and SQLite schema functions; root-aware unique expression index includes soft-deleted rows | SQLite built-in NOCASE is ASCII-only and is insufficient for full Unicode case-insensitivity | No |
 | Note title | Accepted — owner amendment | Maximum 255 Unicode code points; empty title remains permitted | Bounded, consistent input contract | No |
 | Folder deletion | Accepted — owner amendment | Empty-folder-only; soft-delete empty folder; reject if any child folder or any note row exists, including soft-deleted notes | Prevent recursive or hidden data loss | No |
 | Note deletion | Accepted — owner amendment | Soft-delete from schema v1 using nullable deleted_at; preserve original folder_id and sort_order | Phase 04 Trash/Restore compatibility from first schema | No |
@@ -64,7 +64,7 @@ This is the authoritative Phase 02 decision register. The owner approved the pro
 - Creating a folder requires `parent_level + 1 <= 32`.
 - Moving a folder requires checking every descendant: `destination_parent_level + 1 + subtree_height <= 32`. Reject self/descendant moves and any move exceeding the cap before mutation; perform validation and update in one transaction.
 - Count folder names by Unicode code points after trimming; do not use UTF-16 code-unit length as the character count.
-- Canonical comparison key is Unicode NFKC_Casefold of the trimmed display name. The application validator and SQLite constraint must call the same deterministic implementation/version.
+- Canonical comparison key is Unicode 17.0 NFKC_Casefold after Unicode 17.0 `White_Space` boundary trim. Trim first; preserve internal whitespace; apply official NFKC_CF mappings then NFC. The application validator and SQLite constraint call the same generated/bundled deterministic Dart implementation. No platform ICU, lowercase approximation or NOCASE fallback.
 - The database unique index must normalize NULL parent to a non-colliding root scope and must cover deleted rows as well as active rows. Root-level duplicates are prohibited too.
 - Because deleted folders retain their unique key, a same-parent name cannot be reused until the old folder is permanently deleted in Phase 04.
 
@@ -82,4 +82,4 @@ This is the authoritative Phase 02 decision register. The owner approved the pro
 
 **All Phase 02 implementation-blocking architecture and product decisions are resolved and owner-approved. Phase 02 architecture decision freeze is COMPLETE.**
 
-No additional owner approval is required to implement the Phase 02 architecture described here. A separate explicit owner authorization is still required before application code changes begin. Future-phase product/security approvals remain in their owning phases and do not block Phase 02.
+No additional owner approval is required for the accepted Phase 02 architecture. The owner explicitly authorized implementation on 2026-11-05. Future-phase product/security approvals remain in their owning phases and do not block Phase 02.

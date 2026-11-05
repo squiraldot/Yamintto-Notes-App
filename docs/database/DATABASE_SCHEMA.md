@@ -1,7 +1,7 @@
-# Phase 02 database schema — OWNER APPROVED, NOT IMPLEMENTED
+# Phase 02 database schema — IMPLEMENTATION IN PROGRESS
 
 **Architecture status:** Accepted by owner on 2026-11-05.  
-**Implementation status:** Not implemented. This document is not executable SQL, Drift declarations or a migration. Drift + SQLite is accepted by [ADR-0003](../decisions/0003-drift-sqlite.md).
+**Implementation status:** Initial schema v1, Drift database wrapper, Unicode canonicalization and repository implementation are committed on `main`; Flutter CI and Android build verification are pending. Executable schema source: `lib/core/database/schema_v1.dart`; database/migration owner: `lib/core/database/yamintto_database.dart`. Drift + SQLite remains the accepted architecture.
 
 ## Schema version 1 inventory
 
@@ -47,14 +47,14 @@ Constraints and indexes:
 
 - Primary key: `id`.
 - Foreign key: `parent_id REFERENCES folders(id) ON DELETE RESTRICT ON UPDATE RESTRICT`.
-- Check: `length(trim(name)) BETWEEN 1 AND 255` (SQLite length counts Unicode code points).
-- Check: `name_key = yamintto_nfkc_casefold(trim(name))`; the deterministic Unicode canonicalizer must be registered on every DB connection before writes/constraint evaluation. App validation calls the same canonicalizer and Unicode data version.
-- Check: `length(id) = 36`; UUID generator/domain boundary validates canonical UUID v4 syntax and lowercase representation.
+- Check: `name = yamintto_unicode_trim(name)` and `length(name) BETWEEN 1 AND 255`; the custom trim function uses Unicode 17.0 `White_Space` and SQLite `length()` counts Unicode code points after NUL rejection.
+- Check: `name_key = yamintto_folder_name_key(name)`; the deterministic Unicode canonicalizer must be registered on every DB connection before schema checks or writes. Dart validation and SQLite call the same Unicode 17.0 implementation.
+- Check: canonical lowercase UUID v4 syntax, including version and variant bits; domain generator and SQL GLOB check enforce the same representation.
 - Check: `parent_id IS NULL OR parent_id <> id`; descendant cycles require domain ancestry validation.
 - Unique expression index: `UNIQUE(COALESCE(parent_id, ''), name_key)`. Empty string is reserved as the root scope and cannot be a UUID parent ID. The index includes soft-deleted rows; same-parent name reuse is unavailable until explicit permanent deletion.
 - Listing index: `(parent_id, deleted_at, sort_order, created_at, id)`.
 
-SQLite built-in `NOCASE` is ASCII-only and MUST NOT be treated as sufficient Unicode case-insensitive comparison. The canonical key must be computed using Unicode NFKC_Casefold, and the database CHECK + unique index and application validator must share the same deterministic implementation/version. If the function is unavailable on a connection, writes must fail closed rather than bypass uniqueness.
+SQLite built-in `NOCASE` is ASCII-only and MUST NOT be treated as sufficient Unicode case-insensitive comparison. The canonical key is computed by Unicode 17.0 NFKC_Casefold after Unicode 17.0 White_Space boundary trimming; internal whitespace is preserved. NFKC_CF mappings are followed by NFC as required by the Unicode data-file instructions. The generated tables are bundled in `lib/core/unicode/unicode_17_data.dart`; source files, license, hashes and generator are under `tool/unicode/17.0.0/` and `tool/unicode/generate_unicode_17_data.py`. SQLite registers `yamintto_unicode_trim`, `yamintto_nfkc_casefold` and `yamintto_folder_name_key` as deterministic functions with `directOnly: false`, because schema CHECK expressions must call them. Function registration is part of every NativeDatabase connection setup. Runtime behavior is covered by actual SQLite tests; platform-device execution remains separate. If the function is unavailable on a connection, writes must fail closed rather than bypass uniqueness.
 
 ## Table: `notes`
 
@@ -75,7 +75,7 @@ Constraints and indexes:
 - Primary key: `id`.
 - Foreign key: `folder_id REFERENCES folders(id) ON DELETE RESTRICT ON UPDATE RESTRICT`.
 - Check: `length(id) = 36`; canonical UUID v4 syntax is validated by the ID generator/domain boundary.
-- Check: `length(title) <= 255` (Unicode code points; empty is permitted).
+- Check: `instr(title, char(0)) = 0` and `length(title) <= 255` (Unicode code points; empty is permitted).
 - Check: `content_format_version >= 1`.
 - Domain operations reject a deleted folder as a destination.
 - Listing index: `(folder_id, deleted_at, sort_order, created_at, id)`.
@@ -95,9 +95,9 @@ Body stores raw source text, not widget state or rendered output. Phase 03 may e
 
 ## Folder-name uniqueness
 
-- Trim leading/trailing whitespace before storage; reject empty names.
+- Trim leading/trailing Unicode 17.0 `White_Space` before storage; preserve internal whitespace; reject empty names.
 - Maximum 255 Unicode code points after trimming.
-- Canonical uniqueness key is Unicode NFKC_Casefold of the trimmed display name.
+- Canonical uniqueness key is Unicode 17.0 NFKC_Casefold of the display name after boundary trim. Trimming occurs first; internal whitespace is not collapsed.
 - Same canonical key is prohibited among folders with the same parent, including root-level folders and soft-deleted folders. Different parent folders may contain the same display/canonical name.
 - The database CHECK validates name_key against the shared canonicalizer. The unique expression index scopes NULL parent to a reserved empty-string root key.
 - Application validation must use the same canonicalizer and return a typed duplicate-name conflict; the database unique constraint remains the final race-safe enforcement.
@@ -144,4 +144,4 @@ Use one app-private SQLite database for Android/iOS, opened lazily on first repo
 
 ## Explicitly out of scope
 
-No SQL, Drift declarations, generated files, database class, DAO, repository, migration, CRUD, UI, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is created by this documentation task.
+Phase 02 implementation source is now present for the two-table database, folder repository, notes repository and Unicode 17.0 canonicalizer. No UI, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is included.
