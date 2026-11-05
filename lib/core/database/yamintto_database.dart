@@ -11,7 +11,7 @@ import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 /// A single app-scoped Riverpod provider owns the production instance. Tests
 /// use [YaminttoDatabase.inMemory] but still execute the real SQLite engine.
 final class YaminttoDatabase extends GeneratedDatabase {
-  YaminttoDatabase._(QueryExecutor executor) : super(executor);
+  YaminttoDatabase._(super.executor);
 
   factory YaminttoDatabase.open(File file) {
     return YaminttoDatabase._(
@@ -99,7 +99,7 @@ final class YaminttoDatabase extends GeneratedDatabase {
     },
   );
 
-  static void _registerUnicodeFunctions(database) {
+  static void _registerUnicodeFunctions(dynamic database) {
     database.createFunction(
       functionName: 'yamintto_unicode_trim',
       function: (arguments) {
