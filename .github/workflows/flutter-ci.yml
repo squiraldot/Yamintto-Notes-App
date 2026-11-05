@@ -2,13 +2,15 @@ name: Flutter CI
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: flutter-ci-${{ github.workflow }}-${{ github.ref }}
+  group: flutter-ci-${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -17,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -24,6 +28,18 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
+      - name: Apply Dart formatting on GitHub Actions
+        if: github.ref_name != 'main'
+        run: |
+          dart format .
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -- '*.dart'
+            git commit -m "style: apply Dart formatter"
+            git pull --rebase origin "${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          fi
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed .
       - name: Run Flutter analyzer

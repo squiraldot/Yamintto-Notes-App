@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path/path.dart' as path;
@@ -35,10 +35,7 @@ void main() {
     final reopened = YaminttoDatabase.open(file);
     final reopenedFolders = FolderRepository(reopened);
     final reopenedNotes = NoteRepository(reopened);
-    expect(
-      (await reopenedFolders.getFolder(folder.id)).name,
-      folder.name,
-    );
+    expect((await reopenedFolders.getFolder(folder.id)).name, folder.name);
     expect(
       (await reopenedNotes.getNote(note.id)).body,
       'Persistent source body',
@@ -46,10 +43,12 @@ void main() {
 
     await reopenedNotes.softDeleteNote(note.id);
     expect(await reopenedNotes.listNotes(folderId: folder.id), isEmpty);
-    final retained = await reopened.customSelect(
-      'SELECT folder_id, body, deleted_at FROM notes WHERE id = ?',
-      variables: [Variable.withString(note.id)],
-    ).getSingle();
+    final retained = await reopened
+        .customSelect(
+          'SELECT folder_id, body, deleted_at FROM notes WHERE id = ?',
+          variables: [Variable.withString(note.id)],
+        )
+        .getSingle();
     expect(retained.data['folder_id'], folder.id);
     expect(retained.data['body'], 'Persistent source body');
     expect(retained.data['deleted_at'], isNotNull);

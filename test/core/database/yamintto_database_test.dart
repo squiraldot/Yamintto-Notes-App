@@ -21,79 +21,70 @@ void main() {
     test(
       'creates exactly two domain tables and enables foreign keys',
       () async {
-        final tables = await database.customSelect(
-          "SELECT name FROM sqlite_master "
-          "WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
-        ).get();
-        expect(
-          tables.map((row) => row.data['name']),
-          <String>['folders', 'notes'],
-        );
+        final tables = await database
+            .customSelect(
+              "SELECT name FROM sqlite_master "
+              "WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
+            )
+            .get();
+        expect(tables.map((row) => row.data['name']), <String>[
+          'folders',
+          'notes',
+        ]);
 
-        final foreignKeys =
-            await database.customSelect('PRAGMA foreign_keys').getSingle();
+        final foreignKeys = await database
+            .customSelect('PRAGMA foreign_keys')
+            .getSingle();
         expect(foreignKeys.data['foreign_keys'], 1);
       },
-    );;
+    );
 
-    test(
-      'registers deterministic Unicode functions usable by schema checks',
-      () async {
-        final key = await database.customSelect(
-          "SELECT yamintto_folder_name_key('  Ａ  ') AS value",
-        ).getSingle();
-        expect(key.data['value'], 'a');
+    test('registers deterministic Unicode functions usable by schema checks', () async {
+      final key = await database
+          .customSelect("SELECT yamintto_folder_name_key('  Ａ  ') AS value")
+          .getSingle();
+      expect(key.data['value'], 'a');
 
-        final trimmed = await database.customSelect(
-          "SELECT yamintto_unicode_trim(?) AS value",
-          variables: [Variable.withString('  x  ')],
-        ).getSingle();
-        expect(trimmed.data['value'], 'x');
+      final trimmed = await database
+          .customSelect(
+            "SELECT yamintto_unicode_trim(?) AS value",
+            variables: [Variable.withString('  x  ')],
+          )
+          .getSingle();
+      expect(trimmed.data['value'], 'x');
 
-        await expectLater(
-          database.customStatement(
-            'INSERT INTO folders '
-            '(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
-            'VALUES (?, NULL, ?, ?, 0, 1, 1)',
-            <Object?>[
-              '00000000-0000-4000-8000-000000000001',
-              'Alpha',
-              'not-alpha',
-            ],
-          ),
-          throwsA(anything),
-        );
-      },
-    );;
-
-    test(
-      'enforces the root-aware canonical-name unique index in SQLite',
-      () async {
-        await database.customStatement(
+      await expectLater(
+        database.customStatement(
           'INSERT INTO folders '
           '(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
           'VALUES (?, NULL, ?, ?, 0, 1, 1)',
           <Object?>[
             '00000000-0000-4000-8000-000000000001',
             'Alpha',
-            'alpha',
+            'not-alpha',
           ],
-        );
-        await expectLater(
-          database.customStatement(
-            'INSERT INTO folders '
-            '(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
-            'VALUES (?, NULL, ?, ?, 0, 2, 2)',
-            <Object?>[
-              '00000000-0000-4000-8000-000000000002',
-              'ALPHA',
-              'alpha',
-            ],
-          ),
-          throwsA(anything),
-        );
-      },
-    );;
+        ),
+        throwsA(anything),
+      );
+    });
+
+    test('enforces the root-aware canonical-name unique index in SQLite', () async {
+      await database.customStatement(
+        'INSERT INTO folders '
+        '(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
+        'VALUES (?, NULL, ?, ?, 0, 1, 1)',
+        <Object?>['00000000-0000-4000-8000-000000000001', 'Alpha', 'alpha'],
+      );
+      await expectLater(
+        database.customStatement(
+          'INSERT INTO folders '
+          '(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
+          'VALUES (?, NULL, ?, ?, 0, 2, 2)',
+          <Object?>['00000000-0000-4000-8000-000000000002', 'ALPHA', 'alpha'],
+        ),
+        throwsA(anything),
+      );
+    });
 
     test('enforces foreign keys for note folder references', () async {
       await expectLater(
@@ -110,7 +101,7 @@ void main() {
         ),
         throwsA(anything),
       );
-    });;
+    });
 
     test(
       'enforces ON DELETE and ON UPDATE RESTRICT for referenced folders',
@@ -126,32 +117,23 @@ void main() {
           'INSERT INTO notes '
           '(id, folder_id, title, body, content_format_version, sort_order, '
           'created_at, updated_at) VALUES (?, ?, ?, ?, 1, 0, 1, 1)',
-          <Object?>[
-            '00000000-0000-4000-8000-000000000002',
-            folderId,
-            '',
-            '',
-          ],
+          <Object?>['00000000-0000-4000-8000-000000000002', folderId, '', ''],
         );
         await expectLater(
-          database.customStatement(
-            'DELETE FROM folders WHERE id = ?',
-            [folderId],
-          ),
+          database.customStatement('DELETE FROM folders WHERE id = ?', [
+            folderId,
+          ]),
           throwsA(anything),
         );
         await expectLater(
           database.customStatement(
             'UPDATE folders SET id = ? WHERE id = ?',
-            <Object?>[
-              '00000000-0000-4000-8000-000000000003',
-              folderId,
-            ],
+            <Object?>['00000000-0000-4000-8000-000000000003', folderId],
           ),
           throwsA(anything),
         );
       },
-    );;
+    );
 
     test('uses canonical lowercase UUID v4 identifiers', () {
       final id = UuidV4.generate();
@@ -161,30 +143,29 @@ void main() {
         UuidV4.isCanonical('00000000-0000-0000-0000-000000000000'),
         isFalse,
       );
-    });;
+    });
 
     test('registers functions again after reopening a database', () async {
       final directory = await Directory.systemTemp.createTemp('yamintto-db-');
       final file = File('${directory.path}/reopen.sqlite');
       final first = YaminttoDatabase.open(file);
-      final folder = await first.customSelect(
-        "SELECT yamintto_folder_name_key('  Ａ  ') AS value",
-      ).getSingle();
+      final folder = await first
+          .customSelect("SELECT yamintto_folder_name_key('  Ａ  ') AS value")
+          .getSingle();
       expect(folder.data['value'], 'a');
       await first.close();
 
       final reopened = YaminttoDatabase.open(file);
       addTearDown(reopened.close);
-      final result = await reopened.customSelect(
-        "SELECT yamintto_nfkc_casefold('Straße') AS value",
-      ).getSingle();
-      expect(result.data['value'], 'strasse');
-      final fk = await reopened.customSelect('PRAGMA foreign_keys')
+      final result = await reopened
+          .customSelect("SELECT yamintto_nfkc_casefold('Straße') AS value")
           .getSingle();
+      expect(result.data['value'], 'strasse');
+      final fk = await reopened.customSelect('PRAGMA foreign_keys').getSingle();
       expect(fk.data['foreign_keys'], 1);
 
       await directory.delete(recursive: true);
-    });;
+    });
 
     test(
       'does not silently downgrade a database with a newer user_version',
@@ -206,7 +187,7 @@ void main() {
         await reopened.close();
         await directory.delete(recursive: true);
       },
-    );;
+    );
 
     test(
       'Dart and SQLite folder-name canonicalization remain identical',
@@ -221,16 +202,18 @@ void main() {
           'İ',
         ];
         for (final value in values) {
-          final row = await database.customSelect(
-            'SELECT yamintto_folder_name_key(?) AS value',
-            variables: [Variable.withString(value)],
-          ).getSingle();
+          final row = await database
+              .customSelect(
+                'SELECT yamintto_folder_name_key(?) AS value',
+                variables: [Variable.withString(value)],
+              )
+              .getSingle();
           expect(
             row.data['value'],
             UnicodeCanonicalizer.canonicalizeFolderName(value),
           );
         }
       },
-    );;
+    );
   });
 }

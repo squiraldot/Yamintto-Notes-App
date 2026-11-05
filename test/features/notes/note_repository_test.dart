@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yamintto/core/database/yamintto_database.dart';
 import 'package:yamintto/core/errors/domain_failure.dart';
@@ -45,9 +45,11 @@ void main() {
       expect(folderNote.folderId, folder.id);
       expect(folderNote.body, 'source body');
       expect((await notes.listNotes()).single.id, rootNote.id);
-      expect((await notes.listNotes(folderId: folder.id)).single.id,
-          folderNote.id);
-    });;
+      expect(
+        (await notes.listNotes(folderId: folder.id)).single.id,
+        folderNote.id,
+      );
+    });
 
     test(
       'updates title and body without changing identity, order or creation',
@@ -66,13 +68,16 @@ void main() {
         expect(updated.body, '# source text');
         expect(updated.updatedAt, 5000);
       },
-    );;
+    );
 
     test(
       'moves notes to folders and root while appending destination order',
       () async {
         final folder = await folders.createFolder(name: 'Folder');
-        final first = await notes.createNote(title: 'First', folderId: folder.id);
+        final first = await notes.createNote(
+          title: 'First',
+          folderId: folder.id,
+        );
         final second = await notes.createNote(
           title: 'Second',
           folderId: folder.id,
@@ -90,7 +95,7 @@ void main() {
         expect(returned.folderId, folder.id);
         expect(returned.sortOrder, greaterThan(second.sortOrder));
       },
-    );;
+    );
 
     test(
       'soft deletion preserves data and excludes the note from active lists',
@@ -102,10 +107,12 @@ void main() {
           body: 'preserved body',
         );
         await notes.softDeleteNote(note.id);
-        final stored = await database.customSelect(
-          'SELECT * FROM notes WHERE id = ?',
-          variables: [Variable.withString(note.id)],
-        ).getSingle();
+        final stored = await database
+            .customSelect(
+              'SELECT * FROM notes WHERE id = ?',
+              variables: [Variable.withString(note.id)],
+            )
+            .getSingle();
         expect(stored.data['folder_id'], folder.id);
         expect(stored.data['sort_order'], note.sortOrder);
         expect(stored.data['title'], 'Keep me');
@@ -113,7 +120,7 @@ void main() {
         expect(stored.data['deleted_at'], isNotNull);
         expect(await notes.listNotes(folderId: folder.id), isEmpty);
       },
-    );;
+    );
 
     test('rejects reads, updates and moves on soft-deleted notes', () async {
       final note = await notes.createNote(title: 'Deleted');
@@ -123,11 +130,8 @@ void main() {
         notes.updateNote(id: note.id, title: 'No', body: ''),
         throwsA(isA<DomainFailure>()),
       );
-      await expectLater(
-        notes.moveNote(note.id),
-        throwsA(isA<DomainFailure>()),
-      );
-    });;
+      await expectLater(notes.moveNote(note.id), throwsA(isA<DomainFailure>()));
+    });
 
     test(
       'rejects deleted destination folders and invalid title lengths',
@@ -137,19 +141,23 @@ void main() {
         await folders.softDeleteFolder(folder.id);
         await expectLater(
           notes.moveNote(note.id, destinationFolderId: folder.id),
-          throwsA(isA<DomainFailure>().having(
-            (failure) => failure.code,
-            'code',
-            DomainFailureCode.invalidDestination,
-          )),
+          throwsA(
+            isA<DomainFailure>().having(
+              (failure) => failure.code,
+              'code',
+              DomainFailureCode.invalidDestination,
+            ),
+          ),
         );
         await expectLater(
           notes.createNote(title: '😀' * 256),
-          throwsA(isA<DomainFailure>().having(
-            (failure) => failure.code,
-            'code',
-            DomainFailureCode.invalidTitle,
-          )),
+          throwsA(
+            isA<DomainFailure>().having(
+              (failure) => failure.code,
+              'code',
+              DomainFailureCode.invalidTitle,
+            ),
+          ),
         );
         await expectLater(
           notes.createNote(title: 'a\u0000b'),
@@ -157,7 +165,7 @@ void main() {
         );
         await notes.createNote(title: '😀' * 255);
       },
-    );;
+    );
 
     test('deleted notes still prevent empty-folder deletion', () async {
       final folder = await folders.createFolder(name: 'Has deleted note');
@@ -165,12 +173,14 @@ void main() {
       await notes.softDeleteNote(note.id);
       await expectLater(
         folders.softDeleteFolder(folder.id),
-        throwsA(isA<DomainFailure>().having(
-          (failure) => failure.code,
-          'code',
-          DomainFailureCode.folderNotEmpty,
-        )),
+        throwsA(
+          isA<DomainFailure>().having(
+            (failure) => failure.code,
+            'code',
+            DomainFailureCode.folderNotEmpty,
+          ),
+        ),
       );
-    });;
+    });
   });
 }
