@@ -48,5 +48,16 @@ Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](
 | NFR-09 | Honest recovery guarantees | User is informed when recovery is possible or permanently lost | P0 | 06 | Both independent recovery routes and reviewed key lifecycle | Password and recovery-key paths independently recover; total loss of both plus all valid key copies is documented unrecoverable | Clean-device recovery matrix, wrong credentials, rotation and key-loss tests | Planned |
 | NFR-10 | Beta distribution control | Testers receive only debug artifacts during beta | P0 | All phases | Two existing workflows and beta policy | Only Debug APK; no release APK/AAB/signing/publishing; 1.0.0 is first production target | Inspect workflow files and artifact type for each release run | Configured policy |
 
+## Phase 02 data lifecycle proposal — pending owner approval
+
+- Drift + SQLite remains the accepted technology (ADR-0003); dependencies are configured, but no database implementation exists.
+- Proposed schema v1 contains only `folders` and `notes`. Revisions/attachments are Phase 05, encryption metadata Phase 06, settings Phase 09; no separate polymorphic trash table is proposed.
+- Nested folders use NULL as root. Moves reject self/descendant cycles and run transactionally.
+- Recommended folder deletion: block while any child folder or note (including soft-deleted note) exists; soft-delete only an empty folder.
+- Notes use nullable `deleted_at` from schema v1, retaining folder/order. Trash UI/restore UX is Phase 04.
+- UUID v4 TEXT IDs, UTC Unix-millisecond INTEGER timestamps, explicit sort_order, enabled foreign keys with RESTRICT and transactional multi-record operations are recommendations, not approved decisions.
+- No automatic permanent deletion or retention duration is approved.
+- See [Phase 02 decision register](../database/PHASE_02_DECISION_REGISTER.md) for rationale and owner approval blockers.
+
 ## Decisions requiring approval
 Markdown dialect; folder move/delete semantics; title/body limits; autosave debounce/flush; search matching/ranking; trash/revision retention; attachment limits/types; statistics/timezone; theme/font bounds; backup replace/merge; legacy ZIP compatibility; performance budgets. Security choices are tracked in [Security Overview](../security/SECURITY_OVERVIEW.md).
