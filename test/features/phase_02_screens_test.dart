@@ -346,5 +346,4 @@ void main() {
     await tester.pumpAndSettle();
     expect((await notes.getNote(note.id)).folderId, isNull);
   });
-
 }
