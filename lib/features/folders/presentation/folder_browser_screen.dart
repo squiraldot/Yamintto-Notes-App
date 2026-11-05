@@ -263,17 +263,12 @@ class FolderBrowserScreen extends ConsumerWidget {
   }
 }
 
-Future<String?> _name(
-  BuildContext context,
-  String title,
-  String initial,
-) => showDialog<String>(
-  context: context,
-  builder: (dialogContext) => _FolderNameDialog(
-    title: title,
-    initial: initial,
-  ),
-);
+Future<String?> _name(BuildContext context, String title, String initial) =>
+    showDialog<String>(
+      context: context,
+      builder: (dialogContext) =>
+          _FolderNameDialog(title: title, initial: initial),
+    );
 
 class _FolderNameDialog extends StatefulWidget {
   const _FolderNameDialog({required this.title, required this.initial});

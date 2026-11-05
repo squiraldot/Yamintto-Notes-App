@@ -56,12 +56,12 @@ void main() {
   Widget app(WidgetTester tester) {
     activeTester = tester;
     return ProviderScope(
-    overrides: [
-      folderRepositoryProvider.overrideWith((ref) async => folders),
-      noteRepositoryProvider.overrideWith((ref) async => notes),
-    ],
-    child: MaterialApp.router(routerConfig: router),
-  );
+      overrides: [
+        folderRepositoryProvider.overrideWith((ref) async => folders),
+        noteRepositoryProvider.overrideWith((ref) async => notes),
+      ],
+      child: MaterialApp.router(routerConfig: router),
+    );
   }
 
   testWidgets('root screen shows empty folders and notes', (tester) async {
