@@ -194,6 +194,8 @@ void main() {
     await tester.tap(find.byType(DropdownButtonFormField<String?>));
     await tester.pumpAndSettle();
     expect(find.text('Child'), findsNothing);
+    await tester.tap(find.text('Root').last);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
   });
@@ -284,4 +286,65 @@ void main() {
     expect(find.text('Folder unavailable'), findsOneWidget);
     expect(find.text('Retry'), findsWidgets);
   });
+
+  testWidgets('moves a nested folder back to root', (tester) async {
+    final parent = await folders.createFolder(name: 'Parent');
+    final child = await folders.createFolder(
+      name: 'Child',
+      parentId: parent.id,
+    );
+    await mount(tester);
+    await tester.tap(find.text('Parent'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Folder actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButtonFormField<String?>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Root').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move').last);
+    await tester.pumpAndSettle();
+    expect((await folders.getFolder(child.id)).parentId, isNull);
+  });
+
+  testWidgets('creates a note inside the current folder', (tester) async {
+    final folder = await folders.createFolder(name: 'Notes folder');
+    await mount(tester);
+    await tester.tap(find.text('Notes folder'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('New note'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'Folder note');
+    await tester.enterText(find.byType(TextField).last, 'Folder body');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    final created = await notes.listNotes(folderId: folder.id);
+    expect(created.single.title, 'Folder note');
+    expect(created.single.body, 'Folder body');
+  });
+
+  testWidgets('moves a folder note back to root', (tester) async {
+    final folder = await folders.createFolder(name: 'Source folder');
+    final note = await notes.createNote(
+      folderId: folder.id,
+      title: 'Move to root',
+    );
+    await mount(tester);
+    router.go('/folders/${folder.id}');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Note actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButtonFormField<String?>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Root').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move').last);
+    await tester.pumpAndSettle();
+    expect((await notes.getNote(note.id)).folderId, isNull);
+  });
+
 }
