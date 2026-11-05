@@ -14,7 +14,7 @@ Snapshot: 2026-11-06; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec
 - Centralized provisional color, typography, spacing, sizing and radius tokens.
 - Material 3 light, dark and true-black AMOLED themes.
 - Reusable button, card, text-field, dialog and modal-sheet primitives.
-- GoRouter splash route -> temporary foundation route; unknown-route recovery.
+- GoRouter splash route -> root folder browser; `/appearance` retains the foundation theme preview; unknown-route recovery.
 - In-memory system/light/dark/AMOLED preview. Theme preference persistence remains Phase 09.
 - Configuration, theme, splash/navigation, unknown-route and reusable-widget tests.
 - Android app-shell integration smoke test source retained in `integration_test/app_smoke_test.dart`; source presence is not evidence that the test was executed.
@@ -88,7 +88,7 @@ This historical section records the first complete presentation implementation a
 
 - Source implementation revision: `36a27212dadda99fbb7bb333a93a3568c967869d`.
 - Flutter CI run: `42040473461` — success on Flutter 3.47.9; locked dependencies, format, analyzer and **67/67 tests**.
-- Phase 02 screen widget coverage: 19 tests in `test/features/phase_02_screens_test.dart`.
+- Initial Phase 02 screen widget coverage on this historical source revision: 17 tests in `test/features/phase_02_screens_test.dart`.
 - Universal Debug APK run: `42040771830` — success; artifact `yamintto-debug-36a27212dadda99fbb7bb333a93a3568c967869d`; archive 80,051,369 bytes; SHA-256 `4e2544d8b6df7086fdb4ef1300fd8d0e0b78e2f97ee94597985dfbb71d186865`.
 - ARM64 Debug APK run: `42040772056` — success; artifact `yamintto-arm64-debug-36a27212dadda99fbb7bb333a93a3568c967869d`; archive 51,759,376 bytes; SHA-256 `2b635ecafb2a04a256a92fe4f58d10dac8346fd639d6f263f9ddb36d03f4ee15`.
 - Drift lifecycle: tests now close the in-memory fixture before opening file-backed DB instances; the latest source-revision CI log contains zero Drift multiple-database warnings.
@@ -116,7 +116,7 @@ This historical section records the first complete presentation implementation a
 
 **Phase 01 acceptance is recorded as an owner-reported Android pass, not an independent QA/device-log verification.** The owner has reported successful real-device testing, so no Android device-test failure is currently outstanding. iOS verification is not a gate. Do not describe the owner-reported result as independently verified.
 
-Phase 02 is owner-authorized. The folder browser, nested navigation, folder create/rename/move/empty-only soft-delete, active root/folder note lists, plain-text note create/edit/save/cancel, unsaved-change guard, note move/soft-delete, GoRouter routes and Riverpod presentation providers are implemented. Source implementation revision `36a27212dadda99fbb7bb333a93a3568c967869d` passed Flutter CI run `42040473461` on Flutter 3.47.9: locked dependency resolution, repository-wide formatting, fatal-info analysis and **67/67 unit/widget tests**. The 17 Phase 02 screen widget tests cover folder and note interactions, including root/folder creation, both root move directions, descendant-safe folder destinations, soft-delete retention and missing-folder error recovery. Universal Debug APK run `42040771830` and ARM64 Debug APK run `42040772056` both succeeded on that same source SHA and uploaded their artifacts. The final documentation-only revision is validated separately by its own exact-SHA workflows; its run IDs and artifact names are included in the final execution report. The physical-device SQLite reopen/soft-delete integration test remains source-only and owner-run. **Phase 02 implementation and automated validation completed; owner physical-device smoke testing and final acceptance pending.** Phase 02 is not accepted. Phase 03 has not started and is not authorized.
+Phase 02 is owner-authorized. The folder browser, nested navigation, folder create/rename/move/empty-only soft-delete, active root/folder note lists, plain-text note create/edit/save/cancel, unsaved-change guard, note move/soft-delete, GoRouter routes and Riverpod presentation providers are implemented. Latest source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed Flutter CI run `42097059083` on Flutter 3.47.9: locked dependency resolution, repository-wide formatting, fatal-info analysis and **69/69 unit/widget tests**. The 19 Phase 02 screen widget tests cover folder and note interactions, including dismissal-as-cancel regression coverage for folder and note move dialogs. Universal Debug APK run `42097260846` and ARM64 Debug APK run `42097260894` both succeeded on that same source SHA and uploaded their artifacts. The final documentation-only revision `acd8d49fadc4a8c451e0e75e29f254164871b6c4` is validated separately by all three protected workflows on its exact SHA; its run IDs and artifact names are included in the final execution report. The physical-device SQLite reopen/soft-delete integration test remains source-only and owner-run. **Phase 02 implementation and automated validation completed; owner physical-device smoke testing and final acceptance pending.** Phase 02 is not accepted. Phase 03 has not started and is not authorized.
 
 ## Workflow policy
 
