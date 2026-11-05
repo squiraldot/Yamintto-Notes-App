@@ -20,22 +20,28 @@ This is the single authoritative Phase 02 decision register. Recommendations are
 |---|---|---|---|---|
 | Persistence technology | Accepted (ADR-0003) | Drift + SQLite | Relational local persistence, transactions and migrations | No new approval |
 | Offline-first | Accepted (ADR-0002) | Core notes/folders work without network | Product architecture requirement | No new approval |
-| DB initialization/ownership | Recommended | One app-private DB, one app-scoped instance, composed by Riverpod | Single lifecycle/connection owner | Yes |
+| DB initialization/ownership | Recommended | Lazy open on first repository access; memoize one app-private DB instance in an app-scoped Riverpod provider; complete migration before exposing repositories | Single lifecycle/connection owner and controlled startup failure | Yes |
 | Repository/DAO boundary | Recommended | Repositories expose domain operations; DAOs internal; UI never uses SQL | Testable domain and controlled access | Yes |
 | Error mapping | Recommended | Map SQLite/Drift failures to typed app/domain failures at data boundary | Safe, actionable errors | Yes |
 | ID strategy | Recommended | Canonical lowercase UUID v4 TEXT for every entity | Offline generation, portability, collision resistance, no time leakage | Yes |
+| Autoincrement integer IDs | Rejected | Do not use as the portable entity ID | Less suitable for offline import/backup and future merge/conflict handling | No |
+| UUID v7 | Rejected for current baseline | Use UUID v4 unless future measured indexing needs justify v7 | Time leakage and added implementation requirements outweigh current benefit | No |
 | Timestamp format | Recommended | UTC Unix epoch milliseconds as INTEGER | Consistent precision and portable serialization | Yes |
 | Timestamp semantics | Recommended | created_at immutable; updated_at changes on content/metadata mutations incl. move/delete/restore; backup preserves both | Predictable lifecycle and statistics | Yes |
 | Root representation | Recommended | NULL parent_id/folder_id; no synthetic root row | Simple nullable relationships | Yes |
 | Nested folders | Recommended | Support nested hierarchy | Required behavior | Yes |
 | Maximum depth | Recommended | No arbitrary cap initially; guarded cycle-safe traversal | Avoid premature product limit | Yes |
 | Folder movement | Recommended | Allow; reject self/descendant; validate and update atomically | Flexible without cycles | Yes |
-| Folder deletion | Recommended; blocker | Reject if any child folder or note (including soft-deleted) exists; soft-delete only empty folder | Avoid recursive data loss | **Yes — blocking** |
+| Folder deletion | Recommended; blocker | Reject if any child folder or note (including soft-deleted) exists; soft-delete only empty folder; future UI confirmation; reversible by restore | Avoid recursive data loss and retain recoverability | **Yes — blocking** |
+| Recursive folder deletion | Rejected | Do not delete descendants/notes implicitly | High risk of irreversible multi-record data loss | No |
+| Move contents to parent/root/Trash on folder delete | Rejected for proposed baseline | Require explicit separate move operations; do not silently relocate data during delete | Avoid surprising location changes and hidden multi-record behavior | No |
 | Note deletion | Recommended; blocker | Soft-delete via deleted_at from schema v1; preserve folder/order | Future restore without destructive retrofit | **Yes — blocking** |
 | Trash UI | Deferred to Phase 04 | No Trash UI in Phase 02 | Phase ownership | No Phase 02 approval |
 | Restore fallback | Recommended; blocker | Restore original folder/order if valid; otherwise root with explicit conflict result | Avoid inaccessible trashed note | **Yes — blocking** |
 | Deleted-note access | Recommended | Exclude from active lists/default search; disallow edit/move until restored | Clear active/trash boundary | Yes |
 | Permanent deletion | Recommended; blocker | Separate explicit confirmed operation; coordinate revisions/attachments; no implicit cascade | Prevent accidental irreversible loss | **Yes — blocking** |
+| Separate polymorphic trash_items table | Rejected | Use nullable deleted_at on folders/notes | Avoid polymorphic references without normal FK enforcement and duplicated location state | No |
+| FK CASCADE | Rejected | Use RESTRICT and explicit dependent cleanup | Prevent silent destruction of recoverable data | No |
 | Folder naming/depth rules | Recommended; blocker | Non-empty trimmed names; max length, sibling duplicate/case policy and depth limit to be decided | Avoid undocumented input behavior | **Yes — blocking** |
 | Schema v1 inventory | Recommended; blocker | Only folders and notes; no tags/revisions/attachments/trash_items/encryption_metadata/app_settings | Minimal phase-owned schema | **Yes — blocking** |
 | Schema fields/constraints | Recommended; blocker | Follow DATABASE_SCHEMA.md | Exact nullability/defaults/checks/indexes/FKs | **Yes — blocking** |
@@ -52,7 +58,7 @@ This is the single authoritative Phase 02 decision register. Recommendations are
 | Settings table | Deferred to Phase 09 | Do not create in Phase 02 | Not needed for core data | No |
 | Migration baseline | Recommended; blocker | Drift schemaVersion 1; immutable forward migrations; fresh + every supported prior-version tests | Reproducible safe upgrades | **Yes — blocking** |
 | Destructive migrations | Recommended | Prohibit by default; data-preserving rebuilds only; Phase 06 plaintext removal requires security review | Protect user data | Yes |
-| Migration failure | Recommended | Abort/rollback, typed failure, fail closed; never silently replace DB with empty DB | Prevent silent data loss | Yes |
+| Migration failure | Recommended | Abort/rollback before commit, typed failure, fail closed; post-commit recovery uses forward correction or verified backup, not assumed downgrade | Prevent silent data loss | Yes |
 | Trash retention | Pending product decision | Indefinite soft-delete until duration approved; no automatic deletion | No duration specified | **Yes — blocking for cleanup policy, not for soft-delete foundation** |
 | Revision retention | Deferred to Phase 05 | Approve count/age/size before history ships | Product/storage impact | No |
 | Attachment limits | Deferred to Phase 05 | Approve types/size/storage/orphan policy before attachments | Product/storage/security impact | No |
