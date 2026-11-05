@@ -46,30 +46,31 @@ void main() {
     );
   });
 
-  tearDown(() async {
-    router.dispose();
-    await database.close();
-  });
-
   Widget app() => ProviderScope(
-      overrides: [
-        folderRepositoryProvider.overrideWith((ref) async => folders),
-        noteRepositoryProvider.overrideWith((ref) async => notes),
-      ],
-      child: MaterialApp.router(routerConfig: router),
-    );
+    overrides: [
+      folderRepositoryProvider.overrideWith((ref) async => folders),
+      noteRepositoryProvider.overrideWith((ref) async => notes),
+    ],
+    child: MaterialApp.router(routerConfig: router),
+  );
+
+  Future<void> mount(WidgetTester tester) async {
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      router.dispose();
+      await database.close();
+    });
+    await mount(tester);
   }
 
   testWidgets('root screen shows empty folders and notes', (tester) async {
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
+    await mount(tester);
     expect(find.text('No folders here yet.'), findsOneWidget);
     expect(find.text('No notes here yet.'), findsOneWidget);
   });
 
   testWidgets('creates and opens a nested folder', (tester) async {
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
+    await mount(tester);
     await tester.tap(find.byTooltip('Create folder'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).last, 'Projects');
@@ -82,8 +83,7 @@ void main() {
   });
 
   testWidgets('renames a folder through its action menu', (tester) async {
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
+    await mount(tester);
     await tester.tap(find.byTooltip('Create folder'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).last, 'Before');
@@ -103,8 +103,7 @@ void main() {
   testWidgets('moves a folder into another folder', (tester) async {
     final source = await folders.createFolder(name: 'Source');
     final destination = await folders.createFolder(name: 'Destination');
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
+    await mount(tester);
     await tester.tap(find.byTooltip('Folder actions').first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Move'));
@@ -123,8 +122,7 @@ void main() {
     tester,
   ) async {
     final folder = await folders.createFolder(name: 'Empty folder');
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
+    await mount(tester);
     await tester.tap(find.byTooltip('Folder actions'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete'));
@@ -140,9 +138,12 @@ void main() {
 
   testWidgets('rejects deleting a folder containing a note', (tester) async {
     final folder = await folders.createFolder(name: 'Not empty');
-    await notes.createNote(folderId: folder.id, title: 'Retained note');
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
+    final retained = await notes.createNote(
+      folderId: folder.id,
+      title: 'Retained note',
+    );
+    await notes.softDeleteNote(retained.id);
+    await mount(tester);
     await tester.tap(find.byTooltip('Folder actions'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete'));
@@ -154,8 +155,7 @@ void main() {
   });
 
   testWidgets('creates and saves a plain-text note', (tester) async {
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
+    await mount(tester);
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Meeting');
@@ -167,8 +167,7 @@ void main() {
   });
 
   testWidgets('prompts before abandoning unsaved note changes', (tester) async {
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
+    await mount(tester);
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Draft');
@@ -179,4 +178,106 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('New note'), findsOneWidget);
   });
+
+  testWidgets('excludes descendants from folder move destinations', (
+    tester,
+  ) async {
+    final parent = await folders.createFolder(name: 'Parent');
+    await folders.createFolder(name: 'Child', parentId: parent.id);
+    await mount(tester);
+    await tester.tap(find.byTooltip('Folder actions').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButtonFormField<String?>));
+    await tester.pumpAndSettle();
+    expect(find.text('Child'), findsNothing);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('edits an existing note and explicitly saves plain text', (
+    tester,
+  ) async {
+    final note = await notes.createNote(title: 'Before', body: 'Old body');
+    await mount(tester);
+    await tester.tap(find.text('Before'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'After');
+    await tester.enterText(find.byType(TextField).last, 'Updated raw body');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    final saved = await notes.getNote(note.id);
+    expect(saved.title, 'After');
+    expect(saved.body, 'Updated raw body');
+  });
+
+  testWidgets('cancelling existing note edits preserves stored content', (
+    tester,
+  ) async {
+    final note = await notes.createNote(title: 'Original', body: 'Original body');
+    await mount(tester);
+    await tester.tap(find.text('Original'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'Unsaved title');
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Discard'));
+    await tester.pumpAndSettle();
+    final unchanged = await notes.getNote(note.id);
+    expect(unchanged.title, 'Original');
+    expect(unchanged.body, 'Original body');
+    expect(find.text('Original'), findsOneWidget);
+  });
+
+  testWidgets('moves a root note into a selected folder', (tester) async {
+    final destination = await folders.createFolder(name: 'Destination');
+    final note = await notes.createNote(title: 'Move me');
+    await mount(tester);
+    await tester.tap(find.byTooltip('Note actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButtonFormField<String?>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Destination').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move').last);
+    await tester.pumpAndSettle();
+    expect((await notes.getNote(note.id)).folderId, destination.id);
+    expect(find.text('Move me'), findsNothing);
+  });
+
+  testWidgets('soft-deletes a note and removes it from active listing', (
+    tester,
+  ) async {
+    final note = await notes.createNote(title: 'Delete me');
+    await mount(tester);
+    await tester.tap(find.byTooltip('Note actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Confirm'));
+    await tester.pumpAndSettle();
+    expect(find.text('Delete me'), findsNothing);
+    expect(await notes.listNotes(), isEmpty);
+    final retained = await database
+        .customSelect(
+          'SELECT deleted_at FROM notes WHERE id = ?',
+          variables: [Variable.withString(note.id)],
+        )
+        .getSingle();
+    expect(retained.data['deleted_at'], isNotNull);
+  });
+
+  testWidgets('missing folder route shows a recoverable error state', (
+    tester,
+  ) async {
+    await mount(tester);
+    router.go('/folders/missing-folder-id');
+    await tester.pumpAndSettle();
+    expect(find.text('Folder unavailable'), findsOneWidget);
+    expect(find.text('Retry'), findsWidgets);
+  });
+
 }
