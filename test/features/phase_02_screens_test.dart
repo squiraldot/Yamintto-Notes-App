@@ -86,11 +86,11 @@ void main() {
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
     await tester.enterText(
-      find.widgetWithText(TextField, 'Title').first,
+      find.byType(TextField).first,
       'Meeting',
     );
     await tester.enterText(
-      find.widgetWithText(TextField, 'Plain-text body').first,
+      find.byType(TextField).last,
       'Raw source text',
     );
     await tester.tap(find.text('Save'));

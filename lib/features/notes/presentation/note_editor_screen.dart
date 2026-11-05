@@ -21,10 +21,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   bool _initialized = false;
   bool _saving = false;
   bool _dirty = false;
+  String? _activeFolderId;
 
   @override
   void initState() {
     super.initState();
+    _activeFolderId = widget.folderId;
     _title = TextEditingController();
     _body = TextEditingController();
     _title.addListener(_markDirty);
@@ -57,6 +59,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         ),
         data: (note) {
           if (!_initialized) {
+            _activeFolderId = note.folderId;
             _title.text = note.title;
             _body.text = note.body;
             _initialized = true;
@@ -73,7 +76,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     canPop: !_dirty && !_saving,
     onPopInvokedWithResult: (didPop, result) async {
       if (didPop || _saving) return;
-      if (await _confirmDiscard() && mounted) context.pop();
+      if (await _confirmDiscard() && mounted) {
+        setState(() => _dirty = false);
+        await WidgetsBinding.instance.endOfFrame;
+        if (mounted) context.pop();
+      }
     },
     child: Scaffold(
       appBar: AppBar(
@@ -172,7 +179,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         );
       }
       if (!mounted) return;
-      ref.invalidate(noteListProvider(widget.folderId));
+      ref.invalidate(noteListProvider(_activeFolderId));
       if (widget.noteId != null)
         ref.invalidate(noteDetailProvider(widget.noteId!));
       _dirty = false;
