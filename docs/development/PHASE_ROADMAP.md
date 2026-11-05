@@ -15,7 +15,7 @@ This is an ordered plan, not authorization. Phase 01 is the only authorized phas
 ## Phase 02 — Core Management
 - Scope: implement approved Drift schema version 1/migrations; nested folder management; note CRUD with soft-delete foundation. No Trash UI, physical permanent deletion, search, pinning, revisions, attachments, encryption, biometrics, backup or import implementation.
 - Dependencies: Phase 01 accepted; owner-approved architecture freeze recorded in [decision register](../database/PHASE_02_DECISION_REGISTER.md) and [ADR-0013](../decisions/0013-phase-02-data-model-lifecycle.md).
-- Prerequisite: a separate explicit owner authorization for Phase 02 implementation. Architecture approval does not itself authorize code changes.
+- Prerequisite: **satisfied** — owner explicitly authorized Phase 02 implementation on 2026-11-05. Starting baseline `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; continue from the newer `main` head without resetting history.
 - Accepted schema v1: only folders and notes; NULL root relationships; canonical lowercase UUID v4 TEXT; UTC epoch-millisecond INTEGER; nullable deleted_at; explicit sort_order; FK enforcement with RESTRICT; transactional multi-record operations.
 - Folder hierarchy: virtual root level 0; top-level folders level 1; maximum level 32. Domain validation and tests must check create/move subtree depth and cycle rejection.
 - Folder names: trimmed, non-empty, max 255 Unicode code points; case-insensitive unique per parent using the shared Unicode NFKC_Casefold canonicalizer and a root-aware database unique constraint. Includes soft-deleted folders; name reuse only after Phase 04 permanent deletion.
@@ -25,8 +25,8 @@ This is an ordered plan, not authorization. Phase 01 is the only authorized phas
 - Retention: indefinite soft-delete retention initially; no automatic expiry or cleanup. Phase 05 extends permanent deletion to revisions/attachment data/files with durable staged cleanup and crash recovery.
 - Acceptance after authorization: fresh schema v1; CRUD; depth 32 accepted/33 rejected; no cycles/orphans; sibling name uniqueness including root and soft-deleted rows; FK checks; transaction rollback; restart persistence; soft-delete filters; typed errors.
 - Tests: schema/DAO/repository/hierarchy/depth/name canonicalization/order/FK/transaction unit; folder/note widgets; fresh install, CRUD/restart, soft-delete, rollback and migration integration on supported platforms.
-- Checklist: [ ] implementation authorized [ ] schema v1 [ ] migration tests [ ] folder CRUD [ ] note CRUD [ ] depth/name constraints [ ] unit [ ] widget [ ] integration [ ] docs [ ] review/SHA.
-- Status: **Architecture decision freeze COMPLETE; application implementation NOT STARTED; separate owner authorization required.**
+- Checklist: [x] implementation authorized [x] schema v1 source [x] Unicode 17.0 canonicalizer/data [x] folder repository CRUD source [x] note CRUD source [x] depth/name constraints source [x] unit-test source [x] physical-device integration-test source [ ] Flutter formatting [ ] analyzer [ ] unit/widget tests executed [ ] universal Debug APK [ ] ARM64 Debug APK [ ] Android/iOS/device verification [ ] final docs/review/SHA.
+- Status: **Implementation IN PROGRESS; not accepted.** Existing schema/database, Unicode, folder, notes and test source is present on `main`. Latest Flutter CI run `42012048313` on `804769c365b329d94e6fcc7301b23a2caebc1c66` failed at the Dart formatting gate on nine files; analyzer and unit/widget tests were skipped. Both Debug APK workflows were skipped. Do not mark Phase 02 complete until formatting, analyzer, tests, universal/ARM64 APK workflows and required platform/device evidence pass.
 
 ## Phase 03 — Editor
 - Scope: Markdown editor; viewer; autosave.
