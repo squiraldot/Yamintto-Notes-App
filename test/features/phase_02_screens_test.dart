@@ -23,10 +23,25 @@ void main() {
     router = GoRouter(
       initialLocation: '/',
       routes: [
-        GoRoute(path: '/', builder: (context, state) => const FolderBrowserScreen()),
-        GoRoute(path: '/folders/:folderId', builder: (context, state) => FolderBrowserScreen(folderId: state.pathParameters['folderId'])),
-        GoRoute(path: '/notes/new', builder: (context, state) => NoteEditorScreen(folderId: state.extra as String?)),
-        GoRoute(path: '/notes/:noteId/edit', builder: (context, state) => NoteEditorScreen(noteId: state.pathParameters['noteId'])),
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const FolderBrowserScreen(),
+        ),
+        GoRoute(
+          path: '/folders/:folderId',
+          builder: (context, state) =>
+              FolderBrowserScreen(folderId: state.pathParameters['folderId']),
+        ),
+        GoRoute(
+          path: '/notes/new',
+          builder: (context, state) =>
+              NoteEditorScreen(folderId: state.extra as String?),
+        ),
+        GoRoute(
+          path: '/notes/:noteId/edit',
+          builder: (context, state) =>
+              NoteEditorScreen(noteId: state.pathParameters['noteId']),
+        ),
       ],
     );
   });
@@ -103,7 +118,9 @@ void main() {
     expect(find.text('Source'), findsNothing);
   });
 
-  testWidgets('soft-deletes an empty folder from the active list', (tester) async {
+  testWidgets('soft-deletes an empty folder from the active list', (
+    tester,
+  ) async {
     final folder = await folders.createFolder(name: 'Empty folder');
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
@@ -114,7 +131,10 @@ void main() {
     await tester.tap(find.text('Confirm'));
     await tester.pumpAndSettle();
     expect(find.text('Empty folder'), findsNothing);
-    expect((await folders.listFolders()).where((item) => item.id == folder.id), isEmpty);
+    expect(
+      (await folders.listFolders()).where((item) => item.id == folder.id),
+      isEmpty,
+    );
   });
 
   testWidgets('rejects deleting a folder containing a note', (tester) async {
