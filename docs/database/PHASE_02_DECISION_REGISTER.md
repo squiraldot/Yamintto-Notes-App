@@ -2,7 +2,7 @@
 
 **Owner approval:** Explicitly approved by the repository owner on 2026-11-05.  
 **Architecture status:** <strong>ACCEPTED — PHASE 02 DECISION FREEZE COMPLETE</strong>.  
-**Implementation status:** Schema v1, Unicode 17.0 canonicalization, folder/note repositories and Phase 02 presentation source are implemented. Source revision `36a27212dadda99fbb7bb333a93a3568c967869d` passed Flutter CI run `42040473461` with 67/67 tests; universal and ARM64 Debug APK artifacts uploaded on runs `42040771830` and `42040772056`. Owner physical-device testing and final acceptance remain pending.  
+**Implementation status:** Schema v1, Unicode 17.0 canonicalization, folder/note repositories and Phase 02 presentation source are implemented. Latest source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed Flutter CI run `42097059083` with 69/69 tests (19 Phase 02 screen widget tests); universal and ARM64 Debug APK artifacts uploaded on runs `42097260846` and `42097260894` for that same source SHA. Owner physical-device testing and final acceptance remain pending.  
 **Baseline before this approval:** `main` at `9cc09c272faa9ccbb62c240113fcd89bcef046ae`.
 
 This is the authoritative Phase 02 decision register. The owner approved the proposed architecture baseline with the amendments recorded below. No Phase 02 implementation-blocking owner decision remains unresolved. The owner separately authorized Phase 02 implementation on 2026-11-05; implementation source now includes the folder browser and plain-text notes management screens.

@@ -20,4 +20,4 @@
 
 ## Tests and device checks
 
-Widget coverage includes root and nested folder navigation, folder create/rename/move/delete, descendant-safe destination choices, note creation in root/folder, note edit/save/cancel, movement to/from root, soft-delete and missing-folder recovery. These checks are included in the 17 Phase 02 screen widget tests. The owner must verify Android system back and iOS navigation conventions on physical devices. Integration/E2E remains owner-run only.
+Widget coverage includes root and nested folder navigation, folder create/rename/move/delete, descendant-safe destination choices, note creation in root/folder, note edit/save/cancel, movement to/from root, soft-delete and missing-folder recovery. These checks are included in the 19 Phase 02 screen widget tests. Move destination-picker dismissal (system Back/barrier tap) is treated as cancellation and covered for both folders and notes. The owner must verify Android system back and iOS navigation conventions on physical devices. Integration/E2E remains owner-run only.
