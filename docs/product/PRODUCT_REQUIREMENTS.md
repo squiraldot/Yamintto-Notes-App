@@ -6,14 +6,14 @@ Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](
 
 | ID | Description / user behavior | Priority | Primary phase | Dependencies | Acceptance criteria | Test expectations | Status |
 |---|---|---|---:|---|---|---|---|
-| FR-01 | Create, rename, move, navigate and delete nested folders | P1 | 02 | DB, routing, deletion policy | No cycles; references safe; transaction rollback | hierarchy/DAO unit; widget CRUD; integration restart/rollback | Planned |
-| FR-02 | Create, view, edit and delete notes | P0 | 02 | DB, FR-01 | Validated CRUD; survives restart; references consistent | repository unit; list/detail widget; persistence integration | Planned |
+| FR-01 | Create, rename, move, navigate and delete nested folders | P1 | 02 | Accepted Drift schema, hierarchy/name validation | Max depth 32 (root 0); no cycles; max 255 Unicode code points; case-insensitive unique sibling names incl. root; empty-only soft-delete; safe references and transaction rollback | hierarchy/depth/name-key/DAO unit; widget CRUD; integration restart/rollback | Planned |
+| FR-02 | Create, view, edit and soft-delete notes | P0 | 02 | Accepted Drift schema, FR-01 | Title max 255 Unicode code points; soft-delete from schema v1 preserves folder/order; deleted notes excluded from active lists/default search and require restore before edit/move | repository unit; list/detail widget; persistence integration | Planned |
 | FR-03 | Edit Markdown source | P1 | 03 | FR-02, approved dialect | Supported syntax documented; source round-trip | parser unit; editor widget; fixture integration | Planned |
 | FR-04 | Render Markdown safely | P1 | 03 | FR-03, renderer | Output matches dialect; unsafe content handled; semantics accessible | renderer unit; preview widget; fixture integration | Planned |
 | FR-05 | Automatically save edits | P0 | 03 | FR-02/03, lifecycle | Latest revision wins; pending edits flush; errors retain text | race unit; status widget; lifecycle/restart integration | Planned |
 | FR-06 | Search notes offline | P1 | 04 | FR-02/03, index strategy | Correct results; trash excluded by default; Phase 06 removes persistent plaintext content index | matcher unit; query widget; update/restart + migration integration | Planned |
 | FR-07 | Pin/unpin and prioritize notes | P2 | 04 | FR-02 | Stable order and persistence | sort unit; widget action; restart integration | Planned |
-| FR-08 | Trash/restore notes and folders | P1 | 04 | FR-01/02, retention | Restore valid location; permanent deletion explicit; atomic cleanup | lifecycle unit; widget; transaction/cascade integration | Planned |
+| FR-08 | Trash/restore and permanently delete notes and folders | P1 | 04 | FR-01/02, approved indefinite initial retention | Trash includes both entity types; restore notes to original folder/order or root with explicit conflict result; permanent deletion explicit and confirmed; Phase 05 extends dependent cleanup | lifecycle unit; widget; transaction and cleanup-recovery integration | Planned |
 | FR-09 | Browse and restore note revisions | P2 | 05 | FR-02/05, retention | Restore creates new current revision | revision unit; history widget; restore integration | Planned |
 | FR-10 | Import/open/export/remove local attachments | P1 | 05 | FR-02, file adapters | Validate type/size; atomic association/cleanup; bytes local but unencrypted in Phase 05 | file unit; picker widget; round-trip/deletion/storage-full integration | Planned; not encrypted until FR-11 |
 | FR-11 | Encrypt note bodies/revisions and attachments | P0 | 06 | FR-02/09/10, reviewed crypto | AES-256-GCM, unique nonce, 256-bit master key; tamper fails; no plaintext content/index persists after migration | vectors/tamper; at-rest scan; migration/recovery integration; independent review | Planned |
@@ -51,13 +51,13 @@ Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](
 ## Phase 02 data lifecycle — owner approved (2026-11-05)
 
 - Drift + SQLite remains the accepted technology (ADR-0003); dependencies are configured, but no database implementation exists.
-- Proposed schema v1 contains only `folders` and `notes`. Revisions/attachments are Phase 05, encryption metadata Phase 06, settings Phase 09; no separate polymorphic trash table is proposed.
+- Accepted schema v1 contains only `folders` and `notes`. Revisions/attachments are Phase 05, encryption metadata Phase 06, settings Phase 09; no separate polymorphic trash table is proposed.
 - Nested folders use NULL as root. Moves reject self/descendant cycles and run transactionally.
 - Folder depth is capped at 32 levels (virtual root level 0; top-level folders level 1). Validate creates and complete moved subtrees; reject cycles and any move exceeding level 32.
 - Folder names are trimmed, non-empty, maximum 255 Unicode code points, and case-insensitively unique per parent using the same Unicode NFKC_Casefold canonicalizer in app validation and the root-aware database unique constraint. The constraint includes soft-deleted folders; the name is unavailable until permanent deletion. Note titles are maximum 255 Unicode code points.
 - Empty-folder-only deletion is accepted: reject if child folders or any notes (including soft-deleted notes) exist; soft-delete only an empty folder. Notes soft-delete from schema v1, preserving folder/order. Deleted notes are excluded from active lists/default search; edit/move requires restore.
 - Phase 04 Trash includes deleted notes and folders, with restore and explicit permanent deletion. Restore notes to original folder/order when valid; otherwise restore to root and return an explicit conflict result. Soft-deleted records are retained indefinitely initially; no automatic expiry/cleanup. Permanent deletion and dependent-data cleanup are future-phase work, not Phase 02 blockers.
-- See [Phase 02 decision register](../database/PHASE_02_DECISION_REGISTER.md) for rationale and owner approval blockers.
+- See [Phase 02 decision register](../database/PHASE_02_DECISION_REGISTER.md) for the accepted baseline and future-phase decisions.
 
 ## Decisions deferred to their owning phases
 Markdown dialect and autosave lifecycle (03); folder restore conflict UX, search matching/ranking and pin order (04); revision retention, attachment limits/types and statistics/timezone (05); cryptographic protocol and recovery details (06/07); backup replace/merge and legacy ZIP compatibility (08); theme/font bounds and performance budgets (09). These are not Phase 02 implementation blockers. Security choices are tracked in [Security Overview](../security/SECURITY_OVERVIEW.md).
