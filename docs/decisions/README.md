@@ -9,6 +9,7 @@ ADRs capture decisions, not implementation proof. Format: Context, Decision, Alt
 - [ADR-0006 Encryption requirements](0006-encryption.md)
 - [ADR-0007 Both recovery paths](0007-recovery.md)
 - [ADR-0008 App and vault biometrics](0008-biometrics.md)
-- [ADR-0009 Exactly two workflows](0009-two-workflows.md)
+- [ADR-0009 Original two-workflow limit (superseded)](0009-two-workflows.md)
 - [ADR-0010 Debug-only beta](0010-debug-only-beta.md)
 - [ADR-0011 Search index privacy lifecycle](0011-search-index-privacy.md)
+- [ADR-0012 Three protected workflows and ARM64 debug artifact](0012-arm64-debug-apk-workflow.md)
