@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-05; branch: `main`; audited HEAD: `76ba10c04f0ec421f54e5d6252dd6745058611f9`.
+Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 audit starting HEAD: `e1c886ade7eb078049a6303ccfd2f6de72527e1b`.
 
 ## Phase 01 — Foundation
 
