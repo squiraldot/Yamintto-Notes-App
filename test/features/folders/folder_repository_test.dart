@@ -45,7 +45,7 @@ void main() {
         (await folders.listFolders(parentId: root.id)).single.id,
         child.id,
       );
-    });;
+    });
 
     test(
       'rejects root-level case-only and normalization-equivalent duplicates',
@@ -69,7 +69,7 @@ void main() {
           )),
         );
       },
-    );;
+    );
 
     test(
       'allows equal names in different parents but not the same parent',
@@ -83,7 +83,7 @@ void main() {
           throwsA(isA<DomainFailure>()),
         );
       },
-    );;
+    );
 
     test(
       'soft-deleted folders retain identity and reserve their canonical name',
@@ -106,7 +106,7 @@ void main() {
           )),
         );
       },
-    );;
+    );
 
     test(
       'renames folders while preserving identity and enforcing sibling keys',
@@ -129,7 +129,7 @@ void main() {
           )),
         );
       },
-    );;
+    );
 
     test('rejects empty, NUL-containing and overlong folder names', () async {
       for (final value in <String>['  \u2003\u00A0', 'a\u0000b', 'x' * 256]) {
@@ -143,7 +143,7 @@ void main() {
         );
       }
       await folders.createFolder(name: '😀' * 255);
-    });;
+    });
 
     test('allows depth 32 and rejects depth 33', () async {
       Folder? parent;
@@ -161,7 +161,7 @@ void main() {
           DomainFailureCode.depthExceeded,
         )),
       );
-    });;
+    });
 
     test('prevents self and descendant cycles', () async {
       final parent = await folders.createFolder(name: 'Parent');
@@ -181,7 +181,7 @@ void main() {
           DomainFailureCode.hierarchyCycle,
         )),
       );
-    });;
+    });
 
     test('validates the complete subtree depth before moving', () async {
       final source = await folders.createFolder(name: 'Source');
@@ -211,7 +211,7 @@ void main() {
         )),
       );
       expect((await folders.getFolder(source.id)).parentId, isNull);
-    });;
+    });
 
     test(
       'moves a folder atomically and only updates the moved folder timestamp',
@@ -238,7 +238,7 @@ void main() {
         expect(childAfter.updatedAt, childBefore.updatedAt);
         expect(childAfter.parentId, source.id);
       },
-    );;
+    );
 
     test(
       'soft-deletes an empty folder without discarding its canonical identity',
@@ -258,7 +258,7 @@ void main() {
         expect(stored.data['updated_at'], 7000);
         expect(stored.data['deleted_at'], 7000);
       },
-    );;
+    );
 
     test(
       'only deletes an empty folder, counting deleted child rows too',
@@ -278,6 +278,6 @@ void main() {
           )),
         );
       },
-    );;
+    );
   });
 }
