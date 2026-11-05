@@ -26,6 +26,8 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
+      - name: Temporary folder browser formatter output
+        run: dart format --output=show lib/features/folders/presentation/folder_browser_screen.dart
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed .
       - name: Run Flutter analyzer
