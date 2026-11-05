@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; current Phase 02 implementation head before this documentation update: `b15e3c43c20df8f51bb7bc90ab6e384211d900f3`.
+Snapshot: 2026-11-05; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; current Phase 02 source implementation head before documentation reconciliation: `c970b0eed0e14d5fc84a6bad87611934b2adf1c6`.
 
 ## Phase 01 — Foundation
 
@@ -87,7 +87,7 @@ All three successful runs below target the same audited commit `76ba10c04f0ec421
 
 **Phase 01 acceptance is recorded as an owner-reported Android pass, not an independent QA/device-log verification.** The owner has reported successful real-device testing, so no Android device-test failure is currently outstanding. iOS verification is not a gate. Do not describe the owner-reported result as independently verified.
 
-Phase 02 implementation is owner-authorized and source implementation is present on `main`. The latest Flutter CI run (`42012048313`, commit `804769c365b329d94e6fcc7301b23a2caebc1c66`) fails at Dart formatting: nine existing Phase 02 Dart files are reported as needing formatting. Analyzer and unit/widget tests are skipped by the workflow after this gate fails. The universal and ARM64 Debug APK workflows are consequently skipped for this SHA. Phase 02 is **in progress, not accepted**. Phases 03–09 remain not started.
+Phase 02 is owner-authorized. The folder/notes presentation source and widget tests are now present. Earlier CI attempts on intermediate commits failed formatting and skipped analyzer/tests; those failures are historical and must not be treated as the current final result. The final code commit `c970b0eed0e14d5fc84a6bad87611934b2adf1c6` includes formatter output for the new widget tests. This documentation commit creates a new exact final SHA; its Flutter CI and dependent universal/ARM64 Debug APK workflows must be checked before automated completion can be claimed. Phase 02 remains **in progress; exact-final-SHA validation and APK artifacts pending**. Owner physical-device smoke testing and final acceptance are pending. Phase 03 has not started and is not authorized.
 
 ## Workflow policy
 
@@ -100,7 +100,7 @@ Beta policy remains Debug APK only: no release APK/AAB, release signing or publi
 
 ## Phase 02 — Owner-approved architecture decision freeze (2026-11-05)
 
-**Architecture decision freeze: COMPLETE. Implementation authorization: GRANTED by owner on 2026-11-05. Implementation status: IN PROGRESS; acceptance is blocked by the current CI formatting gate.**
+**Architecture decision freeze: COMPLETE. Implementation authorization: GRANTED by owner on 2026-11-05. Source implementation: present. Exact-final-SHA automated validation and APK artifacts: pending. Owner physical-device smoke testing and acceptance: pending.**
 
 - Owner reviewed the Phase 02 decision register, ADR-0013, schema, migration policy and retention policy, then approved the baseline with amendments.
 - Accepted amendments: maximum folder depth 32 (virtual root level 0); folder names max 255 Unicode code points; note titles max 255 Unicode code points; case-insensitive sibling folder-name uniqueness using a Unicode NFKC_Casefold canonicalizer and root-aware DB unique constraint; unique names remain reserved while folders are soft-deleted.
@@ -113,6 +113,6 @@ Beta policy remains Debug APK only: no release APK/AAB, release signing or publi
 - Existing Phase 02 source on `main` includes the Drift `GeneratedDatabase` wrapper and schema v1 SQL, app-scoped lazy Riverpod database provider, Unicode 17.0 canonicalizer and generated data, folder and notes repositories/domain models, repository providers, unit tests and a physical-device integration smoke-test source.
 - Unicode data provenance and generation are present under `tool/unicode/17.0.0/` and `tool/unicode/generate_unicode_17_data.py`; the schema uses the same deterministic Unicode functions for Dart validation and SQLite checks.
 - The owner subsequently authorized implementation on `main`, starting from `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`. The branch already contained implementation commits after that baseline; work continued from the newer branch head without resetting history.
-- Latest CI evidence: run `42012048313` on `804769c365b329d94e6fcc7301b23a2caebc1c66` failed only at `dart format --output=none --set-exit-if-changed .`, which reported nine files changed. Analyzer and unit/widget tests were skipped. Both APK workflows were skipped because CI did not pass. No Phase 02 Android build, iOS build or physical-device integration run is verified.
+- Intermediate validation history: earlier runs on implementation commits failed the format gate (first nine files, then one newly added widget-test file), so analyzer/tests were skipped on those intermediate SHAs and dependent APK workflows were skipped. Formatter output was applied to the relevant source before this documentation commit. The exact final documentation/source SHA still requires a fresh successful Flutter CI run followed by both APK workflows. No Phase 02 physical-device integration run is verified.
 - **Phase 02 is not complete.** Do not mark it accepted until formatting, analyzer, tests, both Debug APK workflows and required platform/device evidence are reconciled.
 
