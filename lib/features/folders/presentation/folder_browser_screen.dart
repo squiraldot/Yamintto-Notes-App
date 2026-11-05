@@ -343,7 +343,9 @@ Future<String?> _destination(
     }
   }
   final choices = folders
-      .where((folder) => folder.id != movingId && !excludedIds.contains(folder.id))
+      .where(
+        (folder) => folder.id != movingId && !excludedIds.contains(folder.id),
+      )
       .toList();
   String? selected = current;
   final result = await showDialog<String>(
