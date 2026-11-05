@@ -17,9 +17,11 @@ Phase 01 does not include notes, folders, editor, search, database, security, at
 
 ## Phase 02 — Core Management
 ### Notes CRUD (primary 02)
-Behavior: create/view/edit/delete. Data: ID, title, body, folder ID, timestamps, pin/trash. Dependencies: Drift schema/repository and folders. Acceptance: validated CRUD, transactional relationships, restart persistence. Tests: repository unit, list/detail widget, persistence integration. Platforms: shared Dart + Android/iOS lifecycle. Status: Not implemented.
+Behavior: create/view/edit and soft-delete notes; no Trash UI or automatic permanent deletion. Proposed data: UUID v4 ID, title, editor-independent source body, optional folder ID, explicit sort order, UTC epoch-millisecond timestamps and nullable deleted_at. Dependencies: approved Drift schema and folders. Acceptance: validated CRUD, transactional relationships, restart persistence, deleted notes excluded from active queries. Status: Not implemented; decisions pending approval.
 ### Folders (primary 02)
-Behavior: create/rename/move/navigate/delete nested folders. Data: ID, parent ID, name, order, timestamps. Dependencies: DB, routing, approved deletion semantics. Acceptance: no cycles, safe note handling, atomic moves/deletes. Tests: hierarchy unit, navigation widget, transaction/rollback integration. Status: Not implemented.
+Behavior: create/rename/move/navigate/delete nested folders. Proposed data: UUID v4 ID, nullable parent ID, name, sibling order, timestamps and nullable deleted_at. Recommended deletion: reject while any child folder or note (including soft-deleted note) remains; soft-delete only an empty folder. Moves reject self/descendant cycles and are transactional. Status: Not implemented; deletion/hierarchy decisions pending approval.
+
+**Phase 02 schema boundary:** schema v1 proposes only `folders` and `notes`. Do not add revisions, attachments, tags, trash_items, encryption_metadata or app_settings early. Search/pinning/Trash UI are Phase 04; revisions/attachments Phase 05; encryption metadata Phase 06; settings Phase 09. See [schema](../database/DATABASE_SCHEMA.md), [migrations](../database/DATABASE_MIGRATIONS.md), [retention](../database/DATA_RETENTION.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
 
 ## Phase 03 — Editor
 ### Markdown editor/viewer (primary 03)
@@ -33,7 +35,7 @@ Phase 04: offline search against pre-encryption local records; a persisted plain
 ### Pinned notes (primary 04)
 Behavior: pin/unpin, deterministic order. Data: note ID, flag, pin time/order. Dependencies: notes/list. Acceptance: persists; trash policy defined. Tests: sort unit, widget action, restart integration. Status: Not implemented.
 ### Trash/restore (primary 04)
-Behavior: soft-delete/restore notes/folders, explicit permanent deletion. Data: entity type/ID, deletion time, original location/order, expiry. Dependencies: DB transactions and retention. Acceptance: restore valid location; explicit permanent delete; atomic related cleanup. Tests: lifecycle unit, confirmation widget, cascade/rollback integration. Status: Not implemented.
+Behavior: soft-delete/restore notes/folders, explicit permanent deletion. Initial schema uses deleted_at on notes/folders; no separate trash table. Retention duration pending approval; no silent expiry. Restore preserves original location/order when valid; fallback policy pending. Permanent deletion explicitly confirms and coordinates related cleanup. Status: Not implemented.
 
 ## Phase 05 — Productivity
 ### Note history (primary 05)
