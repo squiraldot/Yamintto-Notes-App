@@ -42,7 +42,7 @@ UUID v4 is recommended over v7: portable, broadly supported, offline-generated, 
 
 Constraints: PK(id); FK parent_id REFERENCES folders(id) ON DELETE RESTRICT ON UPDATE RESTRICT; CHECK(parent_id IS NULL OR parent_id <> id). The self-check prevents direct self-parenting only; descendant cycles require transactional ancestry validation. No unique (parent_id,name) constraint until case sensitivity, normalization and duplicate behavior are approved. Index (parent_id, deleted_at, sort_order, created_at, id).
 
-A deleted folder cannot receive new children or notes. Parent/name/order remain retained. Proposed deletion is allowed only when no child folder and no note row (including soft-deleted notes) exists; set deleted_at, do not physically delete.
+A deleted folder cannot receive new children or notes. Parent/name/order remain retained. Proposed deletion is allowed only when no child folder and no note row (including soft-deleted notes) exists; set deleted_at, do not physically delete. This is reversible by clearing deleted_at in Phase 04; future UI should require confirmation even for an empty folder.
 
 ## Table: notes
 
