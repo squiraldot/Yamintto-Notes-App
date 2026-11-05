@@ -30,11 +30,15 @@ dart format --output=none --set-exit-if-changed lib test integration_test
 flutter analyze --fatal-infos
 flutter test
 flutter build apk --debug
+flutter build apk --debug --target-platform android-arm64
 ```
 iOS requires macOS, Xcode and CocoaPods; use `cd ios && pod install` after dependency resolution, then verify a Debug build on macOS. Not yet validated here.
 
-## Debug APK
-Only debug APK builds are allowed during beta. The existing debug workflow runs after successful Flutter CI on main/dev, checks out the tested SHA, builds `flutter build apk --debug`, and uploads an artifact for 14 days. GitHub Actions -> Yamintto Debug APK -> successful run -> Artifacts. No release APK, AAB, signing or publishing.
+## Debug APK artifacts
+Beta builds are Debug APKs only. Exactly two separate artifact workflows run automatically after successful Flutter CI on main/dev, each checking out the tested SHA and using Flutter 3.47.9:
+- **Yamintto Debug APK** — universal APK for broad Android ABI compatibility; artifact name `yamintto-debug-<sha>`.
+- **ARM64-only Debug APK** — APK targeting `android-arm64`, intended for compatible 64-bit Android devices such as the Redmi Note 10S; artifact name `yamintto-arm64-debug-<sha>`.
+Both artifacts are retained for 14 days. GitHub Actions -> select the corresponding workflow -> successful run -> Artifacts. The original universal workflow remains unchanged. No release APK, AAB, signing or publishing.
 
 ## Architecture
 Target: feature-first modules with presentation/domain/data boundaries; shared services in `lib/core/`; composition/providers/routing in `lib/app/`; Drift/SQLite local persistence. Current code is only the shell, not the complete target architecture.
@@ -43,4 +47,4 @@ Target: feature-first modules with presentation/domain/data boundaries; shared s
 YRNotes remains a separate web app and must remain untouched. Legacy ZIP import is planned, but its format is unknown until old source and real fixtures are inspected. See [AGENTS.md](AGENTS.md), [docs index](docs/README.md), [status](docs/STATUS.md), and [nine-phase roadmap](docs/development/PHASE_ROADMAP.md).
 
 ## Testing policy
-GitHub CI is intentionally host-only: formatting, analysis and unit/widget tests. It does not start Android emulators or iOS simulators. The owner performs integration/E2E testing on real physical devices using flutter devices and flutter test integration_test -d <physical-device-id>. AI agents must not add virtual-device CI or create/use emulators/simulators. iOS native build requires macOS/Xcode and remains unverified.
+Flutter CI is intentionally host-only: formatting, analysis and unit/widget tests. It does not start Android emulators or iOS simulators. The owner performs integration/E2E testing on real physical devices using flutter devices and flutter test integration_test -d <physical-device-id>. AI agents must not add virtual-device CI or create/use emulators/simulators. iOS native build requires macOS/Xcode and remains unverified.
