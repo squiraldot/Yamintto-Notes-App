@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix/flutter-ci-dart-format
   pull_request:
 
 permissions:
