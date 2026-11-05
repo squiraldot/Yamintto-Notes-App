@@ -13,14 +13,15 @@ This is an ordered plan, not authorization. Phase 01 is the only authorized phas
 - Status: Phase 01 source implementation is present. Latest host-only Flutter CI and both APK artifact workflows succeeded on commit 76ba10c04f0ec421f54e5d6252dd6745058611f9 (run IDs 41981911424, 41982079883 and 41982079971). Android real-device testing is owner-reported successful, with detailed evidence not attached. Phase 01 acceptance is recorded as an owner-reported Android pass, not independent device-log verification. No Android device-test failure is currently outstanding. iOS verification is non-gating; continue iOS implementation with applicable phases.
 
 ## Phase 02 — Core Management
-- Scope: Drift database/migrations; folder management; notes CRUD.
-- Dependencies: Phase 01 accepted.
-- Prerequisites: approve IDs, schema, nesting, move/delete behavior, FK and transaction rules.
-- Acceptance: fresh DB; folders/notes CRUD; no cycles; transactional changes; restart persistence; errors do not corrupt state.
-- Unit: schema, DAOs, repository mapping, validation, hierarchy, FK/transaction. Widget: folder and note CRUD. Integration: fresh install, CRUD/restart, interrupted transaction and migration.
-- Docs: schema, migration, retention, requirements, feature catalog.
-- Checklist: [ ] schema [ ] migration tests [ ] folder CRUD [ ] note CRUD [ ] unit [ ] widget [ ] integration [ ] docs [ ] review/SHA.
-- Status: Planned.
+- Scope: Drift schema v1/migrations; nested folders; note CRUD with soft-delete foundation. No Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup or import implementation.
+- Dependencies: Phase 01 accepted; [Phase 02 decision register](../database/PHASE_02_DECISION_REGISTER.md) approved.
+- Prerequisites: explicit implementation authorization; owner approval of schema/IDs/timestamps, folder deletion/restore, ordering, FK/transactions, migrations and retention.
+- Proposed schema v1: only folders and notes; NULL root relationships; UUID v4 TEXT; UTC epoch-millisecond INTEGER; nullable deleted_at; explicit sort_order; FK enforcement with RESTRICT; transactional multi-record operations. All remain recommendations pending approval.
+- Recommended folder deletion: block if any child folder or any note (including soft-deleted) exists; soft-delete empty folders only. Folder moves reject self/descendant cycles. Note delete soft-deletes and retains folder/order; Trash UI is Phase 04.
+- Acceptance after authorization: fresh DB; CRUD; no cycles/orphans; FK checks; rollback; restart persistence; deleted rows excluded from active queries; typed errors.
+- Tests: schema/DAO/repository/hierarchy/order/FK/transaction unit; folder/note widget; fresh install, CRUD/restart, soft-delete, rollback and migration integration.
+- Checklist: [ ] owner decisions [ ] schema v1 [ ] migration tests [ ] folder CRUD [ ] note CRUD [ ] unit [ ] widget [ ] integration [ ] docs [ ] review/SHA.
+- Status: **Not implemented. Decision review in progress; not frozen. Owner approval required.**
 
 ## Phase 03 — Editor
 - Scope: Markdown editor; viewer; autosave.
