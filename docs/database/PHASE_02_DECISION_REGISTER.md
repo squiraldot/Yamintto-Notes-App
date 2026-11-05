@@ -1,84 +1,85 @@
 # Phase 02 architecture decision register
 
-**Review date:** 2026-11-05  
-**Baseline:** `main` at `e1c886ade7eb078049a6303ccfd2f6de72527e1b`  
-**Overall status:** Decision freeze incomplete — owner approval required.  
-**Implementation:** Not started.
+**Owner approval:** Explicitly approved by the repository owner on 2026-11-05.  
+**Architecture status:** <strong>ACCEPTED — PHASE 02 DECISION FREEZE COMPLETE</strong>.  
+**Implementation status:** Not started; separate implementation authorization is still required.  
+**Baseline before this approval:** `main` at `9cc09c272faa9ccbb62c240113fcd89bcef046ae`.
 
-This is the single authoritative Phase 02 decision register. Recommendations are not accepted decisions. ADR-0013 records the proposed baseline. Owner approval must be explicit.
+This is the authoritative Phase 02 decision register. The owner approved the proposed architecture baseline with the amendments recorded below. No Phase 02 implementation-blocking owner decision remains unresolved. This approval does not authorize implementation.
 
 ## Status vocabulary
 
-- **Accepted:** explicitly approved or already accepted by an applicable ADR.
-- **Recommended — pending owner approval:** proposed, not approved for implementation.
-- **Rejected:** considered and not selected.
-- **Deferred:** belongs to a later phase or requires later-phase review.
+- **Accepted:** approved by the owner or already accepted by an applicable ADR.
+- **Rejected:** explicitly not selected for the approved baseline.
+- **Deferred:** belongs to a later phase and is not a Phase 02 implementation blocker.
 
-## Decision register
+## Accepted decision register
 
-| Decision | Current status | Recommendation | Reason | Owner approval required |
+| Decision | Status | Accepted decision | Rationale / implementation consequence | Owner approval required |
 |---|---|---|---|---|
-| Persistence technology | Accepted (ADR-0003) | Drift + SQLite | Relational local persistence, transactions and migrations | No new approval |
-| Offline-first | Accepted (ADR-0002) | Core notes/folders work without network | Product architecture requirement | No new approval |
-| DB initialization/ownership | Recommended | Lazy open on first repository access; memoize one app-private DB instance in an app-scoped Riverpod provider; complete migration before exposing repositories | Single lifecycle/connection owner and controlled startup failure | Yes |
-| Repository/DAO boundary | Recommended | Repositories expose domain operations; DAOs internal; UI never uses SQL | Testable domain and controlled access | Yes |
-| Error mapping | Recommended | Map SQLite/Drift failures to typed app/domain failures at data boundary | Safe, actionable errors | Yes |
-| ID strategy | Recommended | Canonical lowercase UUID v4 TEXT for every entity | Offline generation, portability, collision resistance, no time leakage | Yes |
-| Autoincrement integer IDs | Rejected | Do not use as the portable entity ID | Less suitable for offline import/backup and future merge/conflict handling | No |
-| UUID v7 | Rejected for current baseline | Use UUID v4 unless future measured indexing needs justify v7 | Time leakage and added implementation requirements outweigh current benefit | No |
-| Timestamp format | Recommended | UTC Unix epoch milliseconds as INTEGER | Consistent precision and portable serialization | Yes |
-| Timestamp semantics | Recommended | created_at immutable; updated_at changes on content/metadata mutations incl. move/delete/restore; backup preserves both | Predictable lifecycle and statistics | Yes |
-| Root representation | Recommended | NULL parent_id/folder_id; no synthetic root row | Simple nullable relationships | Yes |
-| Nested folders | Recommended | Support nested hierarchy | Required behavior | Yes |
-| Maximum depth | Recommended | No arbitrary cap initially; guarded cycle-safe traversal | Avoid premature product limit | Yes |
-| Folder movement | Recommended | Allow; reject self/descendant; validate and update atomically | Flexible without cycles | Yes |
-| Folder deletion | Recommended; blocker | Reject if any child folder or note (including soft-deleted) exists; soft-delete only empty folder; future UI confirmation; reversible by restore | Avoid recursive data loss and retain recoverability | **Yes — blocking** |
-| Recursive folder deletion | Rejected | Do not delete descendants/notes implicitly | High risk of irreversible multi-record data loss | No |
-| Move contents to parent/root/Trash on folder delete | Rejected for proposed baseline | Require explicit separate move operations; do not silently relocate data during delete | Avoid surprising location changes and hidden multi-record behavior | No |
-| Note deletion | Recommended; blocker | Soft-delete via deleted_at from schema v1; preserve folder/order | Future restore without destructive retrofit | **Yes — blocking** |
-| Trash UI | Deferred to Phase 04 | No Trash UI in Phase 02 | Phase ownership | No Phase 02 approval |
-| Restore fallback | Recommended; blocker | Restore original folder/order if valid; otherwise root with explicit conflict result | Avoid inaccessible trashed note | **Yes — blocking** |
-| Deleted-note access | Recommended | Exclude from active lists/default search; disallow edit/move until restored | Clear active/trash boundary | Yes |
-| Permanent deletion | Recommended; blocker | Separate explicit confirmed operation; coordinate revisions/attachments; no implicit cascade | Prevent accidental irreversible loss | **Yes — blocking** |
-| Separate polymorphic trash_items table | Rejected | Use nullable deleted_at on folders/notes | Avoid polymorphic references without normal FK enforcement and duplicated location state | No |
-| FK CASCADE | Rejected | Use RESTRICT and explicit dependent cleanup | Prevent silent destruction of recoverable data | No |
-| Folder naming/depth rules | Recommended; blocker | Non-empty trimmed names; max length, sibling duplicate/case policy and depth limit to be decided | Avoid undocumented input behavior | **Yes — blocking** |
-| Schema v1 inventory | Recommended; blocker | Only folders and notes; no tags/revisions/attachments/trash_items/encryption_metadata/app_settings | Minimal phase-owned schema | **Yes — blocking** |
-| Schema fields/constraints | Recommended; blocker | Follow DATABASE_SCHEMA.md | Exact nullability/defaults/checks/indexes/FKs | **Yes — blocking** |
-| Foreign keys | Recommended; blocker | Enable/test every connection; ON DELETE/UPDATE RESTRICT | Prevent orphans and silent cascade loss | **Yes — blocking** |
-| Transactions | Recommended; blocker | All multi-record operations and hierarchy changes atomic | No partially applied relationship changes | **Yes — blocking** |
-| Ordering | Recommended | Explicit sort_order per parent/folder; append on create/move; duplicates allowed; tie-break created_at then id | Deterministic without timestamp sorting | Yes |
-| Pinning | Deferred to Phase 04 | Add pin fields/indexes through Phase 04 migration | No Phase 02 pin feature | No |
-| Search index | Deferred to Phase 04/06; privacy ADR-0011 accepted | Pre-encryption only if engine support verified; remove persistent plaintext index in Phase 06; unlocked transient memory only | Encryption compatibility | No Phase 02 approval |
-| Revisions | Deferred to Phase 05 | Add revision table later with stable note IDs and approved retention | Avoid premature schema | No |
-| Attachments | Deferred to Phase 05 | Add metadata/filesystem lifecycle later; durable staged cleanup | DB and filesystem are not one transaction | No |
-| Encryption metadata | Deferred to Phase 06 | Add only with reviewed crypto envelope/key protocol | Do not invent crypto schema | No |
-| Biometrics | Deferred to Phase 07 | Separate APP and VAULT authorization from CRUD | Avoid security/CRUD coupling | No |
-| Backup/restore/import | Deferred to Phase 08 | Versioned portable format; preserve IDs, relations, timestamps/deleted state; inspect real YRNotes fixtures without modifying YRNotes | Compatibility and security evidence required | No |
-| Settings table | Deferred to Phase 09 | Do not create in Phase 02 | Not needed for core data | No |
-| Migration baseline | Recommended; blocker | Drift schemaVersion 1; immutable forward migrations; fresh + every supported prior-version tests | Reproducible safe upgrades | **Yes — blocking** |
-| Destructive migrations | Recommended | Prohibit by default; data-preserving rebuilds only; Phase 06 plaintext removal requires security review | Protect user data | Yes |
-| Migration failure | Recommended | Abort/rollback before commit, typed failure, fail closed; post-commit recovery uses forward correction or verified backup, not assumed downgrade | Prevent silent data loss | Yes |
-| Trash retention | Pending product decision | Indefinite soft-delete until duration approved; no automatic deletion | No duration specified | **Yes — blocking for cleanup policy, not for soft-delete foundation** |
-| Revision retention | Deferred to Phase 05 | Approve count/age/size before history ships | Product/storage impact | No |
-| Attachment limits | Deferred to Phase 05 | Approve types/size/storage/orphan policy before attachments | Product/storage/security impact | No |
-| Backup retention | Deferred to Phase 08 | Approve count/location/expiry before backup | User-owned file lifecycle | No |
-| Cryptographic protocol | Deferred to Phase 06 | Independent security review; no invented nonce/AAD/KDF/wrapping values | High-impact security decision | Security review and owner approval later |
+| Persistence technology | Accepted — ADR-0003 | Drift + SQLite | Retain the already accepted relational local database; no second database technology | No |
+| Offline-first | Accepted — ADR-0002 | Core note/folder workflows work without network or mandatory backend | Preserve local-first product architecture | No |
+| DB initialization/ownership | Accepted | One app-private SQLite DB; lazy-open on first repository access; memoized app-scoped Riverpod owner; finish open/migration before repositories are exposed | Single lifecycle owner and controlled failure boundary | No |
+| Repository/DAO boundary | Accepted | Repositories expose domain operations; DAOs remain internal; widgets/controllers never issue SQL or receive raw DB handles | Enforceable data boundary and testability | No |
+| Error mapping | Accepted | Map Drift/SQLite errors at data boundary to typed domain/application failures; fail closed for corruption/migration failures | No raw SQL/stack traces or silent empty-database fallback | No |
+| IDs | Accepted | Canonical lowercase UUID v4 strings stored as SQLite TEXT for folders, notes and future entities | Offline creation, portability, stable references and collision resistance | No |
+| UUID v7 / autoincrement IDs | Rejected for this baseline | Do not use UUID v7 or integer autoincrement as portable entity IDs | UUID v4 is the consistent, portable baseline; no timestamp leakage | No |
+| Timestamps | Accepted | UTC Unix epoch milliseconds stored as SQLite INTEGER | Platform-independent precision and portable serialization | No |
+| Timestamp semantics | Accepted | created_at immutable after creation/import; updated_at changes on successful content/metadata mutation including rename, move, soft-delete and restore; backup preserves source timestamps | Predictable lifecycle and import behavior | No |
+| Legacy missing timestamps | Accepted | Use import instant for missing created_at and updated_at; never fabricate historical values | Honest legacy import semantics | No |
+| Schema inventory/version | Accepted | Schema version 1 contains only `folders` and `notes` | Minimal Phase 02 scope | No |
+| Root representation | Accepted | NULL `parent_id` means root folder; NULL `folder_id` means root note collection; no synthetic root row | Simple, portable hierarchy | No |
+| Nested folders | Accepted | Nested folder hierarchy supported | Required product capability | No |
+| Maximum folder depth | Accepted — owner amendment | Root is level 0; top-level folders are level 1; maximum folder level is 32 | Prevent pathological recursion while preserving useful nesting | No |
+| Folder moves | Accepted | Moves supported; reject self/descendant cycles; validate full moved subtree depth; execute atomically | No cycles and no subtree can exceed level 32 | No |
+| Folder names | Accepted — owner amendment | Trimmed non-empty names; maximum 255 Unicode code points; case-insensitive unique name per parent; same name allowed in different parents | Consistent validation and predictable sibling identity | No |
+| Folder-name uniqueness scope | Accepted — explicit schema interpretation | Uniqueness applies to active and soft-deleted folder rows; a name cannot be reused in that parent until the old folder is permanently deleted | Guarantees a deleted folder can be restored without a same-parent name collision | No |
+| Folder name canonicalization | Accepted — implementation requirement | Unicode NFKC_Casefold key; same deterministic canonicalizer used by app validation and DB constraint; unique expression index treats NULL parent as a root scope | SQLite built-in NOCASE is ASCII-only and is insufficient for full Unicode case-insensitivity | No |
+| Note title | Accepted — owner amendment | Maximum 255 Unicode code points; empty title remains permitted | Bounded, consistent input contract | No |
+| Folder deletion | Accepted — owner amendment | Empty-folder-only; soft-delete empty folder; reject if any child folder or any note row exists, including soft-deleted notes | Prevent recursive or hidden data loss | No |
+| Note deletion | Accepted — owner amendment | Soft-delete from schema v1 using nullable deleted_at; preserve original folder_id and sort_order | Phase 04 Trash/Restore compatibility from first schema | No |
+| Deleted-note behavior | Accepted | Exclude from active lists/default search; editing and moving require restore first | Clear active/trash boundary | No |
+| Trash UI and lifecycle | Accepted phase boundary | Phase 04 Trash must include both deleted notes and deleted folders; support restore and explicit permanent deletion workflows | Complete user-facing lifecycle belongs to Phase 04, not Phase 02 | No Phase 02 approval |
+| Note restore | Accepted — owner amendment | Restore original folder/order if valid; otherwise restore to root and return an explicit conflict result | Predictable recovery without losing note | No |
+| Folder restore details | Deferred to Phase 04 | Trash includes folders; Phase 04 must define parent availability, name conflict and restore ordering UX while respecting unique sibling names | Not required to implement Phase 02 persistence safely | Phase 04 product review |
+| Permanent deletion | Accepted phase boundary | No permanent-delete implementation in Phase 02. Phase 04 owns explicit note/folder permanent-delete workflow; Phase 05 extends cleanup to revisions/attachment metadata/files | Not a Phase 02 blocker; avoid premature dependent-data implementation | No Phase 02 approval |
+| Retention | Accepted — owner amendment | Indefinite soft-delete retention initially; no automatic permanent deletion, expiry timer or cleanup job | Prevent silent user-data loss | No |
+| Foreign keys | Accepted | Enable and verify SQLite FK enforcement on every connection; ON DELETE RESTRICT and ON UPDATE RESTRICT | Prevent orphans and implicit cascade loss | No |
+| Transactions | Accepted | Multi-record operations, hierarchy/note moves and deletion state changes use transactions; failure rolls back all DB changes | Preserve relational invariants | No |
+| Ordering | Accepted | Explicit integer sort_order independently scoped per parent/folder; append on create/move; duplicate values allowed; deterministic order by sort_order, created_at, id | Stable ordering without timestamp-as-order | No |
+| Migration baseline | Accepted | Drift schemaVersion 1; ordered, versioned, immutable forward migrations | Reproducible upgrades | No |
+| Migration failure | Accepted | Fail closed; rollback pre-commit changes; typed failure; never silently replace a failed/corrupt DB with empty DB | Protect user data | No |
+| Destructive migrations | Accepted | Prohibited by default; data-preserving rebuild only; Phase 06 plaintext removal requires independent security review | Avoid accidental loss while allowing reviewed security migration | No |
+| Permanent-delete dependencies | Deferred | Phase 05 must stage revision/attachment metadata and filesystem cleanup with crash recovery; DB and filesystem are not one ACID transaction | No dependent cleanup is needed in Phase 02's two-table schema | Phase 05 review |
+| Search and pinning | Deferred to Phase 04 | No search/pin implementation or tables in Phase 02; Phase 06 removes persistent plaintext content indexes | Preserve phase ownership and encryption compatibility | No |
+| Revisions and attachments | Deferred to Phase 05 | Add tables/storage lifecycle only in Phase 05 | Avoid premature schema surface | No |
+| Encryption metadata/protocol | Deferred to Phase 06 | Independent security review; no invented nonce/AAD/KDF/wrapping parameters | High-impact security boundary | Phase 06 review |
+| Biometrics | Deferred to Phase 07 | APP and VAULT scopes remain separate from CRUD | Avoid auth/data-layer coupling | Phase 07 review |
+| Backup/restore/import | Deferred to Phase 08 | Versioned portable format; preserve IDs/relationships/timestamps/deleted state; inspect real legacy fixtures without modifying YRNotes | Compatibility and security evidence | Phase 08 review |
+| Settings | Deferred to Phase 09 | No settings table in Phase 02 | Settings are not needed for note/folder foundation | No |
 
-## Blocking owner decisions
+## Folder depth and name enforcement contract
 
-Before the separate Phase 02 implementation prompt, owner must approve or revise:
+- The virtual root is level 0. A folder whose `parent_id IS NULL` is level 1. The deepest permitted folder is level 32.
+- Creating a folder requires `parent_level + 1 <= 32`.
+- Moving a folder requires checking every descendant: `destination_parent_level + 1 + subtree_height <= 32`. Reject self/descendant moves and any move exceeding the cap before mutation; perform validation and update in one transaction.
+- Count folder names by Unicode code points after trimming; do not use UTF-16 code-unit length as the character count.
+- Canonical comparison key is Unicode NFKC_Casefold of the trimmed display name. The application validator and SQLite constraint must call the same deterministic implementation/version.
+- The database unique index must normalize NULL parent to a non-colliding root scope and must cover deleted rows as well as active rows. Root-level duplicates are prohibited too.
+- Because deleted folders retain their unique key, a same-parent name cannot be reused until the old folder is permanently deleted in Phase 04.
 
-1. Two-table schema v1 and its fields/constraints.
-2. UUID v4 and UTC Unix-millisecond conventions.
-3. Nested hierarchy, NULL root, no hard depth limit, cycle-safe moves.
-4. Empty-folder-only soft deletion; no recursive delete or moving contents elsewhere.
-5. Note soft deletion from v1, retained folder/order, and no Phase 02 Trash UI.
-6. Restore fallback to root when original folder is unavailable.
-7. Deleted-note edit/move/search rules and explicit permanent-delete semantics.
-8. Ordering and duplicate sort-value tie-break.
-9. FK enforcement/RESTRICT and transaction requirements.
-10. Schema version 1, forward-only migration and failure policy.
-11. No automatic permanent deletion; retention duration remains unset.
+## Phase boundaries
 
-Owner may approve all proposals or reply with changes. Do not mark this register Accepted or begin implementation merely because it is documented.
+- **Phase 02:** implement approved schema v1, notes/folder CRUD, hierarchy validation and soft-delete foundation only. No Trash UI or physical permanent deletion.
+- **Phase 04:** Trash for deleted notes and folders; restore and explicit permanent deletion workflows; search and pinning.
+- **Phase 05:** revisions, attachment storage and dependent-data/file cleanup.
+- **Phase 06:** reviewed encryption/key migration, including DB pages, WAL/journals, indexes, caches, temp files, exports and backups.
+- **Phase 07:** separate app/vault biometric authorization.
+- **Phase 08:** backup, restore and legacy import.
+- **Phase 09:** persisted settings.
+
+## Freeze result
+
+**All Phase 02 implementation-blocking architecture and product decisions are resolved and owner-approved. Phase 02 architecture decision freeze is COMPLETE.**
+
+No additional owner approval is required to implement the Phase 02 architecture described here. A separate explicit owner authorization is still required before application code changes begin. Future-phase product/security approvals remain in their owning phases and do not block Phase 02.
