@@ -18,7 +18,7 @@ The `drift` and SQLite packages in `pubspec.yaml` are dependencies, not a databa
 
 ## Proposed Phase 02 data architecture — pending owner approval
 
-- One app-private SQLite database for Android/iOS, owned by one app-scoped provider.
+- One app-private SQLite database for Android/iOS, opened lazily on first repository access and memoized by one app-scoped provider. Complete open/migration before repositories are exposed.
 - Database lifecycle, Drift tables and migrations under `lib/core/database`.
 - Root providers compose DB and repositories in `lib/app/providers`; widgets never access SQL or raw DB handles.
 - Notes/folders features own presentation/domain/data. Repositories expose domain-safe operations; DAOs remain internal.
