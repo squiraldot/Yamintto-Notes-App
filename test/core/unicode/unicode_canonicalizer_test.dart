@@ -29,7 +29,7 @@ void main() {
       for (final rune in whiteSpace) {
         final character = String.fromCharCode(rune);
         expect(
-          UnicodeCanonicalizer.trimWhiteSpace('${character}x${character}'),
+          UnicodeCanonicalizer.trimWhiteSpace('${character}x$character'),
           'x',
           reason: 'U+${rune.toRadixString(16).toUpperCase()}',
         );
