@@ -13,3 +13,4 @@ ADRs capture decisions, not implementation proof. Format: Context, Decision, Alt
 - [ADR-0010 Debug-only beta](0010-debug-only-beta.md)
 - [ADR-0011 Search index privacy lifecycle](0011-search-index-privacy.md)
 - [ADR-0012 Three protected workflows and ARM64 debug artifact](0012-arm64-debug-apk-workflow.md)
+- [ADR-0013 Phase 02 relational data model and lifecycle proposal (pending approval)](0013-phase-02-data-model-lifecycle.md)
