@@ -34,5 +34,4 @@ class Note {
   final int createdAt;
   final int updatedAt;
   final int? deletedAt;
-
 }
