@@ -12,7 +12,7 @@
 
 ## Migration organization
 
-Keep migration definitions and schema declarations under `lib/core/database/`; generated schema snapshots follow the approved Drift code-generation convention. Use ordered, immutable migration steps. Exact file naming/codegen layout belongs to implementation, not this docs-only task.
+Keep migration definitions and schema declarations under `lib/core/database/`; store versioned Drift schema snapshots in the repository's dedicated schema-snapshot directory (recommended: `drift_schemas/`). Name each migration by its source and target versions using a stable pattern such as `v001_to_v002`; one step represents one adjacent version transition. Keep migration tests/fixtures under `test/core/database/migrations/`. Use Drift's supported migration APIs and generated schema snapshots; do not hand-edit generated snapshots. This naming/organization is a recommendation pending owner approval, not files created by this task.
 
 Released migration steps are immutable. Fix mistakes with a new forward migration. Each step documents source/target versions, changed schema, data transformations, disk headroom, duration, interruption recovery and fixtures.
 
