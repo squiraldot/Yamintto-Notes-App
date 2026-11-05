@@ -34,7 +34,7 @@ void main() {
             await database.customSelect('PRAGMA foreign_keys').getSingle();
         expect(foreignKeys.data['foreign_keys'], 1);
       },
-    );;
+    );
 
     test(
       'registers deterministic Unicode functions usable by schema checks',
@@ -64,7 +64,7 @@ void main() {
           throwsA(anything),
         );
       },
-    );;
+    );
 
     test(
       'enforces the root-aware canonical-name unique index in SQLite',
@@ -93,7 +93,7 @@ void main() {
           throwsA(anything),
         );
       },
-    );;
+    );
 
     test('enforces foreign keys for note folder references', () async {
       await expectLater(
@@ -110,7 +110,7 @@ void main() {
         ),
         throwsA(anything),
       );
-    });;
+    });
 
     test(
       'enforces ON DELETE and ON UPDATE RESTRICT for referenced folders',
@@ -151,7 +151,7 @@ void main() {
           throwsA(anything),
         );
       },
-    );;
+    );
 
     test('uses canonical lowercase UUID v4 identifiers', () {
       final id = UuidV4.generate();
@@ -161,7 +161,7 @@ void main() {
         UuidV4.isCanonical('00000000-0000-0000-0000-000000000000'),
         isFalse,
       );
-    });;
+    });
 
     test('registers functions again after reopening a database', () async {
       final directory = await Directory.systemTemp.createTemp('yamintto-db-');
@@ -184,7 +184,7 @@ void main() {
       expect(fk.data['foreign_keys'], 1);
 
       await directory.delete(recursive: true);
-    });;
+    });
 
     test(
       'does not silently downgrade a database with a newer user_version',
@@ -206,7 +206,7 @@ void main() {
         await reopened.close();
         await directory.delete(recursive: true);
       },
-    );;
+    );
 
     test(
       'Dart and SQLite folder-name canonicalization remain identical',
@@ -231,6 +231,6 @@ void main() {
           );
         }
       },
-    );;
+    );
   });
 }
