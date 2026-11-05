@@ -112,7 +112,8 @@ abstract final class UnicodeCanonicalizer {
       }
       var insertion = output.length;
       while (insertion > 0) {
-        final previousClass = _combiningClass[output[insertion - 1]] ?? 0;
+        final previousClass =
+            _combiningClass[output[insertion - 1]] ?? 0;
         if (previousClass == 0 || previousClass <= currentClass) {
           break;
         }
@@ -247,14 +248,12 @@ abstract final class UnicodeCanonicalizer {
 
   static List<(int, int)> _parseRanges(String data) {
     if (data.isEmpty) return const <(int, int)>[];
-    return data.split(',').map(
-      (part) {
-        final bounds = part.split('-');
-        return (
-          int.parse(bounds[0], radix: 16),
-          int.parse(bounds[1], radix: 16),
-        );
-      },
-    ).toList(growable: false);
+    return data.split(',').map((part) {
+      final bounds = part.split('-');
+      return (
+        int.parse(bounds[0], radix: 16),
+        int.parse(bounds[1], radix: 16),
+      );
+    }).toList(growable: false);
   }
 }
