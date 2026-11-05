@@ -16,22 +16,22 @@ The `drift` and SQLite packages in `pubspec.yaml` are dependencies, not a databa
 - Features do not import another feature's private data implementation.
 - Three protected workflows and beta Debug APK policy remain governed by ADR-0012.
 
-## Proposed Phase 02 data architecture — pending owner approval
+## Accepted Phase 02 data architecture — owner approved (2026-11-05)
 
 - One app-private SQLite database for Android/iOS, opened lazily on first repository access and memoized by one app-scoped provider. Complete open/migration before repositories are exposed.
 - Database lifecycle, Drift tables and migrations under `lib/core/database`.
 - Root providers compose DB and repositories in `lib/app/providers`; widgets never access SQL or raw DB handles.
 - Notes/folders features own presentation/domain/data. Repositories expose domain-safe operations; DAOs remain internal.
-- Domain operations validate hierarchy, active/deleted state and ordering. Multi-record invariants run in one Drift transaction.
+- Domain operations validate hierarchy (root level 0, maximum folder level 32), Unicode NFKC_Casefold sibling-name uniqueness, active/deleted state and ordering. Multi-record invariants run in one Drift transaction.
 - Map low-level SQLite/Drift errors to typed application failures at the data boundary.
 - Enable and test foreign keys on every connection.
-- Schema v1 proposal contains only `folders` and `notes`; see [schema](../database/DATABASE_SCHEMA.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
+- Accepted schema v1 contains only `folders` and `notes`; see [schema](../database/DATABASE_SCHEMA.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
 
-This architecture remains proposed, not implemented or owner-approved.
+Architecture decisions are owner-approved; application code remains not implemented and requires separate authorization.
 
 ## Data lifecycle and integrity
 
-Folder hierarchy uses nullable self-referencing `parent_id`; notes use nullable `folder_id`. UUID IDs and UTC epoch-millisecond timestamps are proposed consistently across future entities. Folder/note moves are atomic and reject invalid destinations/cycles. Proposed folder deletion blocks while any child folder or note (including soft-deleted note) remains; an empty folder is soft-deleted. Notes use `deleted_at` from schema v1; Trash UI is Phase 04. No automatic expiry is approved.
+Folder hierarchy uses nullable self-referencing `parent_id`; notes use nullable `folder_id`. UUID v4 IDs and UTC epoch-millisecond timestamps are accepted. Root is level 0; maximum folder depth is 32. Moves validate the full subtree and reject cycles/depth overflow atomically. Folder names are trimmed, max 255 Unicode code points, and unique per parent using shared Unicode NFKC_Casefold canonicalization plus a root-aware database constraint (including soft-deleted folders). Note titles are max 255 Unicode code points. Folder deletion rejects any child folder or note, including soft-deleted notes; only empty folders are soft-deleted. Notes use `deleted_at` from schema v1; Phase 04 Trash covers both notes and folders. Soft-deleted data is retained indefinitely initially; no automatic expiry.
 
 Foreign keys use RESTRICT rather than implicit cascades. Permanent deletion must coordinate future revisions and filesystem attachments. SQLite transactions cannot atomically commit filesystem operations; Phase 05 must design staged cleanup and crash recovery before attachments ship.
 
