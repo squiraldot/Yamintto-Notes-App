@@ -11,6 +11,14 @@ Record phase authorization, scope, exact expected paths, forbidden paths, accept
 ## Boundaries
 Presentation renders UI and calls Riverpod controllers; no SQL, crypto or native APIs in widgets. Controllers coordinate use cases. Domain owns entities, validation, business rules and repository interfaces, independent of Flutter. Data owns Drift DAOs, repository implementations, serialization, local files and error translation. Native capabilities are behind narrow interfaces. Dependencies point inward; features do not import each other's private data implementation. Transactions protect multi-record operations. Do not silently decide folder deletion, Markdown dialect, search ranking, retention, attachment limits, backup format, crypto parameters or biometric fallback.
 
+## Phase 02 database decision gate
+
+Before any Phase 02 code is authorized, read [schema](../database/DATABASE_SCHEMA.md), [migration policy](../database/DATABASE_MIGRATIONS.md), [retention](../database/DATA_RETENTION.md), [decision register](../database/PHASE_02_DECISION_REGISTER.md) and ADR-0013. Drift + SQLite is accepted (ADR-0003), but dependency presence does not mean a database exists. Current lib/core/database contains guidance only.
+
+The proposed schema v1 contains only folders and notes. Do not add revisions, attachments, tags, a separate trash table, encryption metadata or settings in Phase 02. UUID v4, UTC epoch milliseconds, nested folders, explicit ordering, RESTRICT FKs and soft-delete semantics remain recommendations until owner approval. Never turn recommendations into accepted decisions silently.
+
+No Phase 02 implementation may begin until blocking decisions are approved and a separate implementation authorization is given. Trash/search/pinning are Phase 04; revisions/attachments Phase 05; encryption Phase 06; biometrics Phase 07; backup/import Phase 08; settings Phase 09. Phase 06 must account for SQLite pages, WAL/journals, FTS, temp files, caches, exports and backups. Do not claim SQLite or AES-GCM encryption exists.
+
 ## Tests and docs
 Test success, invalid input, empty/error states, concurrency, lifecycle, rollback and data-loss cases at the right layer. Device-only behavior is unverified until physical-device tests. Distinguish owner-reported results from independently attached evidence and automated CI. Update requirements, feature status, architecture/DB/security/testing docs, phase checklist, ADR and changelog as appropriate. UI presence alone does not mean a feature is implemented.
 
