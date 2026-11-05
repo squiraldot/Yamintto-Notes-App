@@ -346,4 +346,44 @@ void main() {
     await tester.pumpAndSettle();
     expect((await notes.getNote(note.id)).folderId, isNull);
   });
+  testWidgets('dismissing a folder move dialog preserves its parent', (
+    tester,
+  ) async {
+    final parent = await folders.createFolder(name: 'Parent');
+    final child = await folders.createFolder(
+      name: 'Child',
+      parentId: parent.id,
+    );
+    await mount(tester);
+    await tester.tap(find.text('Parent'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Folder actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move'));
+    await tester.pumpAndSettle();
+    await tester.tapAt(const Offset(4, 4));
+    await tester.pumpAndSettle();
+    expect((await folders.getFolder(child.id)).parentId, parent.id);
+  });
+
+  testWidgets('dismissing a note move dialog preserves its folder', (
+    tester,
+  ) async {
+    final folder = await folders.createFolder(name: 'Notes folder');
+    final note = await notes.createNote(
+      folderId: folder.id,
+      title: 'Keep in folder',
+    );
+    await mount(tester);
+    router.go('/folders/${folder.id}');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Note actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move'));
+    await tester.pumpAndSettle();
+    await tester.tapAt(const Offset(4, 4));
+    await tester.pumpAndSettle();
+    expect((await notes.getNote(note.id)).folderId, folder.id);
+  });
+
 }

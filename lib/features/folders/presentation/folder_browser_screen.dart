@@ -375,7 +375,8 @@ Future<String?> _destination(
       ],
     ),
   );
-  if (result == _cancel) return _cancel;
+  // A dismissed dialog is cancellation, never an implicit move to root.
+  if (result == null || result == _cancel) return _cancel;
   return result == '' ? null : result;
 }
 
