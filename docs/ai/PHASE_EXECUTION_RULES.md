@@ -11,7 +11,7 @@ Roadmap is an ordered plan, not permission. User must explicitly authorize phase
 5. Avoid unnecessary dependencies; security dependencies need independent review.
 6. Preserve behavior and add regression tests.
 7. YRNotes remains untouched.
-8. Exactly two workflows; never add another. Docs-only tasks do not edit workflows.
+8. Exactly three protected workflows must remain: flutter-ci.yml, yamintto-debug-apk.yml and yamintto-arm64-debug-apk.yml. Do not delete, rename, disable, merge, replace or omit any from documentation without explicit owner authorization. Do not add more workflows without authorization. Docs-only tasks do not edit workflows.
 9. Beta is Debug APK only; no release APK/AAB/signing/publishing.
 10. Phase 05 attachment bytes are temporary unencrypted beta data; Phase 06 must encrypt/migrate before production-ready claims.
 
@@ -19,7 +19,8 @@ Roadmap is an ordered plan, not permission. User must explicitly authorize phase
 Before: confirm explicit authorization, prerequisites, feature IDs, source state, scope and exclusions. During: stop for unresolved architecture/schema/security decisions. After: test every criterion, inspect migration/data-loss behavior, update docs/ADR/status, review diff/links, report SHA and evidence. Do not start next phase before acceptance.
 
 ## Physical-device testing rule
-- CI is host-only: locked dependencies, formatting, analyzer, unit and widget tests.
+- Flutter CI is host-only: locked dependencies, formatting, analyzer, unit and widget tests.
+- The two APK workflows build universal and ARM64-only Debug APK artifacts after successful Flutter CI; they do not run tests on virtual or physical devices.
 - Do not provision or run Android emulators or iOS simulators in CI. Do not add emulator-runner, KVM, virtualization or virtual-device boot steps.
 - AI agents must not create/use virtual devices as a substitute for owner testing.
 - Integration/E2E tests are owner-run on real physical devices only. Preserve integration_test source; owner can run flutter devices followed by flutter test integration_test -d <physical-device-id>.
