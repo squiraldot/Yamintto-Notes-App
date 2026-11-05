@@ -20,15 +20,33 @@ class FolderBrowserScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final folders = ref.watch(folderListProvider(folderId));
     final notes = ref.watch(noteListProvider(folderId));
-    final current = folderId == null ? null : ref.watch(folderDetailProvider(folderId!));
-    final title = current?.when(data: (f) => f.name, loading: () => 'Loading folder…', error: (_, __) => 'Folder unavailable') ?? 'Yamintto';
+    final current = folderId == null
+        ? null
+        : ref.watch(folderDetailProvider(folderId!));
+    final title =
+        current?.when(
+          data: (f) => f.name,
+          loading: () => 'Loading folder…',
+          error: (_, __) => 'Folder unavailable',
+        ) ??
+        'Yamintto';
     return Scaffold(
       appBar: AppBar(
-        leading: folderId == null ? null : BackButton(onPressed: () => _parent(context, ref)),
+        leading: folderId == null
+            ? null
+            : BackButton(onPressed: () => _parent(context, ref)),
         title: Text(title),
         actions: [
-          IconButton(tooltip: 'Appearance preview', onPressed: () => context.push('/appearance'), icon: const Icon(Icons.palette_outlined)),
-          IconButton(tooltip: 'Create folder', onPressed: () => _create(context, ref), icon: const Icon(Icons.create_new_folder_outlined)),
+          IconButton(
+            tooltip: 'Appearance preview',
+            onPressed: () => context.push('/appearance'),
+            icon: const Icon(Icons.palette_outlined),
+          ),
+          IconButton(
+            tooltip: 'Create folder',
+            onPressed: () => _create(context, ref),
+            icon: const Icon(Icons.create_new_folder_outlined),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -41,36 +59,80 @@ class FolderBrowserScreen extends ConsumerWidget {
           ref.invalidate(folderListProvider(folderId));
           ref.invalidate(noteListProvider(folderId));
           if (folderId != null) ref.invalidate(folderDetailProvider(folderId!));
-          await Future.wait([ref.read(folderListProvider(folderId).future), ref.read(noteListProvider(folderId).future)]);
+          await Future.wait([
+            ref.read(folderListProvider(folderId).future),
+            ref.read(noteListProvider(folderId).future),
+          ]);
         },
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(AppSpacing.md),
           children: [
-            if (folderId != null) TextButton.icon(onPressed: () => _parent(context, ref), icon: const Icon(Icons.arrow_upward), label: const Text('Parent folder')),
-            Text(folderId == null ? 'Folders' : 'Subfolders', style: Theme.of(context).textTheme.titleMedium),
+            if (folderId != null)
+              TextButton.icon(
+                onPressed: () => _parent(context, ref),
+                icon: const Icon(Icons.arrow_upward),
+                label: const Text('Parent folder'),
+              ),
+            Text(
+              folderId == null ? 'Folders' : 'Subfolders',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             folders.when(
-              loading: () => const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator())),
-              error: (e, _) => _Error(message: _message(e), retry: () => ref.invalidate(folderListProvider(folderId))),
-              data: (items) => items.isEmpty ? const _Empty('No folders here yet.') : Column(children: items.map((f) => _FolderRow(
-                folder: f,
-                open: () => context.push('/folders/' + f.id),
-                rename: () => _rename(context, ref, f),
-                move: () => _moveFolder(context, ref, f),
-                delete: () => _deleteFolder(context, ref, f),
-              )).toList()),
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              error: (e, _) => _Error(
+                message: _message(e),
+                retry: () => ref.invalidate(folderListProvider(folderId)),
+              ),
+              data: (items) => items.isEmpty
+                  ? const _Empty('No folders here yet.')
+                  : Column(
+                      children: items
+                          .map(
+                            (f) => _FolderRow(
+                              folder: f,
+                              open: () => context.push('/folders/' + f.id),
+                              rename: () => _rename(context, ref, f),
+                              move: () => _moveFolder(context, ref, f),
+                              delete: () => _deleteFolder(context, ref, f),
+                            ),
+                          )
+                          .toList(),
+                    ),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text('Notes', style: Theme.of(context).textTheme.titleMedium),
             notes.when(
-              loading: () => const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator())),
-              error: (e, _) => _Error(message: _message(e), retry: () => ref.invalidate(noteListProvider(folderId))),
-              data: (items) => items.isEmpty ? const _Empty('No notes here yet.') : Column(children: items.map((n) => _NoteRow(
-                note: n,
-                open: () => context.push('/notes/' + n.id + '/edit'),
-                move: () => _moveNote(context, ref, n),
-                delete: () => _deleteNote(context, ref, n),
-              )).toList()),
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              error: (e, _) => _Error(
+                message: _message(e),
+                retry: () => ref.invalidate(noteListProvider(folderId)),
+              ),
+              data: (items) => items.isEmpty
+                  ? const _Empty('No notes here yet.')
+                  : Column(
+                      children: items
+                          .map(
+                            (n) => _NoteRow(
+                              note: n,
+                              open: () =>
+                                  context.push('/notes/' + n.id + '/edit'),
+                              move: () => _moveNote(context, ref, n),
+                              delete: () => _deleteNote(context, ref, n),
+                            ),
+                          )
+                          .toList(),
+                    ),
             ),
             const SizedBox(height: 88),
           ],
@@ -84,135 +146,310 @@ class FolderBrowserScreen extends ConsumerWidget {
     try {
       final f = await ref.read(folderDetailProvider(folderId!).future);
       if (!context.mounted) return;
-      if (f.parentId == null) { context.go('/'); } else { context.go('/folders/' + f.parentId!); }
-    } catch (_) { if (context.mounted) context.go('/'); }
+      if (f.parentId == null) {
+        context.go('/');
+      } else {
+        context.go('/folders/' + f.parentId!);
+      }
+    } catch (_) {
+      if (context.mounted) context.go('/');
+    }
   }
 
   Future<void> _create(BuildContext context, WidgetRef ref) async {
     final name = await _name(context, 'Create folder', '');
     if (name == null || name.trim().isEmpty) return;
     try {
-      await (await ref.read(folderRepositoryProvider.future)).createFolder(name: name, parentId: folderId);
+      await (await ref.read(folderRepositoryProvider.future))
+          .createFolder(name: name, parentId: folderId);
       ref.invalidate(folderListProvider(folderId));
       ref.invalidate(allFoldersProvider);
-    } catch (e) { if (context.mounted) _error(context, e); }
+    } catch (e) {
+      if (context.mounted) _error(context, e);
+    }
   }
 
-  Future<void> _rename(BuildContext context, WidgetRef ref, Folder folder) async {
+  Future<void> _rename(
+    BuildContext context,
+    WidgetRef ref,
+    Folder folder,
+  ) async {
     final name = await _name(context, 'Rename folder', folder.name);
     if (name == null) return;
     try {
-      await (await ref.read(folderRepositoryProvider.future)).renameFolder(folder.id, name);
+      await (await ref.read(folderRepositoryProvider.future))
+          .renameFolder(folder.id, name);
       ref.invalidate(folderListProvider(folder.parentId));
       ref.invalidate(folderDetailProvider(folder.id));
-    } catch (e) { if (context.mounted) _error(context, e); }
+    } catch (e) {
+      if (context.mounted) _error(context, e);
+    }
   }
 
-  Future<void> _moveFolder(BuildContext context, WidgetRef ref, Folder folder) async {
-    final destination = await _destination(context, ref, folder.id, folder.parentId);
+  Future<void> _moveFolder(
+    BuildContext context,
+    WidgetRef ref,
+    Folder folder,
+  ) async {
+    final destination = await _destination(
+      context,
+      ref,
+      folder.id,
+      folder.parentId,
+    );
     if (destination == _cancel) return;
     try {
-      await (await ref.read(folderRepositoryProvider.future)).moveFolder(folder.id, destinationParentId: destination);
+      await (await ref.read(folderRepositoryProvider.future))
+          .moveFolder(folder.id, destinationParentId: destination);
       ref.invalidate(folderListProvider(folder.parentId));
       ref.invalidate(folderListProvider(destination));
       ref.invalidate(allFoldersProvider);
-    } catch (e) { if (context.mounted) _error(context, e); }
+    } catch (e) {
+      if (context.mounted) _error(context, e);
+    }
   }
 
-  Future<void> _deleteFolder(BuildContext context, WidgetRef ref, Folder folder) async {
-    final yes = await _confirm(context, 'Delete empty folder?', 'Only an empty folder can be deleted. Child folders and all notes, including soft-deleted notes, prevent deletion. The folder is retained as soft-deleted data.');
+  Future<void> _deleteFolder(
+    BuildContext context,
+    WidgetRef ref,
+    Folder folder,
+  ) async {
+    final yes = await _confirm(
+      context,
+      'Delete empty folder?',
+      'Only an empty folder can be deleted. Child folders and all notes, including soft-deleted notes, prevent deletion. The folder is retained as soft-deleted data.',
+    );
     if (yes != true) return;
     try {
-      await (await ref.read(folderRepositoryProvider.future)).softDeleteFolder(folder.id);
+      await (await ref.read(folderRepositoryProvider.future))
+          .softDeleteFolder(folder.id);
       ref.invalidate(folderListProvider(folder.parentId));
       ref.invalidate(allFoldersProvider);
-    } catch (e) { if (context.mounted) _error(context, e); }
+    } catch (e) {
+      if (context.mounted) _error(context, e);
+    }
   }
 
   Future<void> _moveNote(BuildContext context, WidgetRef ref, Note note) async {
     final destination = await _destination(context, ref, null, note.folderId);
     if (destination == _cancel) return;
     try {
-      await (await ref.read(noteRepositoryProvider.future)).moveNote(note.id, destinationFolderId: destination);
+      await (await ref.read(noteRepositoryProvider.future))
+          .moveNote(note.id, destinationFolderId: destination);
       ref.invalidate(noteListProvider(note.folderId));
       ref.invalidate(noteListProvider(destination));
-    } catch (e) { if (context.mounted) _error(context, e); }
+    } catch (e) {
+      if (context.mounted) _error(context, e);
+    }
   }
 
-  Future<void> _deleteNote(BuildContext context, WidgetRef ref, Note note) async {
-    final yes = await _confirm(context, 'Delete note?', 'The note will be soft-deleted and hidden from active lists. Its content, folder and order are retained.');
+  Future<void> _deleteNote(
+    BuildContext context,
+    WidgetRef ref,
+    Note note,
+  ) async {
+    final yes = await _confirm(
+      context,
+      'Delete note?',
+      'The note will be soft-deleted and hidden from active lists. Its content, folder and order are retained.',
+    );
     if (yes != true) return;
     try {
-      await (await ref.read(noteRepositoryProvider.future)).softDeleteNote(note.id);
+      await (await ref.read(noteRepositoryProvider.future))
+          .softDeleteNote(note.id);
       ref.invalidate(noteListProvider(note.folderId));
-    } catch (e) { if (context.mounted) _error(context, e); }
+    } catch (e) {
+      if (context.mounted) _error(context, e);
+    }
   }
 }
 
-Future<String?> _name(BuildContext context, String title, String initial) async {
+Future<String?> _name(
+  BuildContext context,
+  String title,
+  String initial,
+) async {
   final controller = TextEditingController(text: initial);
   try {
-    return await showDialog<String>(context: context, builder: (c) => AlertDialog(
-      title: Text(title),
-      content: TextField(controller: controller, autofocus: true, maxLength: 255, decoration: const InputDecoration(labelText: 'Folder name')),
-      actions: [TextButton(onPressed: () => Navigator.pop(c), child: const Text('Cancel')), FilledButton(onPressed: () => Navigator.pop(c, controller.text), child: const Text('Save'))],
-    ));
-  } finally { controller.dispose(); }
+    return await showDialog<String>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 255,
+          decoration: const InputDecoration(labelText: 'Folder name'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(c),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(c, controller.text),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  } finally {
+    controller.dispose();
+  }
 }
 
-Future<String?> _destination(BuildContext context, WidgetRef ref, String? movingId, String? current) async {
+Future<String?> _destination(
+  BuildContext context,
+  WidgetRef ref,
+  String? movingId,
+  String? current,
+) async {
   final folders = await ref.read(allFoldersProvider.future);
   if (!context.mounted) return _cancel;
   final choices = folders.where((f) => f.id != movingId).toList();
   String? selected = current;
-  final result = await showDialog<String>(context: context, builder: (c) => AlertDialog(
-    title: const Text('Move to folder'),
-    content: DropdownButtonFormField<String?>(
-      initialValue: selected,
-      decoration: const InputDecoration(labelText: 'Destination'),
-      items: [const DropdownMenuItem<String?>(value: null, child: Text('Root')), ...choices.map((f) => DropdownMenuItem<String?>(value: f.id, child: Text(f.name)))],
-      onChanged: (v) => selected = v,
+  final result = await showDialog<String>(
+    context: context,
+    builder: (c) => AlertDialog(
+      title: const Text('Move to folder'),
+      content: DropdownButtonFormField<String?>(
+        initialValue: selected,
+        decoration: const InputDecoration(labelText: 'Destination'),
+        items: [
+          const DropdownMenuItem<String?>(value: null, child: Text('Root')),
+          ...choices.map(
+            (f) => DropdownMenuItem<String?>(value: f.id, child: Text(f.name)),
+          ),
+        ],
+        onChanged: (v) => selected = v,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(c, _cancel),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(c, selected ?? ''),
+          child: const Text('Move'),
+        ),
+      ],
     ),
-    actions: [TextButton(onPressed: () => Navigator.pop(c, _cancel), child: const Text('Cancel')), FilledButton(onPressed: () => Navigator.pop(c, selected ?? ''), child: const Text('Move'))],
-  ));
+  );
   if (result == _cancel) return _cancel;
   return result == '' ? null : result;
 }
 
-Future<bool?> _confirm(BuildContext context, String title, String message) => showDialog<bool>(context: context, builder: (c) => AlertDialog(
-  title: Text(title), content: Text(message),
-  actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancel')), FilledButton(onPressed: () => Navigator.pop(c, true), child: const Text('Confirm'))],
-));
+Future<bool?> _confirm(BuildContext context, String title, String message) =>
+    showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(c, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(c, true),
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    );
 
-void _error(BuildContext context, Object e) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_message(e))));
-String _message(Object e) => e is DomainFailure ? e.message : 'The operation could not be completed. Please try again.';
+void _error(BuildContext context, Object e) =>
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(_message(e))));
+String _message(Object e) => e is DomainFailure
+    ? e.message
+    : 'The operation could not be completed. Please try again.';
 
 class _FolderRow extends StatelessWidget {
-  const _FolderRow({required this.folder, required this.open, required this.rename, required this.move, required this.delete});
-  final Folder folder; final VoidCallback open, rename, move, delete;
-  @override Widget build(BuildContext context) => ListTile(
-    leading: const Icon(Icons.folder_outlined), title: Text(folder.name), onTap: open,
-    trailing: PopupMenuButton<String>(tooltip: 'Folder actions', onSelected: (v) { if (v == 'rename') rename(); if (v == 'move') move(); if (v == 'delete') delete(); },
-      itemBuilder: (_) => const [PopupMenuItem(value: 'rename', child: Text('Rename')), PopupMenuItem(value: 'move', child: Text('Move')), PopupMenuItem(value: 'delete', child: Text('Delete'))]),
+  const _FolderRow({
+    required this.folder,
+    required this.open,
+    required this.rename,
+    required this.move,
+    required this.delete,
+  });
+  final Folder folder;
+  final VoidCallback open, rename, move, delete;
+  @override
+  Widget build(BuildContext context) => ListTile(
+    leading: const Icon(Icons.folder_outlined),
+    title: Text(folder.name),
+    onTap: open,
+    trailing: PopupMenuButton<String>(
+      tooltip: 'Folder actions',
+      onSelected: (v) {
+        if (v == 'rename') rename();
+        if (v == 'move') move();
+        if (v == 'delete') delete();
+      },
+      itemBuilder: (_) => const [
+        PopupMenuItem(value: 'rename', child: Text('Rename')),
+        PopupMenuItem(value: 'move', child: Text('Move')),
+        PopupMenuItem(value: 'delete', child: Text('Delete')),
+      ],
+    ),
   );
 }
 
 class _NoteRow extends StatelessWidget {
-  const _NoteRow({required this.note, required this.open, required this.move, required this.delete});
-  final Note note; final VoidCallback open, move, delete;
-  @override Widget build(BuildContext context) => ListTile(
-    leading: const Icon(Icons.description_outlined), title: Text(note.title.isEmpty ? 'Untitled note' : note.title),
-    subtitle: Text('Updated ' + DateTime.fromMillisecondsSinceEpoch(note.updatedAt, isUtc: true).toLocal().toString()), onTap: open,
-    trailing: PopupMenuButton<String>(tooltip: 'Note actions', onSelected: (v) { if (v == 'move') move(); if (v == 'delete') delete(); },
-      itemBuilder: (_) => const [PopupMenuItem(value: 'move', child: Text('Move')), PopupMenuItem(value: 'delete', child: Text('Delete'))]),
+  const _NoteRow({
+    required this.note,
+    required this.open,
+    required this.move,
+    required this.delete,
+  });
+  final Note note;
+  final VoidCallback open, move, delete;
+  @override
+  Widget build(BuildContext context) => ListTile(
+    leading: const Icon(Icons.description_outlined),
+    title: Text(note.title.isEmpty ? 'Untitled note' : note.title),
+    subtitle: Text(
+      'Updated ' +
+          DateTime.fromMillisecondsSinceEpoch(
+            note.updatedAt,
+            isUtc: true,
+          ).toLocal().toString(),
+    ),
+    onTap: open,
+    trailing: PopupMenuButton<String>(
+      tooltip: 'Note actions',
+      onSelected: (v) {
+        if (v == 'move') move();
+        if (v == 'delete') delete();
+      },
+      itemBuilder: (_) => const [
+        PopupMenuItem(value: 'move', child: Text('Move')),
+        PopupMenuItem(value: 'delete', child: Text('Delete')),
+      ],
+    ),
   );
 }
 
 class _Empty extends StatelessWidget {
-  const _Empty(this.message); final String message;
-  @override Widget build(BuildContext context) => Padding(padding: const EdgeInsets.symmetric(vertical: 18), child: Center(child: Text(message)));
+  const _Empty(this.message);
+  final String message;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 18),
+    child: Center(child: Text(message)),
+  );
 }
+
 class _Error extends StatelessWidget {
-  const _Error({required this.message, required this.retry}); final String message; final VoidCallback retry;
-  @override Widget build(BuildContext context) => Column(children: [Text(message), TextButton(onPressed: retry, child: const Text('Retry'))]);
+  const _Error({required this.message, required this.retry});
+  final String message;
+  final VoidCallback retry;
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      Text(message),
+      TextButton(onPressed: retry, child: const Text('Retry')),
+    ],
+  );
 }

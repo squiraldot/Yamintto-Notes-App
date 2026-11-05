@@ -23,10 +23,25 @@ void main() {
     router = GoRouter(
       initialLocation: '/',
       routes: [
-        GoRoute(path: '/', builder: (context, state) => const FolderBrowserScreen()),
-        GoRoute(path: '/folders/:folderId', builder: (context, state) => FolderBrowserScreen(folderId: state.pathParameters['folderId'])),
-        GoRoute(path: '/notes/new', builder: (context, state) => NoteEditorScreen(folderId: state.extra as String?)),
-        GoRoute(path: '/notes/:noteId/edit', builder: (context, state) => NoteEditorScreen(noteId: state.pathParameters['noteId'])),
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const FolderBrowserScreen(),
+        ),
+        GoRoute(
+          path: '/folders/:folderId',
+          builder: (context, state) =>
+              FolderBrowserScreen(folderId: state.pathParameters['folderId']),
+        ),
+        GoRoute(
+          path: '/notes/new',
+          builder: (context, state) =>
+              NoteEditorScreen(folderId: state.extra as String?),
+        ),
+        GoRoute(
+          path: '/notes/:noteId/edit',
+          builder: (context, state) =>
+              NoteEditorScreen(noteId: state.pathParameters['noteId']),
+        ),
       ],
     );
   });
@@ -70,8 +85,14 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.widgetWithText(TextField, 'Title').first, 'Meeting');
-    await tester.enterText(find.widgetWithText(TextField, 'Plain-text body').first, 'Raw source text');
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Title').first,
+      'Meeting',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Plain-text body').first,
+      'Raw source text',
+    );
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.text('Meeting'), findsOneWidget);
@@ -83,7 +104,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.widgetWithText(TextField, 'Title').first, 'Draft');
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Title').first,
+      'Draft',
+    );
     await tester.tap(find.byType(BackButton));
     await tester.pumpAndSettle();
     expect(find.text('Discard unsaved changes?'), findsOneWidget);

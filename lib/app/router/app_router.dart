@@ -27,23 +27,20 @@ GoRouter appRouter({
       GoRoute(
         path: '/folders/:folderId',
         name: 'folder',
-        builder: (context, state) => FolderBrowserScreen(
-          folderId: state.pathParameters['folderId'],
-        ),
+        builder: (context, state) =>
+            FolderBrowserScreen(folderId: state.pathParameters['folderId']),
       ),
       GoRoute(
         path: '/notes/new',
         name: 'note-create',
-        builder: (context, state) => NoteEditorScreen(
-          folderId: state.extra as String?,
-        ),
+        builder: (context, state) =>
+            NoteEditorScreen(folderId: state.extra as String?),
       ),
       GoRoute(
         path: '/notes/:noteId/edit',
         name: 'note-edit',
-        builder: (context, state) => NoteEditorScreen(
-          noteId: state.pathParameters['noteId'],
-        ),
+        builder: (context, state) =>
+            NoteEditorScreen(noteId: state.pathParameters['noteId']),
       ),
       GoRoute(
         path: '/appearance',
@@ -75,8 +72,14 @@ class _NotFoundScreen extends StatelessWidget {
             children: <Widget>[
               const Icon(Icons.route_outlined, size: 40),
               const SizedBox(height: 12),
-              Text('Page not found', style: Theme.of(context).textTheme.titleLarge),
-              TextButton(onPressed: () => context.go('/'), child: const Text('Go to home')),
+              Text(
+                'Page not found',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              TextButton(
+                onPressed: () => context.go('/'),
+                child: const Text('Go to home'),
+              ),
             ],
           ),
         ),

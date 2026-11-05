@@ -2,12 +2,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yamintto/features/folders/data/folder_providers.dart';
 import 'package:yamintto/features/folders/domain/folder.dart';
 
-final folderListProvider = FutureProvider.family<List<Folder>, String?>((ref, parentId) async {
+final folderListProvider = FutureProvider.family<List<Folder>, String?>((
+  ref,
+  parentId,
+) async {
   final repository = await ref.watch(folderRepositoryProvider.future);
   return repository.listFolders(parentId: parentId);
 });
 
-final folderDetailProvider = FutureProvider.family<Folder, String>((ref, id) async {
+final folderDetailProvider = FutureProvider.family<Folder, String>((
+  ref,
+  id,
+) async {
   final repository = await ref.watch(folderRepositoryProvider.future);
   return repository.getFolder(id);
 });

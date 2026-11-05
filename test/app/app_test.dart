@@ -7,7 +7,9 @@ import 'package:yamintto/features/foundation/presentation/foundation_screen.dart
 import 'package:yamintto/features/foundation/presentation/splash_screen.dart';
 
 void main() {
-  testWidgets('shows splash first and navigates to the folder browser', (tester) async {
+  testWidgets('shows splash first and navigates to the folder browser', (
+    tester,
+  ) async {
     await tester.pumpWidget(const ProviderScope(child: YaminttoApp()));
     expect(find.byType(SplashScreen), findsOneWidget);
     await tester.pump(const Duration(seconds: 1));
