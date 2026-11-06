@@ -83,3 +83,19 @@ This is the authoritative Phase 02 decision register. The owner approved the pro
 **All Phase 02 implementation-blocking architecture and product decisions are resolved and owner-approved. Phase 02 architecture decision freeze is COMPLETE.**
 
 No additional owner approval is required for the accepted Phase 02 architecture. The owner explicitly authorized implementation on 2026-11-05. Future-phase product/security approvals remain in their owning phases and do not block Phase 02.
+
+
+## Superseding owner decision — 2026-11-06
+
+The original schema-v1 architecture freeze remains historical, but the owner has selected **REPAIR** for the omitted note-tags and folder-colors requirements. Therefore Phase 02 implementation acceptance is **REOPENED — REPAIR REQUIRED**. Earlier text in this register stating that all implementation-blocking decisions are resolved or that Phase 02 is accepted is superseded for phase progression.
+
+| Area | Owner decision | Required consequence |
+|---|---|---|
+| Workflows | Retain three | Preserve the existing Flutter CI, universal Debug APK and ARM64 Debug APK workflows. No consolidation/deletion/rename/disablement/addition without new explicit authorization. |
+| Note tags | Repair in Phase 02 | Support multiple reusable tags per note and persistent assignments. Derive detailed normalization/duplicate/deletion/order semantics from the original Phase 02 prompt; document any unresolved choice before coding. |
+| Folder colors | Repair in Phase 02 | Persist an optional validated folder color and display it consistently, including nested folders. Define palette/serialization/fallback/contrast before coding. |
+| Schema v1 | Immutable baseline | Preserve existing v1; use only a forward-only, data-preserving migration for the repair. |
+| Markdown | Hybrid in Phase 03 | Modern Markdown baseline plus explicitly verified legacy YRNotes syntax and safe rendering. |
+| Phase progression | Phase 03 blocked | Close Phase 02 repair with tests, three exact-SHA workflows, owner physical-device retest, docs and explicit acceptance before Phase 03 authorization. |
+
+Historical CI/APK/device evidence validates only the prior folders/notes baseline; it does not cover tags or folder colors.
