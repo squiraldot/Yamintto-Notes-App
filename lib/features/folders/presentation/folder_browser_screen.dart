@@ -6,6 +6,7 @@ import 'package:yamintto/core/theme/tokens/app_spacing.dart';
 import 'package:yamintto/features/folders/data/folder_providers.dart';
 import 'package:yamintto/features/folders/domain/folder.dart';
 import 'package:yamintto/features/folders/domain/folder_color_palette.dart';
+import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 import 'package:yamintto/features/folders/presentation/folder_providers.dart';
 import 'package:yamintto/features/notes/data/note_providers.dart';
 import 'package:yamintto/features/notes/domain/note.dart';
@@ -193,10 +194,12 @@ class FolderBrowserScreen extends ConsumerWidget {
     );
     if (input == null) return;
     try {
-      await (await ref.read(folderRepositoryProvider.future))
-          .renameFolder(folder.id, input.name);
-      await (await ref.read(folderRepositoryProvider.future))
-          .setFolderColor(folder.id, input.colorArgb);
+      final repository = await ref.read(folderRepositoryProvider.future);
+      final nextName = UnicodeCanonicalizer.trimWhiteSpace(input.name);
+      if (nextName != folder.name) {
+        await repository.renameFolder(folder.id, nextName);
+      }
+      await repository.setFolderColor(folder.id, input.colorArgb);
       ref.invalidate(folderListProvider(folder.parentId));
       ref.invalidate(folderDetailProvider(folder.id));
     } catch (e) {
