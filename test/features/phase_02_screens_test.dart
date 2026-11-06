@@ -178,7 +178,7 @@ void main() {
     await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();
 
-    expect(find.text('New note'), findsNothing);
+    expect(find.byKey(const ValueKey('note-body-editor')), findsNothing);
     final saved = (await notes.listNotes()).single;
     expect(saved.title, 'Draft');
     expect(saved.body, isEmpty);
