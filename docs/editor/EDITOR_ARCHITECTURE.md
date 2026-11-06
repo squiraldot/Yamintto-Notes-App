@@ -28,7 +28,7 @@ A deliberate body edit to a v1 note upgrades only that note to v2 in the same re
 4. Writes within an editor are serialized. If a newer revision arrives while a write is in flight, the coordinator persists the newer snapshot before it can report Saved.
 5. Saved is true only when the persisted revision equals the current edit revision and no save error remains.
 6. A failed write keeps the source editable, leaves the coordinator dirty, exposes an error and permits retry.
-7. Preview transition, explicit save, back navigation and lifecycle inactive/paused/detached events attempt a flush.
+7. Preview transition, explicit save, toolbar/system/gesture back navigation and lifecycle inactive/paused/detached events attempt a flush. PopScope prevents a system pop until the pending flush succeeds.
 
 The lifecycle flush is best-effort. A process kill or OS termination before a debounce/flush completes can lose pending edits. The app makes no stronger durability guarantee than the last successfully completed repository write.
 
@@ -46,11 +46,11 @@ The lifecycle flush is best-effort. A process kill or OS termination before a de
 
 PR #2 branch: `phase-03/markdown-autosave`.
 
-Verified source SHA: `fc8912781b4ee38efd22be1dcea24f324674cd40`.
+Verified source SHA: `1cb2558e408a4253ca36abc8a77aeccd9c183e25`.
 
-Flutter CI run [#42200165499](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200165499) passed:
+Flutter CI run [#42200798879](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200798879) passed:
 - Dart formatting.
 - `flutter analyze --fatal-infos`.
-- **113/113 unit and widget tests**.
+- **114/114 unit and widget tests**.
 
 The tests cover parser syntax and limits, source preservation, v1/v2/future version behavior, debounce, serialized revisions, stale completions, failure/retry, editor/preview, inert links/images, navigation flush and lifecycle flush. Owner physical-device testing remains pending. No APK artifact or iOS native build/device pass is claimed for this PR SHA.
