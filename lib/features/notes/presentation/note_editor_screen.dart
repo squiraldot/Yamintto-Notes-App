@@ -173,11 +173,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
               : 'Edit note',
         ),
         actions: [
-          if (_isPending && !_hasError)
-            IconButton(
-              tooltip: 'Save now',
-              onPressed: _isSaving ? null : _saveNow,
-              icon: const Icon(Icons.save_outlined),
+          if (!_readOnly)
+            TextButton(
+              onPressed: _isSaving ? null : _flushAndPop,
+              child: const Text('Save'),
             ),
         ],
       ),

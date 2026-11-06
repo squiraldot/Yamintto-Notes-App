@@ -84,12 +84,18 @@ class NoteAutosaveCoordinator {
     if (active != null) return active;
     if (!isDirty) return Future<void>.value();
 
-    final tracked = _runFlush().whenComplete(() {
+    final completer = Completer<void>();
+    _flushFuture = completer.future;
+    _runFlush().then(
+      (_) => completer.complete(),
+      onError: (Object error, StackTrace stackTrace) {
+        completer.completeError(error, stackTrace);
+      },
+    ).whenComplete(() {
       _flushFuture = null;
       _notify();
     });
-    _flushFuture = tracked;
-    return tracked;
+    return completer.future;
   }
 
   Future<void> retry() {

@@ -5,7 +5,6 @@ import 'package:yamintto/core/errors/domain_failure.dart';
 import 'package:yamintto/core/ids/uuid_v4.dart';
 import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 import 'package:yamintto/features/notes/domain/note.dart';
-import 'package:yamintto/features/notes/domain/note_content_format.dart';
 
 class NoteRepository {
   NoteRepository(
@@ -25,15 +24,8 @@ class NoteRepository {
     String? folderId,
     String title = '',
     String body = '',
-    int contentFormatVersion = NoteContentFormat.plainText,
   }) async {
     _validateTitle(title);
-    if (!NoteContentFormat.isSupported(contentFormatVersion)) {
-      throw const DomainFailure(
-        DomainFailureCode.unsupportedContentFormat,
-        'This note format cannot be created by this app version.',
-      );
-    }
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
         if (folderId != null) {
@@ -51,8 +43,8 @@ class NoteRepository {
         await _database.customStatement(
           'INSERT INTO notes '
           '(id, folder_id, title, body, content_format_version, sort_order, '
-          'created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-          <Object?>[id, folderId, title, body, contentFormatVersion, order, now, now],
+          'created_at, updated_at) VALUES (?, ?, ?, ?, 1, ?, ?, ?)',
+          <Object?>[id, folderId, title, body, order, now, now],
         );
         return _requireActiveNote(id);
       }),
@@ -93,20 +85,11 @@ class NoteRepository {
     _validateTitle(title);
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
-        final current = await _requireActiveNote(id);
-        if (!NoteContentFormat.isSupported(current.contentFormatVersion)) {
-          throw const DomainFailure(
-            DomainFailureCode.unsupportedContentFormat,
-            'This note uses a newer content format and is read-only.',
-          );
-        }
-        final nextFormatVersion = body == current.body
-            ? current.contentFormatVersion
-            : NoteContentFormat.hybridMarkdown;
+        await _requireActiveNote(id);
         await _database.customStatement(
-          'UPDATE notes SET title = ?, body = ?, content_format_version = ?, updated_at = ? '
+          'UPDATE notes SET title = ?, body = ?, updated_at = ? '
           'WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[title, body, nextFormatVersion, _now(), id],
+          <Object?>[title, body, _now(), id],
         );
         return _requireActiveNote(id);
       }),
