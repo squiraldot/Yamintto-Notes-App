@@ -125,102 +125,102 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
         unawaited(_handleBack());
       },
       child: Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          tooltip: 'Back',
-          icon: const Icon(Icons.arrow_back),
-          onPressed: _handleBack,
-        ),
-        title: Text(widget.noteId == null ? 'New note' : 'Edit note'),
-        actions: [
-          if (_isSaving)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Center(
-                child: SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              ),
-            )
-          else if (_saveError)
-            TextButton(onPressed: _retrySave, child: const Text('Retry'))
-          else if (_autosave.isSaved)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Center(child: Text('Saved')),
-            )
-          else if (_isDirty)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Center(child: Text('Saving soon')),
-            ),
-          TextButton(
-            onPressed: _isSaving ? null : _saveNow,
-            child: const Text('Save'),
+        appBar: AppBar(
+          leading: IconButton(
+            tooltip: 'Back',
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _handleBack,
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (_unsupportedFormat) ...[
-              Text(
-                'Unsupported content format',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                'This note uses a newer content format. Its source is read-only '
-                'so it cannot be accidentally overwritten.',
-              ),
-              const SizedBox(height: 12),
-            ],
-            TextField(
-              key: const ValueKey('note-title-editor'),
-              controller: _title,
-              readOnly: _unsupportedFormat,
-              maxLength: 255,
-              maxLines: 1,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                hintText: 'Untitled note',
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: _showPreview
-                      ? () => setState(() => _showPreview = false)
-                      : null,
-                  child: const Text('Editor'),
-                ),
-                TextButton(
-                  onPressed: _unsupportedFormat || _showPreview
-                      ? null
-                      : _openPreview,
-                  child: const Text('Preview'),
-                ),
-                const Spacer(),
-                if (_saveError)
-                  Text(
-                    'Save error',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+          title: Text(widget.noteId == null ? 'New note' : 'Edit note'),
+          actions: [
+            if (_isSaving)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Center(
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   ),
-              ],
+                ),
+              )
+            else if (_saveError)
+              TextButton(onPressed: _retrySave, child: const Text('Retry'))
+            else if (_autosave.isSaved)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Center(child: Text('Saved')),
+              )
+            else if (_isDirty)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Center(child: Text('Saving soon')),
+              ),
+            TextButton(
+              onPressed: _isSaving ? null : _saveNow,
+              child: const Text('Save'),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            Expanded(child: _editorContent(context)),
           ],
         ),
-      ),
+        body: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_unsupportedFormat) ...[
+                Text(
+                  'Unsupported content format',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'This note uses a newer content format. Its source is read-only '
+                  'so it cannot be accidentally overwritten.',
+                ),
+                const SizedBox(height: 12),
+              ],
+              TextField(
+                key: const ValueKey('note-title-editor'),
+                controller: _title,
+                readOnly: _unsupportedFormat,
+                maxLength: 255,
+                maxLines: 1,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                  hintText: 'Untitled note',
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: _showPreview
+                        ? () => setState(() => _showPreview = false)
+                        : null,
+                    child: const Text('Editor'),
+                  ),
+                  TextButton(
+                    onPressed: _unsupportedFormat || _showPreview
+                        ? null
+                        : _openPreview,
+                    child: const Text('Preview'),
+                  ),
+                  const Spacer(),
+                  if (_saveError)
+                    Text(
+                      'Save error',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Expanded(child: _editorContent(context)),
+            ],
+          ),
+        ),
       ),
     );
   }
