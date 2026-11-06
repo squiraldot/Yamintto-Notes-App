@@ -15,7 +15,7 @@ This is the project knowledge base. Source/config/tests determine current implem
 [System architecture](architecture/SYSTEM_ARCHITECTURE.md) · [Project structure](architecture/PROJECT_STRUCTURE.md) · [State and DI](architecture/STATE_MANAGEMENT.md) · [Routing](architecture/ROUTING.md) · [Errors](architecture/ERROR_HANDLING.md) · [Platform architecture](architecture/PLATFORM_ARCHITECTURE.md) · [Dependency policy](architecture/DEPENDENCY_POLICY.md)
 
 ## Editor
-[Editor architecture](editor/EDITOR_ARCHITECTURE.md) · [Hybrid Markdown dialect and safety policy](editor/MARKDOWN_DIALECT.md)
+[Editor architecture](editor/EDITOR_ARCHITECTURE.md) · [Hybrid Markdown dialect and safety policy](editor/MARKDOWN_DIALECT.md) · [Physical-device integration test guide](../integration_test/README.md)
 
 ## Database
 [Schema proposal](database/DATABASE_SCHEMA.md) · [Migrations](database/DATABASE_MIGRATIONS.md) · [Retention](database/DATA_RETENTION.md) · [Phase 02 decision register](database/PHASE_02_DECISION_REGISTER.md)
@@ -39,7 +39,7 @@ This is the project knowledge base. Source/config/tests determine current implem
 ## Current owner decisions and execution status (2026-11-06)
 
 - [Phase 02 Note Tags + Folder Colors repair is ACCEPTED, including owner-reported physical-device PASS](STATUS.md).
-- The owner explicitly authorized Phase 03 by submitting [the final implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md). Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2); exact PR source SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25` passed Flutter CI run `42200798879` with 114/114 tests.
+- The owner explicitly authorized Phase 03 by submitting [the final implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md). Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2); exact PR source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run `42200798879` with 114/114 tests.
 - Phase 03 remains pending PR review and owner physical-device acceptance; it is not yet merged or phase-accepted.
 - Existing three protected GitHub Actions workflows remain in force; no workflow changes are part of the implementation.
 
@@ -51,4 +51,4 @@ Phase 02 Note Tags and Folder Colors are implemented on schema v2 and **Phase 02
 
 ## Phase 03 implementation status — 2026-11-06
 
-The Markdown editor, safe hybrid renderer, content-format handling and serialized autosave are implemented on `phase-03/markdown-autosave`. Exact PR SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25` passed formatting, analyzer and 114/114 unit/widget tests in Flutter CI run `42200798879`. No physical-device pass, APK build or iOS native build is claimed yet.
+The Markdown editor, safe hybrid renderer, content-format handling and serialized autosave are implemented on `phase-03/markdown-autosave`. Exact PR SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed formatting, analyzer and 114/114 unit/widget tests in Flutter CI run `42200798879`. No physical-device pass, APK build or iOS native build is claimed yet.
