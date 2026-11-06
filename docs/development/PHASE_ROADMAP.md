@@ -101,3 +101,27 @@ This is an ordered plan, not authorization. Phase 02 implementation is explicitl
 
 ## Cross-phase ownership
 02 folders/notes; 03 Markdown/autosave; 04 search/pin/trash; 05 history/local attachments/statistics; 06 encryption/password/recovery key/search-index migration; 07 app/vault biometrics; 08 legacy/new backup/restore; 09 settings/theme preference/font size/polish/accessibility/performance/regression. Phase 01 owns base design tokens only; Phase 09 owns selectable theme preferences and persistence. Phase 05 stores attachments locally unencrypted; Phase 06 encrypts/migrates them. Phase 04 search is introduced pre-encryption; Phase 06 removes persistent plaintext index. No scope expansion, skipped phases or premature future work.
+
+
+## Owner-directed status reconciliation — 2026-11-06
+
+### Phase 02 — Core Management — REOPENED
+
+The owner selected repair for two missing original Phase 02 capabilities: note tags and folder colors. The prior “ACCEPTED” label and completed checklist are historical baseline records and are superseded for phase progression.
+
+Outstanding repair checklist:
+- [ ] Inspect original Phase 02 prompt and freeze tag semantics (normalization, duplicates, ordering, deletion and soft-deleted-note behavior).
+- [ ] Implement reusable note tags and persistent note-tag assignments.
+- [ ] Freeze folder color palette/serialization/fallback/contrast and implement persistence/display.
+- [ ] Preserve schema v1 and add a forward-only, data-preserving migration.
+- [ ] Add tag/color domain, repository, migration and widget tests.
+- [ ] Run locked dependencies, format, analyzer and full unit/widget tests.
+- [ ] Verify all three protected workflows on the exact repair SHA.
+- [ ] Owner repeats Android physical-device smoke test after repair.
+- [ ] Reconcile documentation and receive explicit Phase 02 acceptance.
+
+The earlier 69/69 CI run, universal/ARM64 APK runs and owner-reported device test remain historical evidence for the old baseline only. **Phase 03 is blocked until this repair is accepted.**
+
+### Phase 03 — Editor — PLANNED, BLOCKED
+
+Owner-selected Markdown direction: **HYBRID** — modern Markdown baseline plus explicitly verified legacy YRNotes constructs. The final gated prompt is [PHASE_03_IMPLEMENTATION_PROMPT.md](PHASE_03_IMPLEMENTATION_PROMPT.md). It is preparation only, not implementation authorization. Phase 03 additionally requires separate explicit owner authorization after Phase 02 closes.
