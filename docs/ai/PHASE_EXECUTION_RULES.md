@@ -1,7 +1,7 @@
 # Phase execution rules
 
 ## Authorization
-Roadmap is an ordered plan, not blanket permission. Phase 01 is present and Phase 02 is accepted. The owner explicitly authorized Phase 03 by submitting the complete final implementation prompt on 2026-11-06. Phase 03 is implemented on branch `phase-03/markdown-autosave`, PR #2, exact source SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25`; Flutter CI run `42200798879` passed formatting, analyzer and 114/114 tests. PR review/merge and owner physical-device acceptance remain pending. Phase 04–09 require separate authorization.
+Roadmap is an ordered plan, not blanket permission. Phase 01 is present and Phase 02 is accepted. The owner explicitly authorized Phase 03 by submitting the complete final implementation prompt on 2026-11-06. Phase 03 is implemented on branch `phase-03/markdown-autosave`, PR #2, exact source SHA `cc8295293e85380cd964e26bfc890b0da063643c`; Flutter CI run `42200798879` passed formatting, analyzer and 114/114 tests. PR review/merge and owner physical-device acceptance remain pending. Phase 04–09 require separate authorization.
 
 ## Rules
 1. One phase at a time; maximum 2–3 major features.
@@ -37,4 +37,4 @@ Phase 02 implementation is complete on source SHA `fa8f4ad469786a6a7199360a3d681
 
 ## Phase 03 current gate — 2026-11-06
 
-Owner authorization was granted by submission of `docs/development/PHASE_03_IMPLEMENTATION_PROMPT.md`. Implementation is on PR #2, branch `phase-03/markdown-autosave`, source SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25`. Exact-SHA Flutter CI run `42200798879` passed formatting, analyzer and 114/114 tests. The PR is not merged; owner physical-device acceptance is pending. Keep the exact three protected workflows unchanged. Do not start Phase 04.
+Owner authorization was granted by submission of `docs/development/PHASE_03_IMPLEMENTATION_PROMPT.md`. Implementation is on PR #2, branch `phase-03/markdown-autosave`, source SHA `cc8295293e85380cd964e26bfc890b0da063643c`. Exact-SHA Flutter CI run `42200798879` passed formatting, analyzer and 114/114 tests. The PR is not merged; owner physical-device acceptance is pending. Keep the exact three protected workflows unchanged. Do not start Phase 04.
