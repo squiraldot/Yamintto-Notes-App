@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yamintto/core/database/schema_v1.dart';
@@ -71,7 +71,7 @@ void main() {
     expect(note.data['updated_at'], 22);
     expect(note.data['deleted_at'], 23);
 
-    final newNoteId = '00000000-0000-4000-8000-000000000003';
+    const newNoteId = '00000000-0000-4000-8000-000000000003';
     await upgraded.customStatement(
       'INSERT INTO notes(id, folder_id, title, body, content_format_version, sort_order, created_at, updated_at) '
       'VALUES (?, NULL, ?, ?, 1, 0, 30, 30)',

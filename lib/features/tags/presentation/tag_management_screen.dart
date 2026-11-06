@@ -41,11 +41,12 @@ class TagManagementScreen extends ConsumerWidget {
                         title: Text(tag.name),
                         trailing: PopupMenuButton<String>(
                           tooltip: 'Tag actions',
-                          onSelected: (action) async {
-                            if (action == 'rename')
-                              await _edit(context, ref, tag);
-                            if (action == 'delete')
-                              await _delete(context, ref, tag);
+                          onSelected: (action) {
+                            if (action == 'rename') {
+                              _edit(context, ref, tag);
+                            } else if (action == 'delete') {
+                              _delete(context, ref, tag);
+                            }
                           },
                           itemBuilder: (_) => const [
                             PopupMenuItem(

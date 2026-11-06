@@ -28,17 +28,20 @@ class _NoteTagAssignmentScreenState
     try {
       final repository = await ref.read(tagRepositoryProvider.future);
       final assigned = await repository.listNoteTags(widget.noteId);
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         selected = assigned.map((tag) => tag.id).toSet();
         loaded = true;
       });
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           loaded = true;
           error = 'Assigned tags could not be loaded.';
         });
+      }
     }
   }
 
@@ -135,11 +138,12 @@ class _NoteTagAssignmentScreenState
                               );
                               if (context.mounted) context.pop();
                             } catch (e) {
-                              if (mounted)
+                              if (mounted) {
                                 setState(() {
                                   error = e.toString();
                                   saving = false;
                                 });
+                              }
                             }
                           },
                     child: saving
