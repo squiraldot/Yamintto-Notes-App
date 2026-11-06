@@ -60,10 +60,10 @@ void main() {
   }
 
   testWidgets('safe Markdown links and images stay inert', (tester) async {
-    const source =
-        '[Safe link](https://example.com) ![Alt](https://example.com/image.png)';
+    const source = '[Safe link](https://example.com) '
+        '![Alt](https://example.com/image.png)';
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: SafeMarkdownViewer(source: source),
         ),
