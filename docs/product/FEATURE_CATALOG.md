@@ -25,7 +25,7 @@ Behavior: create/rename/move/navigate/delete nested folders. Accepted data: UUID
 
 ## Phase 03 — Editor
 ### Markdown editor/viewer (primary 03)
-Behavior: edit source and render documented dialect. Data: Markdown source and format version. Dependencies: notes repository, approved dialect/safe renderer. Acceptance: source round-trip, safe rendering, accessible semantics. Tests: parser/serializer unit, editor/preview widget, fixture integration. Platforms: shared; test selection/keyboard/typography both. Status: Not implemented.
+Behavior: edit source and render the owner-approved HYBRID dialect: modern Markdown baseline plus explicitly verified legacy YRNotes constructs. Data: original Markdown source and `content_format_version`. Dependencies: accepted Phase 02 schema-v2 notes repository, safe renderer and compatibility fixtures. Acceptance: source round-trip, safe rendering, documented unsupported syntax, accessible semantics. Tests: parser/serializer unit, malicious-input security cases, modern/legacy fixtures, editor/preview widget and owner-run physical-device integration. Platforms: shared; test selection/keyboard/typography both. Status: Not implemented.
 ### Autosave (primary 03)
 Behavior: save edits automatically; show saving/saved/error. Data: note ID, edit revision, dirty state, save time. Dependencies: editor, repository transaction, lifecycle policy. Acceptance: stale save cannot overwrite newer edit; pending edits flush on defined lifecycle; errors retain text. Tests: race unit, status widget, rapid edit/background/kill/restart integration. Status: Not implemented.
 
