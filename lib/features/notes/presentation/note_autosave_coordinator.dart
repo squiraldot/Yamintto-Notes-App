@@ -26,18 +26,16 @@ class NoteSaveSnapshot {
 /// acknowledging a newer in-memory revision.
 class NoteAutosaveCoordinator {
   NoteAutosaveCoordinator({
-    required NoteSaveCallback save,
+    required this.save,
     this.debounce = const Duration(milliseconds: 700),
     NoteTimerFactory? timerFactory,
-    void Function()? onStateChanged,
-  }) : _save = save,
-       _timerFactory = timerFactory ?? Timer.new,
-       _onStateChanged = onStateChanged;
+    this.onStateChanged,
+  }) : _timerFactory = timerFactory ?? Timer.new;
 
-  final NoteSaveCallback _save;
+  final NoteSaveCallback save;
   final Duration debounce;
   final NoteTimerFactory _timerFactory;
-  final void Function()? _onStateChanged;
+  final void Function()? onStateChanged;
 
   Timer? _timer;
   Future<void>? _flushFuture;
@@ -82,20 +80,12 @@ class NoteAutosaveCoordinator {
     if (active != null) return active;
     if (!isDirty) return Future<void>.value();
 
-    final completer = Completer<void>();
-    _flushFuture = completer.future;
-    _runFlush()
-        .then(
-          (_) => completer.complete(),
-          onError: (Object error, StackTrace stackTrace) {
-            completer.completeError(error, stackTrace);
-          },
-        )
-        .whenComplete(() {
-          _flushFuture = null;
-          _notify();
-        });
-    return completer.future;
+    final operation = _runFlush().whenComplete(() {
+      _flushFuture = null;
+      _notify();
+    });
+    _flushFuture = operation;
+    return operation;
   }
 
   Future<void> retry() {
@@ -112,7 +102,7 @@ class NoteAutosaveCoordinator {
       _hasError = false;
       _notify();
       try {
-        await _save(snapshot);
+        await save(snapshot);
       } catch (_) {
         _saving = false;
         _hasError = true;
@@ -128,7 +118,7 @@ class NoteAutosaveCoordinator {
   }
 
   void _notify() {
-    if (!_disposed) _onStateChanged?.call();
+    if (!_disposed) onStateChanged?.call();
   }
 
   void dispose() {
