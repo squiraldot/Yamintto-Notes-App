@@ -1,3 +1,4 @@
+// dart format off
 import 'package:flutter/material.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:yamintto/features/notes/domain/hybrid_markdown_parser.dart';

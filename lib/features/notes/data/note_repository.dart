@@ -1,3 +1,4 @@
+// dart format off
 import 'package:drift/drift.dart';
 import 'package:yamintto/core/database/database_boundary.dart';
 import 'package:yamintto/core/database/yamintto_database.dart';

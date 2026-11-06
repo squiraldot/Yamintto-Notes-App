@@ -1,3 +1,4 @@
+// dart format off
 import 'package:flutter_test/flutter_test.dart';
 import 'package:markdown/markdown.dart' show Element, Node, Text;
 import 'package:yamintto/features/notes/domain/hybrid_markdown_parser.dart';
