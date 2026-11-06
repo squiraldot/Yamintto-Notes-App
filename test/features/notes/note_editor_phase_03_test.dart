@@ -59,6 +59,39 @@ void main() {
     }
   }
 
+  testWidgets('safe Markdown links and images stay inert', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SafeMarkdownViewer(
+            source:
+                '[Safe link](https://example.com) ![Alt](https://example.com/image.png)',
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Safe link'), findsOneWidget);
+    expect(find.text('[Image: Alt]'), findsOneWidget);
+    expect(find.byType(Image), findsNothing);
+  });
+
+  testWidgets('preview respects text scaling and selection', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MediaQuery(
+          data: MediaQueryData(textScaler: TextScaler.linear(1.4)),
+          child: const Scaffold(
+            body: SafeMarkdownViewer(source: '# Accessible heading'),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(SelectionArea), findsOneWidget);
+    expect(find.text('Accessible heading'), findsOneWidget);
+  });
+
   testWidgets('switches between source and preview without rewriting source', (
     tester,
   ) async {
