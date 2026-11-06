@@ -70,8 +70,14 @@ void main() {
       );
       await tester.tap(find.text('Preview'));
       await tester.pumpAndSettle();
-      expect(find.text('Device Markdown'), findsOneWidget);
-      expect(find.text('Saved before navigation'), findsOneWidget);
+      expect(
+        find.textContaining('Device Markdown', findRichText: true),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('Saved before navigation', findRichText: true),
+        findsOneWidget,
+      );
 
       // Return to source and verify a lifecycle flush persists a later edit.
       await tester.tap(find.text('Editor'));
@@ -101,7 +107,7 @@ void main() {
       expect(reopenedNote.contentFormatVersion, 2);
       await reopened.close();
       await databaseFile.delete();
-      await databaseDirectory.delete();
+      await databaseDirectory.delete(recursive: true);
     },
   );
 }
