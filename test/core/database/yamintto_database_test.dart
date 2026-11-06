@@ -29,8 +29,8 @@ void main() {
           .get();
       expect(tables.map((row) => row.data['name']), <String>[
         'folders',
-        'notes',
         'note_tags',
+        'notes',
         'tags',
       ]);
 

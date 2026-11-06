@@ -49,9 +49,11 @@ final class YaminttoDatabase extends GeneratedDatabase {
     },
     onUpgrade: (_, from, to) async {
       if (from == 1 && to == 2) {
-        for (final statement in SchemaV2.upgradeFromV1) {
-          await customStatement(statement);
-        }
+        await transaction(() async {
+          for (final statement in SchemaV2.upgradeFromV1) {
+            await customStatement(statement);
+          }
+        });
         return;
       }
       throw DomainFailure(

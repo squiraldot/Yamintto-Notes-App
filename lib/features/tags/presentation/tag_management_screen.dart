@@ -72,30 +72,13 @@ class TagManagementScreen extends ConsumerWidget {
     WidgetRef ref, [
     NoteTag? tag,
   ]) async {
-    final controller = TextEditingController(text: tag?.name ?? '');
     final value = await showDialog<String>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(tag == null ? 'Create tag' : 'Rename tag'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          maxLength: 64,
-          decoration: const InputDecoration(labelText: 'Tag name'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, controller.text),
-            child: const Text('Save'),
-          ),
-        ],
+      builder: (dialogContext) => _TagNameDialog(
+        initial: tag?.name ?? '',
+        title: tag == null ? 'Create tag' : 'Rename tag',
       ),
     );
-    controller.dispose();
     if (value == null || value.trim().isEmpty) return;
     try {
       final repository = await ref.read(tagRepositoryProvider.future);
@@ -136,6 +119,7 @@ class TagManagementScreen extends ConsumerWidget {
     try {
       await (await ref.read(tagRepositoryProvider.future)).deleteTag(tag.id);
       ref.invalidate(tagListProvider);
+      ref.invalidate(noteTagListProvider);
     } catch (error) {
       if (context.mounted) {
         ScaffoldMessenger.of(context)
@@ -143,4 +127,49 @@ class TagManagementScreen extends ConsumerWidget {
       }
     }
   }
+}
+
+class _TagNameDialog extends StatefulWidget {
+  const _TagNameDialog({required this.initial, required this.title});
+  final String initial;
+  final String title;
+  @override
+  State<_TagNameDialog> createState() => _TagNameDialogState();
+}
+
+class _TagNameDialogState extends State<_TagNameDialog> {
+  late final TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.initial);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: Text(widget.title),
+    content: TextField(
+      controller: controller,
+      autofocus: true,
+      maxLength: 64,
+      decoration: const InputDecoration(labelText: 'Tag name'),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: () => Navigator.pop(context, controller.text),
+        child: const Text('Save'),
+      ),
+    ],
+  );
 }
