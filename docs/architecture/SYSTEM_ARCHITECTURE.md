@@ -60,3 +60,12 @@ Field-level encryption does not automatically protect titles, folder names, meta
 - 09: settings and persisted preferences.
 
 No future-phase table, UI, service or behavior is implemented by this document.
+
+
+## Owner decision reconciliation — 2026-11-06
+
+Phase 02 is reopened because note tags and folder colors required by the original scope are absent from the implemented baseline. Preserve schema v1 as an immutable migration baseline and add approved capabilities only through a forward-only, data-preserving migration. Tag persistence belongs behind repository/domain boundaries; widgets must not issue SQL. Folder color is optional presentation metadata and must not affect folder identity, hierarchy or ordering.
+
+Phase 03 uses the owner-selected hybrid Markdown direction: modern Markdown baseline plus explicitly verified legacy YRNotes syntax. Persist source text, not rendered widget state. Treat `content_format_version` as a real format contract. Raw HTML is disabled by default except explicit safe legacy allowlisting; URL/image handling must be security- and privacy-conscious. Autosave must prevent stale asynchronous writes from replacing newer edits and retain dirty text after failure.
+
+The existing three protected GitHub Actions workflows remain authoritative. No workflow consolidation or removal is approved.
