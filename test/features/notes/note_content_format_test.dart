@@ -68,7 +68,10 @@ void main() {
       ),
     );
     final stored = await database
-        .customSelect('SELECT body, content_format_version FROM notes WHERE id = ?', variables: [Variable.withString(note.id)])
+        .customSelect(
+          'SELECT body, content_format_version FROM notes WHERE id = ?',
+          variables: [Variable.withString(note.id)],
+        )
         .getSingle();
     expect(stored.data['body'], 'preserve me');
     expect(stored.data['content_format_version'], 99);

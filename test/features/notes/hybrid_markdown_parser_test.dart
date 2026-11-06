@@ -98,9 +98,15 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
     });
 
     test('validates URL schemes and rejects URL tricks', () {
-      expect(HybridMarkdownParser.isAllowedUrl('https://example.com/a'), isTrue);
+      expect(
+        HybridMarkdownParser.isAllowedUrl('https://example.com/a'),
+        isTrue,
+      );
       expect(HybridMarkdownParser.isAllowedUrl('http://example.com'), isTrue);
-      expect(HybridMarkdownParser.isAllowedUrl('mailto:help@example.com'), isTrue);
+      expect(
+        HybridMarkdownParser.isAllowedUrl('mailto:help@example.com'),
+        isTrue,
+      );
       for (final url in [
         'javascript:alert(1)',
         'data:text/html,<script>',
@@ -127,7 +133,10 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
         40,
         (index) => '${' ' * (index * 4)}- nested',
       ).join('\n');
-      expect(() => parser.parse(deeplyNested), throwsA(isA<MarkdownParseException>()));
+      expect(
+        () => parser.parse(deeplyNested),
+        throwsA(isA<MarkdownParseException>()),
+      );
 
       final header = List.generate(21, (index) => 'c$index').join(' | ');
       final separator = List.generate(21, (_) => '---').join(' | ');

@@ -28,29 +28,35 @@ void main() {
       expect(coordinator.isSaved, isTrue);
     });
 
-    test('serializes rapid edits and persists the latest revision last', () async {
-      final firstWrite = Completer<void>();
-      final saved = <NoteSaveSnapshot>[];
-      final coordinator = NoteAutosaveCoordinator(
-        save: (snapshot) async {
-          saved.add(snapshot);
-          if (saved.length == 1) await firstWrite.future;
-        },
-        timerFactory: timers.create,
-      );
-      addTearDown(coordinator.dispose);
+    test(
+      'serializes rapid edits and persists the latest revision last',
+      () async {
+        final firstWrite = Completer<void>();
+        final saved = <NoteSaveSnapshot>[];
+        final coordinator = NoteAutosaveCoordinator(
+          save: (snapshot) async {
+            saved.add(snapshot);
+            if (saved.length == 1) await firstWrite.future;
+          },
+          timerFactory: timers.create,
+        );
+        addTearDown(coordinator.dispose);
 
-      coordinator.update(title: 'First title', body: 'First body');
-      final flush = coordinator.flush();
-      coordinator.update(title: 'Latest title', body: 'Latest body');
-      firstWrite.complete();
-      await flush;
+        coordinator.update(title: 'First title', body: 'First body');
+        final flush = coordinator.flush();
+        coordinator.update(title: 'Latest title', body: 'Latest body');
+        firstWrite.complete();
+        await flush;
 
-      expect(saved.map((item) => item.title), ['First title', 'Latest title']);
-      expect(saved.last.body, 'Latest body');
-      expect(coordinator.isSaved, isTrue);
-      expect(coordinator.savedRevision, coordinator.editRevision);
-    });
+        expect(saved.map((item) => item.title), [
+          'First title',
+          'Latest title',
+        ]);
+        expect(saved.last.body, 'Latest body');
+        expect(coordinator.isSaved, isTrue);
+        expect(coordinator.savedRevision, coordinator.editRevision);
+      },
+    );
 
     test('keeps dirty state and exposes retry after a write failure', () async {
       var shouldFail = true;
@@ -117,29 +123,32 @@ void main() {
       expect(coordinator.isDirty, isFalse);
     });
 
-    test('uses independent revision streams for separate note sessions', () async {
-      final firstSaved = <NoteSaveSnapshot>[];
-      final secondSaved = <NoteSaveSnapshot>[];
-      final first = NoteAutosaveCoordinator(
-        save: (snapshot) async => firstSaved.add(snapshot),
-        timerFactory: timers.create,
-      );
-      final second = NoteAutosaveCoordinator(
-        save: (snapshot) async => secondSaved.add(snapshot),
-        timerFactory: timers.create,
-      );
-      addTearDown(first.dispose);
-      addTearDown(second.dispose);
+    test(
+      'uses independent revision streams for separate note sessions',
+      () async {
+        final firstSaved = <NoteSaveSnapshot>[];
+        final secondSaved = <NoteSaveSnapshot>[];
+        final first = NoteAutosaveCoordinator(
+          save: (snapshot) async => firstSaved.add(snapshot),
+          timerFactory: timers.create,
+        );
+        final second = NoteAutosaveCoordinator(
+          save: (snapshot) async => secondSaved.add(snapshot),
+          timerFactory: timers.create,
+        );
+        addTearDown(first.dispose);
+        addTearDown(second.dispose);
 
-      first.update(title: 'Note one', body: 'one');
-      second.update(title: 'Note two', body: 'two');
-      await first.flush();
+        first.update(title: 'Note one', body: 'one');
+        second.update(title: 'Note two', body: 'two');
+        await first.flush();
 
-      expect(firstSaved.single.title, 'Note one');
-      expect(secondSaved, isEmpty);
-      await second.flush();
-      expect(secondSaved.single.title, 'Note two');
-    });
+        expect(firstSaved.single.title, 'Note one');
+        expect(secondSaved, isEmpty);
+        await second.flush();
+        expect(secondSaved.single.title, 'Note two');
+      },
+    );
   });
 }
 

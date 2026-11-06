@@ -16,9 +16,7 @@ class NoteSaveSnapshot {
 
   @override
   bool operator ==(Object other) =>
-      other is NoteSaveSnapshot &&
-      other.title == title &&
-      other.body == body;
+      other is NoteSaveSnapshot && other.title == title && other.body == body;
 
   @override
   int get hashCode => Object.hash(title, body);
@@ -86,15 +84,17 @@ class NoteAutosaveCoordinator {
 
     final completer = Completer<void>();
     _flushFuture = completer.future;
-    _runFlush().then(
-      (_) => completer.complete(),
-      onError: (Object error, StackTrace stackTrace) {
-        completer.completeError(error, stackTrace);
-      },
-    ).whenComplete(() {
-      _flushFuture = null;
-      _notify();
-    });
+    _runFlush()
+        .then(
+          (_) => completer.complete(),
+          onError: (Object error, StackTrace stackTrace) {
+            completer.completeError(error, stackTrace);
+          },
+        )
+        .whenComplete(() {
+          _flushFuture = null;
+          _notify();
+        });
     return completer.future;
   }
 

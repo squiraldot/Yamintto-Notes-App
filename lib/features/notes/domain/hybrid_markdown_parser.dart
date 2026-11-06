@@ -54,10 +54,14 @@ class HybridMarkdownParser {
 
   void _validateSource(String source) {
     if (utf8.encode(source).length > maxSourceBytes) {
-      throw const MarkdownParseException('The document exceeds the preview size limit.');
+      throw const MarkdownParseException(
+        'The document exceeds the preview size limit.',
+      );
     }
     if (source.split('\n').length > maxAstNodes) {
-      throw const MarkdownParseException('The document contains too many lines to preview safely.');
+      throw const MarkdownParseException(
+        'The document contains too many lines to preview safely.',
+      );
     }
 
     var detailsDepth = 0;
@@ -65,7 +69,9 @@ class HybridMarkdownParser {
     for (final line in source.split('\n')) {
       final indent = line.length - line.trimLeft().length;
       if (indent > maxNestingDepth * 4) {
-        throw const MarkdownParseException('The document nesting is too deep to preview safely.');
+        throw const MarkdownParseException(
+          'The document nesting is too deep to preview safely.',
+        );
       }
       final trimmed = line.trim().toLowerCase();
       if (trimmed == '<details>') {
@@ -78,7 +84,9 @@ class HybridMarkdownParser {
       }
     }
     if (maximumDetailsDepth > maxDetailsDepth) {
-      throw const MarkdownParseException('The document has too many nested details blocks.');
+      throw const MarkdownParseException(
+        'The document has too many nested details blocks.',
+      );
     }
   }
 
@@ -91,7 +99,9 @@ class HybridMarkdownParser {
       final entry = stack.removeLast();
       count++;
       if (count > maxAstNodes || entry.depth > maxNestingDepth) {
-        throw const MarkdownParseException('The parsed document exceeds safe structural limits.');
+        throw const MarkdownParseException(
+          'The parsed document exceeds safe structural limits.',
+        );
       }
       final node = entry.node;
       if (node is! md.Element) continue;
@@ -99,7 +109,9 @@ class HybridMarkdownParser {
         final rows = <md.Element>[];
         _collectRows(node, rows);
         if (rows.length > maxTableRows) {
-          throw const MarkdownParseException('The table has too many rows to preview safely.');
+          throw const MarkdownParseException(
+            'The table has too many rows to preview safely.',
+          );
         }
         final columns = rows.isEmpty
             ? 0
@@ -108,7 +120,9 @@ class HybridMarkdownParser {
                   .where((cell) => cell.tag == 'th' || cell.tag == 'td')
                   .length;
         if (columns > maxTableColumns) {
-          throw const MarkdownParseException('The table has too many columns to preview safely.');
+          throw const MarkdownParseException(
+            'The table has too many columns to preview safely.',
+          );
         }
       }
       for (final child in node.children ?? const <md.Node>[]) {
@@ -211,7 +225,9 @@ class _LegacyDetailsSyntax extends md.BlockSyntax {
       parser.advance();
     }
     if (!closed || rawLines.isEmpty) {
-      return md.Text('<details>\n${rawLines.join('\n')}${closed ? '\n</details>' : ''}');
+      return md.Text(
+        '<details>\n${rawLines.join('\n')}${closed ? '\n</details>' : ''}',
+      );
     }
 
     final summaryPattern = RegExp(
