@@ -1,7 +1,7 @@
 # Phase execution rules
 
 ## Authorization
-Roadmap is an ordered plan, not permission. Phase 01 source implementation is present. Phase 02 implementation was explicitly authorized by the owner on 2026-11-05. Source implementation and automated validation are complete on code revision `745b8f589afceb783a9b39bafcd03c123e50c395` (Flutter CI run `42097059083`, 69/69 tests); universal and ARM64 Debug APK artifacts uploaded on runs `42097260846` and `42097260894`. The final documentation-only revision must also be verified on its exact SHA by all three protected workflows. owner-reported Android physical-device smoke testing passed; Phase 02 repair implementation is complete; owner device acceptance remains pending. Phase 03–09 remain subject to separate explicit authorization.
+Roadmap is an ordered plan, not permission. Phase 01 source implementation is present. Phase 02 implementation was explicitly authorized by the owner on 2026-11-05. Source implementation and automated validation are complete on code revision `745b8f589afceb783a9b39bafcd03c123e50c395` (Flutter CI run `42097059083`, 69/69 tests); universal and ARM64 Debug APK artifacts uploaded on runs `42097260846` and `42097260894`. The final documentation-only revision must also be verified on its exact SHA by all three protected workflows. owner-reported Android physical-device testing of the completed tags/colors repair passed; Phase 02 is ACCEPTED. Phase 03–09 remain subject to separate explicit authorization.
 
 ## Rules
 1. One phase at a time; maximum 2–3 major features.
@@ -31,4 +31,4 @@ Before: confirm explicit authorization, prerequisites, feature IDs, source state
 
 ## Current Phase 02 repair gate — 2026-11-06
 
-Phase 02 implementation is complete on source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` succeeded with 85/85 tests. The two Debug APK workflows were triggered for the exact same SHA; their conclusions/artifacts must be read from Actions before claims. Owner Android physical-device retest of tags and folder colors is pending. Therefore Phase 02 is **IMPLEMENTATION COMPLETE — OWNER DEVICE ACCEPTANCE PENDING**, not ACCEPTED. The previous owner-reported device smoke test covers only the old folders/notes baseline. Phase 03 requires separate explicit authorization and must not start.
+Phase 02 implementation is complete on source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` succeeded with 85/85 tests. The two Debug APK workflows were triggered for the exact same SHA; their conclusions/artifacts must be read from Actions before claims. Owner confirmed successful physical-device testing of tags and folder colors. Phase 02 is **ACCEPTED**. The separate automated integration-test source's execution is not independently evidenced and is not claimed. Phase 03 requires separate explicit authorization and must not start.

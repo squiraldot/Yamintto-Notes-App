@@ -34,3 +34,15 @@
 - Recorded successful Flutter CI run 41981911424, universal Debug APK run 41982079883 and ARM64 Debug APK run 41982079971, all on commit 76ba10c04f0ec421f54e5d6252dd6745058611f9. Both APK artifacts uploaded successfully.
 - Recorded Android device testing as owner-reported success; detailed evidence not attached. This is not represented as independent device-log verification.
 - iOS native build/device verification remains Not Verified — Environment Unavailable; continue iOS implementation/configuration alongside applicable phases and do not block Android-focused phase progression.
+
+
+## Phase 02 Note Tags + Folder Colors repair and final acceptance — 2026-11-06
+
+- Added reusable global note tags, normalized tag identity, multiple persistent note-to-tag assignments, tag management and note assignment UI.
+- Added nullable persisted folder ARGB colors, a validated ten-color palette, root/nested folder display, theme-aware fallback and color reset.
+- Preserved schema v1 unchanged and added a transactional, forward-only schema v1 → v2 migration with fail-closed rollback behavior.
+- Added migration, repository, unit and widget regression coverage. No dependency or pubspec/lockfile changes were required.
+- Exact repair source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` passed on Flutter 3.47.9: formatting, analyzer and **85/85 tests**.
+- Universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` both succeeded and uploaded artifacts for that same source SHA.
+- Owner confirmed successful physical-device testing of the repaired application. Recorded as **owner-reported PASS**; no device model, OS version, screenshots, logs or exact test command are asserted.
+- Documentation reconciled after owner acceptance. **Phase 02 — ACCEPTED. Phase 03 — NOT STARTED / NOT AUTHORIZED.**

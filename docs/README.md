@@ -35,11 +35,11 @@ This is the project knowledge base. Source/config/tests determine current implem
 
 ## Current owner decisions (2026-11-06)
 
-- [Phase 02 note-tag and folder-color repair is implemented; owner device acceptance is pending](STATUS.md).
+- [Phase 02 Note Tags + Folder Colors repair is ACCEPTED, including owner-reported physical-device PASS](STATUS.md).
 - [Phase 03 final implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md) — prepared, gated, and not authorized for execution.
 - Existing three protected GitHub Actions workflows remain in force.
 
 
 ## Phase 02 repair status — 2026-11-06
 
-Phase 02 Note Tags and Folder Colors are implemented on schema v2. Automated validation passed on source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` (Flutter CI `42177776797`, 85/85 tests). The two Debug APK workflows were triggered for the same SHA. **Current phase status: IMPLEMENTATION COMPLETE — OWNER DEVICE ACCEPTANCE PENDING.** The physical-device integration source is not claimed as executed. Phase 03 remains unauthorized.
+Phase 02 Note Tags and Folder Colors are implemented on schema v2 and **Phase 02 is ACCEPTED**. Flutter CI passed on repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` (run `42177776797`, 85/85 tests); universal and ARM64 Debug APK workflows succeeded for that exact SHA (runs `42177872597` and `42177872567`). The owner confirmed successful physical-device testing; this is owner-reported evidence, not an independently attached device log. The separate automated integration-test source's execution is not claimed. Phase 03 remains unauthorized.
