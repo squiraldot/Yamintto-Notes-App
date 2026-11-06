@@ -15,9 +15,9 @@ import 'package:yamintto/features/notes/data/note_repository.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets(
-    'Phase 03 editor autosaves on navigation and backgrounding',
-    (tester) async {
+  testWidgets('Phase 03 editor autosaves on navigation and backgrounding', (
+    tester,
+  ) async {
       final temporaryDirectory = await getTemporaryDirectory();
       final databaseDirectory = Directory(
         path.join(temporaryDirectory.path, 'yamintto-phase-03'),
@@ -108,6 +108,5 @@ void main() {
       await reopened.close();
       await databaseFile.delete();
       await databaseDirectory.delete(recursive: true);
-    },
-  );
+  });
 }
