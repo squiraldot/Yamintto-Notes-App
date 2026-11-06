@@ -173,6 +173,22 @@ void main() {
     expect(saved.body, 'Immediate flush');
   });
 
+  testWidgets('flushes pending edits on system back navigation', (
+    tester,
+  ) async {
+    await mount(tester, path: '/notes/new');
+    await tester.enterText(
+      find.byKey(const ValueKey('note-body-editor')),
+      'System back flush',
+    );
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('note-body-editor')), findsNothing);
+    expect((await notes.listNotes()).single.body, 'System back flush');
+  });
+
   testWidgets('flushes pending edits on lifecycle backgrounding', (
     tester,
   ) async {
