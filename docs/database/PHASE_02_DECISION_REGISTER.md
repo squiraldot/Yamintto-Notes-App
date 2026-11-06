@@ -99,3 +99,41 @@ The original schema-v1 architecture freeze remains historical, but the owner has
 | Phase progression | Phase 03 blocked | Close Phase 02 repair with tests, three exact-SHA workflows, owner physical-device retest, docs and explicit acceptance before Phase 03 authorization. |
 
 Historical CI/APK/device evidence validates only the prior folders/notes baseline; it does not cover tags or folder colors.
+
+
+## Superseding repair decisions and implementation result — 2026-11-06
+
+The owner reopened Phase 02 for Note Tags and Folder Colors. Historical v1-only implementation freeze and earlier ACCEPTED wording do not represent current acceptance. Schema v1 is retained unchanged; schema v2 is implemented.
+
+| Decision | Implemented contract |
+|---|---|
+| Tag name | Unicode 17.0 boundary trim; preserve internal whitespace/display spelling; reject empty, NUL and >64 code points |
+| Tag identity/duplicates | UUID v4; app-global unique key using Unicode NFKC_Casefold + NFC; duplicate create/rename rejected |
+| Tag ordering | `name_key`, display name, ID ascending |
+| Tag rename | Preserve ID and all assignments |
+| Tag delete | Confirmation; transaction deletes note-tag junction rows then tag |
+| Note soft-delete | Keep tag links; reject assignment changes while note is soft-deleted |
+| Assignment | Multiple tags per note; one tag shared by many notes; transaction validates full requested set before replacement; no note timestamp/content changes |
+| Folder color | Nullable ARGB INTEGER restricted to ten opaque palette values; NULL is default |
+| Color UI | Select at create/edit and from folder actions; root/nested display; theme primary fallback; contrast-aware swatch foreground |
+| Color metadata | Color changes do not modify ID/name/parent/sort order/timestamps |
+| Migration | Immutable schema v1 → transactional additive schema v2; fail closed and rollback DDL on migration failure |
+
+The original November 5 Phase 02 authorization excluded tags and folder colors; it did not establish detailed semantics for them. The November 6 repair authorization supplies the required capabilities. The choices above are the smallest predictable offline-first semantics selected where the repair prompt did not specify exact limits or ordering.
+
+**Implementation evidence:** source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; Flutter CI run `42177776797`; 85/85 tests passed.
+
+
+### Exact-SHA Android Debug APK evidence
+
+Both protected APK workflows succeeded on repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`:
+
+| Workflow | Run | Artifact | Artifact ID | Archive bytes | SHA-256 |
+|---|---:|---|---:|---:|---|
+| Universal Debug APK | `42177872597` | `yamintto-debug-fa8f4ad469786a6a7199360a3d6813d22fac75e6` | `13483409802` | 80,077,640 | `ec417ad611bbdbc64ffa402af433cfc96cb70958871aee56b5a70192626c34e2` |
+| ARM64 Debug APK | `42177872567` | `yamintto-arm64-debug-fa8f4ad469786a6a7199360a3d6813d22fac75e6` | `13484082037` | 51,786,455 | `f53c2e1caadd41b52dfaf3a657ad0bf95ad82bf36be6a51a532f16c680308837` |
+
+Sizes are GitHub artifact ZIP archive sizes, not extracted APK sizes. Both artifacts were uploaded successfully and were unexpired when inspected; their recorded expiry is 2026-11-20.
+
+
+Owner device acceptance for tags/colors remains pending. Phase 02 is not marked ACCEPTED; Phase 03 remains unauthorized.

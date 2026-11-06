@@ -77,3 +77,17 @@ Tag semantics and color representation must be frozen from the original Phase 02
 ## Phase 03 owner decision — hybrid Markdown
 
 FR-03/FR-04 must use a documented hybrid dialect: modern Markdown baseline plus verified legacy YRNotes constructs. Raw HTML is disabled by default except a safe allowlist; unsafe URLs/content are rejected or rendered inert. FR-05 autosave must serialize or revision-guard writes, never let stale saves overwrite newer edits, flush at explicit/lifecycle opportunities, and retain editable dirty text with retry on failure. Phase 03 remains blocked until Phase 02 repair acceptance and separate Phase 03 authorization.
+
+
+## Phase 02 repair requirements — implemented
+
+### FR-TAG-01 — Reusable note tags
+The application shall support local reusable tags, tag CRUD, multiple tags per note, one tag shared by multiple notes, persistent assignment, assigned-tag display and removal. Tag operations shall not mutate note content, identity, folder relationship or timestamps.
+
+### FR-TAG-02 — Tag normalization and lifecycle
+Tag names shall be Unicode-trimmed, non-empty, NUL-free and limited to 64 Unicode code points. Uniqueness shall use Unicode 17.0 NFKC_Casefold + NFC and apply globally. Tags shall sort by canonical key/display name/ID. Rename preserves assignments. Delete removes all assignments transactionally. Note soft-delete retains assignments; changing assignments on a deleted note is rejected.
+
+### FR-FOLDER-COLOR-01 — Persistent folder colors
+The application shall allow a user to select, change and reset a folder color during folder creation/editing and from folder actions. Colors shall persist for root and nested folders. A finite, validated opaque ARGB palette is stored as nullable SQLite INTEGER; NULL is the theme-aware default. Color shall not affect folder identity, hierarchy, name uniqueness, order or timestamps.
+
+**Implementation status:** implemented in schema v2 and feature UI. Automated evidence: Flutter CI run `42177776797`, source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`, 85/85 tests passed. Owner physical-device acceptance remains pending.

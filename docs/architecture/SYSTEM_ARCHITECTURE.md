@@ -69,3 +69,12 @@ Phase 02 is reopened because note tags and folder colors required by the origina
 Phase 03 uses the owner-selected hybrid Markdown direction: modern Markdown baseline plus explicitly verified legacy YRNotes syntax. Persist source text, not rendered widget state. Treat `content_format_version` as a real format contract. Raw HTML is disabled by default except explicit safe legacy allowlisting; URL/image handling must be security- and privacy-conscious. Autosave must prevent stale asynchronous writes from replacing newer edits and retain dirty text after failure.
 
 The existing three protected GitHub Actions workflows remain authoritative. No workflow consolidation or removal is approved.
+
+
+## Current Phase 02 repair architecture — schema v2
+
+The app-scoped Riverpod database provider continues to own the single Drift/SQLite instance. Widgets call Riverpod providers/controllers and do not access SQL handles. The new `TagRepository` owns tag and junction operations; tag domain validation is in `NoteTag`; `tag_providers.dart` exposes repository/list/assigned-tag providers. The existing `FolderRepository` owns color validation and persistence; `FolderColorPalette` owns the fixed UI palette.
+
+Schema v2 adds `tags`, `note_tags` and nullable `folders.color_argb`. Tag assignment replacement, tag deletion and folder color updates execute through repository/database boundaries. Note/tag foreign keys are RESTRICT; explicit tag deletion removes junction rows in the same transaction. Existing notes/folders are retained through an additive v1→v2 migration.
+
+Repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` on Flutter 3.47.9 with 85/85 tests. Both exact-SHA Debug APK workflows succeeded and uploaded artifacts (see [status](../STATUS.md)). Owner physical-device verification of repaired features is pending. Earlier schema-v1-only statements above remain historical and are superseded for current architecture. No Phase 03 functionality has started.

@@ -178,3 +178,35 @@ The repair must inspect the original Phase 02 prompt and actual Drift migration/
 Phase 02 can close only after implementation, migration tests, tag/color unit and widget tests, full Flutter validation, all three protected workflows on the exact repair SHA, owner-run Android physical-device retest, documentation reconciliation and explicit owner acceptance.
 
 **Phase 03 remains NOT STARTED and NOT AUTHORIZED.** The prepared [Phase 03 implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md) is gated and must not be executed until Phase 02 repair is accepted and the owner separately authorizes Phase 03.
+
+
+## Phase 02 reopened repair — implementation evidence (2026-11-06)
+
+**Current status: IMPLEMENTATION COMPLETE — OWNER DEVICE ACCEPTANCE PENDING. Phase 02 is not yet ACCEPTED.**
+
+- Starting source HEAD: `7882bbdd5b751980bc1f14502e5e4bacc452f2d5`.
+- Repair implementation source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6` on `main`.
+- Database: immutable schema v1 upgraded forward to v2. Existing v1 records are retained; migrated folder colors default to NULL; existing notes receive no tags.
+- Note tags: reusable global definitions, multiple note assignments, Unicode 17.0 normalization, transactional assignment/deletion, retained links for soft-deleted notes.
+- Folder colors: fixed ten-color opaque ARGB palette, nullable default, root/nested persistence. Color-only edits do not alter timestamps.
+- Dependencies: no package added; pubspec and pubspec.lock unchanged.
+- Flutter CI run `42177776797`: success on the exact repair SHA with Flutter 3.47.9; locked dependency installation, formatting, analyzer and **85/85 tests passed** (16 unit, 11 database/migration, 29 repository, 29 widget).
+
+
+### Exact-SHA Android Debug APK evidence
+
+Both protected APK workflows succeeded on repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`:
+
+| Workflow | Run | Artifact | Artifact ID | Archive bytes | SHA-256 |
+|---|---:|---|---:|---:|---|
+| Universal Debug APK | `42177872597` | `yamintto-debug-fa8f4ad469786a6a7199360a3d6813d22fac75e6` | `13483409802` | 80,077,640 | `ec417ad611bbdbc64ffa402af433cfc96cb70958871aee56b5a70192626c34e2` |
+| ARM64 Debug APK | `42177872567` | `yamintto-arm64-debug-fa8f4ad469786a6a7199360a3d6813d22fac75e6` | `13484082037` | 51,786,455 | `f53c2e1caadd41b52dfaf3a657ad0bf95ad82bf36be6a51a532f16c680308837` |
+
+Sizes are GitHub artifact ZIP archive sizes, not extracted APK sizes. Both artifacts were uploaded successfully and were unexpired when inspected; their recorded expiry is 2026-11-20.
+
+
+- Physical-device integration source covers tag and folder-color persistence across a database close/reopen. It has **not** been executed by this agent or CI. Owner retest is pending.
+- The prior owner-reported device result applies to the earlier folders/notes baseline only; it does not accept the repaired features.
+- Phase 03 remains unauthorized and has not started.
+
+This section supersedes historical Phase 02 ACCEPTED / schema-v1-only / repair-required statements earlier in this file. Those statements remain historical records, not current status.

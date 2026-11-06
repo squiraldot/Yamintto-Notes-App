@@ -12,7 +12,7 @@ This is an ordered plan, not authorization. Phase 02 implementation is explicitl
 - Checklist: [x] scope [x] identity [x] tokens/themes/components [x] splash/root/unknown route [x] unit/widget tests [x] docs [x] repository-wide format [x] analyzer [x] Flutter tests (15) [x] integration smoke source retained [x] host-only Flutter CI [x] universal Debug APK artifact [x] ARM64 Debug APK artifact [x] owner-reported successful physical Android testing (detailed evidence not attached; not independently verified) [ ] iOS native build/device verification (Not Verified — Environment Unavailable; non-blocking).
 - Status: Phase 01 source implementation is present. Latest host-only Flutter CI and both APK artifact workflows succeeded on commit 76ba10c04f0ec421f54e5d6252dd6745058611f9 (run IDs 41981911424, 41982079883 and 41982079971). Android real-device testing is owner-reported successful, with detailed evidence not attached. Phase 01 acceptance is recorded as an owner-reported Android pass, not independent device-log verification. No Android device-test failure is currently outstanding. iOS verification is non-gating; continue iOS implementation with applicable phases.
 
-## Phase 02 — Core Management — ACCEPTED
+## Phase 02 — Core Management — IMPLEMENTATION COMPLETE; OWNER DEVICE ACCEPTANCE PENDING
 - Scope: implement approved Drift schema version 1/migrations; nested folder management; note CRUD with soft-delete foundation. No Trash UI, physical permanent deletion, search, pinning, revisions, attachments, encryption, biometrics, backup or import implementation.
 - Dependencies: Phase 01 accepted; owner-approved architecture freeze recorded in [decision register](../database/PHASE_02_DECISION_REGISTER.md) and [ADR-0013](../decisions/0013-phase-02-data-model-lifecycle.md).
 - Prerequisite: **satisfied** — owner explicitly authorized Phase 02 implementation on 2026-11-05. Starting baseline `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; continue from the newer `main` head without resetting history.
@@ -125,3 +125,21 @@ The earlier 69/69 CI run, universal/ARM64 APK runs and owner-reported device tes
 ### Phase 03 — Editor — PLANNED, BLOCKED
 
 Owner-selected Markdown direction: **HYBRID** — modern Markdown baseline plus explicitly verified legacy YRNotes constructs. The final gated prompt is [PHASE_03_IMPLEMENTATION_PROMPT.md](PHASE_03_IMPLEMENTATION_PROMPT.md). It is preparation only, not implementation authorization. Phase 03 additionally requires separate explicit owner authorization after Phase 02 closes.
+
+
+## Phase 02 reopened repair — current gate status (2026-11-06)
+
+**IMPLEMENTATION COMPLETE — OWNER DEVICE ACCEPTANCE PENDING. Do not start Phase 03.**
+
+The repair adds reusable note tags and persisted folder colors via schema v2 while preserving schema v1. Implementation source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` succeeded on Flutter 3.47.9 with format, analyzer and 85/85 tests passing.
+
+
+Exact-SHA Debug APK evidence (source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`):
+- Universal run `42177872597` succeeded; artifact `yamintto-debug-fa8f4ad469786a6a7199360a3d6813d22fac75e6`, ID `13483409802`, archive 80,077,640 bytes, SHA-256 `ec417ad611bbdbc64ffa402af433cfc96cb70958871aee56b5a70192626c34e2`.
+- ARM64 run `42177872567` succeeded; artifact `yamintto-arm64-debug-fa8f4ad469786a6a7199360a3d6813d22fac75e6`, ID `13484082037`, archive 51,786,455 bytes, SHA-256 `f53c2e1caadd41b52dfaf3a657ad0bf95ad82bf36be6a51a532f16c680308837`.
+Archive sizes are ZIP sizes, not extracted APK sizes. Both artifact records showed expiry 2026-11-20.
+
+
+The physical-device integration test source covers tags and folder colors across close/reopen, but has not been executed. Owner must repeat the Android physical-device smoke test for both repaired features. The prior device report covers the earlier folder/note baseline only.
+
+The prior Phase 02 ACCEPTED checklist above is historical and superseded for progression. Phase 03 remains blocked until owner device acceptance, final documentation reconciliation and separate explicit Phase 03 authorization.

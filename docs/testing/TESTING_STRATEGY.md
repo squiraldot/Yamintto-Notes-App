@@ -75,3 +75,31 @@ The historical 69-test CI run did not test note tags or folder colors. Before Ph
 - Viewer/editor tests for syntax matrix, unknown constructs, accessibility semantics, keyboard/focus, selection and text scaling.
 - Autosave tests for debounce, immediate flush, same-note serialization/revision guards, stale completions, note switching, navigation, background/resume, failure/retry and dirty-state retention.
 - Process kill cannot guarantee a pending debounce was flushed; document the durability boundary and test restart after a completed flush.
+
+
+## Phase 02 repair verification — executed
+
+Repair source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`.
+
+Flutter CI run `42177776797` succeeded on Flutter 3.47.9:
+- Locked dependency resolution: passed.
+- `dart format --output=none --set-exit-if-changed .`: passed.
+- `flutter analyze --fatal-infos`: passed.
+- `flutter test`: **85/85 passed**.
+
+Test distribution from the successful runner log:
+- Unit/app/theme/Unicode tests: 16.
+- Database/schema/migration tests: 11.
+- Folder/note/tag repository tests: 29.
+- Widget tests: 29 (including 19 existing Phase 02 screen tests and 4 repair-screen tests).
+
+Migration coverage includes a populated schema-v1 fixture, preservation of old IDs/content/relationships/order/timestamps/deleted_at, v2 tag creation and assignment, color persistence after reopen, FK/integrity checks and forced migration failure/rollback.
+
+
+Exact-SHA Debug APK evidence (source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`):
+- Universal run `42177872597` succeeded; artifact `yamintto-debug-fa8f4ad469786a6a7199360a3d6813d22fac75e6`, ID `13483409802`, archive 80,077,640 bytes, SHA-256 `ec417ad611bbdbc64ffa402af433cfc96cb70958871aee56b5a70192626c34e2`.
+- ARM64 run `42177872567` succeeded; artifact `yamintto-arm64-debug-fa8f4ad469786a6a7199360a3d6813d22fac75e6`, ID `13484082037`, archive 51,786,455 bytes, SHA-256 `f53c2e1caadd41b52dfaf3a657ad0bf95ad82bf36be6a51a532f16c680308837`.
+Archive sizes are ZIP sizes, not extracted APK sizes. Both artifact records showed expiry 2026-11-20.
+
+
+The physical-device integration source `integration_test/phase_02_data_smoke_test.dart` covers tag assignment and folder-color persistence across close/reopen. **It has not been executed by CI or this agent.** Owner must run it and repaired UI smoke flows on a real Android device. No emulator/simulator/KVM/virtual device was used or added.

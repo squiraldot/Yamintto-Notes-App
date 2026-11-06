@@ -1,4 +1,4 @@
-# Phase 02 database schema — IMPLEMENTED (SCHEMA VERSION 1)
+# Phase 02 database schema — CURRENT SCHEMA VERSION 2 (v1 immutable)
 
 **Architecture status:** Accepted by owner on 2026-11-05.  
 **Implementation status:** Schema v1, Drift database wrapper, Unicode canonicalization, folder/note repositories and presentation screens are implemented. Source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed Flutter CI run `42097059083` (69/69 tests); universal and ARM64 Debug APK artifacts uploaded on runs `42097260846` and `42097260894`. Owner physical-device persistence smoke testing and final acceptance remain pending. Executable schema source: `lib/core/database/schema_v1.dart`; database/migration owner: `lib/core/database/yamintto_database.dart`. Drift + SQLite remains the accepted architecture.
@@ -159,3 +159,37 @@ Repair requirements:
 - Do not add revisions, attachments, search, pinning, Trash UI, encryption metadata, biometrics, backup or settings as part of this repair.
 
 The exact v2 physical schema is intentionally not frozen by this addendum. Inspect the original Phase 02 authorization and current Drift source/migration history, propose the smallest safe additive design, document it, and verify the migration before implementation.
+
+
+## Current schema version 2 — implemented 2026-11-06
+
+Schema v1 remains the immutable historical baseline. Current application schema is v2, implemented at repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. The prior v1-only inventory and instruction not to create `note_tags` are historical and superseded by this approved repair.
+
+### v2 inventory
+
+| Table | Purpose | Key constraints |
+|---|---|---|
+| `folders` | Existing folder hierarchy plus `color_argb INTEGER NULL` | v1 columns, indexes and constraints retained; color is NULL or one of ten palette ARGB integers |
+| `notes` | Existing notes and soft-delete state | v1 definition unchanged |
+| `tags` | Reusable global tag definitions | UUID v4 ID; trimmed display name; 1–64 Unicode code points; unique canonical `name_key` |
+| `note_tags` | Many-to-many note/tag assignments | Composite primary key (`note_id`, `tag_id`); both FKs RESTRICT; tag lookup index |
+
+### Tag contract
+
+- Trim leading/trailing Unicode 17.0 White_Space; preserve internal whitespace and display spelling.
+- Reject empty names, NUL and names longer than 64 Unicode code points.
+- Canonical uniqueness key uses deterministic Unicode 17.0 NFKC_Casefold + NFC after boundary trim. Names are unique across the app; duplicates are rejected.
+- Rename preserves tag ID and all note links. Delete confirms and removes all junction rows plus the tag in one transaction.
+- Tag lists and note assignments sort by canonical key, display name, then ID.
+- Soft-deleting a note does not delete tag links. Links remain with the retained note; assignment changes to a soft-deleted note are rejected. Deleting a tag removes links to active and soft-deleted notes.
+- Assignment replacement validates all tag IDs before changing links and is transactional. Removing one assignment leaves other links intact. Tag operations never update note title, body, ID, folder or timestamps.
+
+### Folder color contract
+
+- `color_argb` stores one of ten fixed opaque ARGB values defined by `FolderColorPalette`; arbitrary values are rejected by repository validation and SQLite CHECK.
+- Palette: `#F44336`, `#E91E63`, `#FF9800`, `#FFEB3B`, `#4CAF50`, `#009688`, `#3F51B5`, `#673AB7`, `#03A9F4`, `#FFC107`.
+- NULL means no custom color. Existing v1 folders migrate with NULL.
+- Default UI fallback is active theme `colorScheme.primary`; swatch/check foreground uses black or white based on swatch brightness.
+- Color applies to root/nested folders and does not change folder ID, name, parent, sort order, created_at or updated_at.
+
+Executable v2 SQL: `lib/core/database/schema_v2.dart`; schema v1 source `schema_v1.dart` was not modified. Flutter CI run `42177776797` passed 85/85 tests on the repair SHA above.

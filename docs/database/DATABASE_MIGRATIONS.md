@@ -1,4 +1,4 @@
-# Database migration policy — SCHEMA V1 IMPLEMENTED
+# Database migration policy — CURRENT SCHEMA V2 IMPLEMENTED
 
 **Architecture status:** Owner approved on 2026-11-05.  
 **Implementation status:** Schema version 1 and the Drift `GeneratedDatabase` wrapper are implemented in `lib/core/database/`; the immutable SQL definition is `schema_v1.dart`. Phase 02 repositories and UI are implemented. Source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed locked dependency, format, analyzer and 69/69 test validation. The owner reports successful Android physical-device smoke testing. The integration-test source is separate; its execution is not claimed. No destructive fallback or database reset path exists.
@@ -54,3 +54,16 @@ Field-level encryption does not encrypt metadata, SQLite pages, indexes, WAL/jou
 ## Phase boundaries
 
 Phase 02 implements schema version 1 and its supported migration/fresh-install path only. Phase 04 adds search/pin/trash; Phase 05 revisions/attachments; Phase 06 encryption metadata and plaintext migration; Phase 08 backup/import. No later-phase migration is implemented in this task.
+
+
+## Schema v1 → v2 repair migration — implemented
+
+- Current Drift schema version: **2**. Schema v1 remains immutable.
+- Fresh installation executes the v1 create statements, then the same additive v1→v2 statements.
+- Upgrade uses an explicit v1→v2 path in `YaminttoDatabase.migration`, inside a SQLite transaction. Unknown versions fail closed.
+- Add nullable `folders.color_argb` with CHECK restricted to the ten opaque ARGB palette values. Existing rows receive NULL without changing any v1 field.
+- Create `tags`, unique index on Unicode canonical `name_key`, `note_tags` junction with composite primary key and RESTRICT foreign keys, plus a tag lookup index.
+- No existing note receives a tag. Existing IDs, names, bodies, parent/folder references, sort orders, timestamps and deleted_at values remain unchanged.
+- Migration failure propagates; transaction rollback removes earlier DDL changes from the failed attempt. No drop/recreate fallback or empty-database substitution.
+- Tests cover populated v1 upgrade, old soft-deleted rows, post-migration tag creation/assignment, folder color persistence after reopen, FK/integrity checks and forced migration failure/rollback.
+- Evidence: Flutter CI run `42177776797`, source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; 85/85 tests passed. Physical-device integration source is owner-run only and is not claimed as executed.

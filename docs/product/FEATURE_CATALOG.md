@@ -94,3 +94,19 @@ Support an optional persisted, validated color per folder and consistent renderi
 The owner selected **HYBRID** compatibility: a modern Markdown baseline plus explicitly verified legacy YRNotes constructs. Raw HTML is disabled by default; only safe allowlisted legacy constructs may render. Preserve source text and define `content_format_version` semantics. Autosave must prevent stale writes from overwriting newer edits and retain dirty text on failure.
 
 Phase 03 is blocked until Phase 02 repair is accepted and separate Phase 03 authorization is given. See [the gated Phase 03 implementation prompt](../development/PHASE_03_IMPLEMENTATION_PROMPT.md).
+
+
+## Phase 02 repair features — implemented in source
+
+### Note tags
+Status: **Implemented; automated tests passed; owner device acceptance pending.**
+
+Reusable global tags, normalized names, duplicate rejection, rename/delete, multiple note assignments, assignment removal, tag chips in active note lists, tag management and note assignment screens are implemented. Assignments use a normalized `note_tags` junction. Rename preserves links; delete removes links transactionally. Soft-deleted notes retain assignments and reject assignment edits. Tag operations do not change note content or timestamps.
+
+### Folder colors
+Status: **Implemented; automated tests passed; owner device acceptance pending.**
+
+Ten validated opaque ARGB palette values, nullable default, creation/edit selection, folder action color selection, reset, theme fallback and nested folder display are implemented. Color changes preserve folder identity, hierarchy, sort order and timestamps.
+
+### Current Phase 02 schema and evidence
+Schema v1 remains immutable; current schema is v2 with `tags`, `note_tags` and nullable `folders.color_argb`. Repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; Flutter CI run `42177776797`; 85/85 tests passed. The prior v1-only prohibition of `note_tags` and earlier missing/repair-required status are historical and superseded. Phase 03 remains unauthorized.
