@@ -128,7 +128,7 @@ Phase 03 coverage includes:
 - Hybrid Markdown parser tests for modern block/inline syntax, task lists, tables, links, images, verified legacy details/summary and inline tags, raw HTML inertness, unsafe URLs, malformed details, source preservation, byte/node/depth/table limits.
 - Content format repository tests for v2 creation, v1 literal preservation on open/title-only edits, v1→v2 upgrade only on deliberate body edits, and rejection/preservation of unknown future versions.
 - Autosave coordinator tests for 700 ms debounce, serialized latest-revision persistence, stale completion protection, failure/retry, atomic title/body snapshots and independent editor sessions.
-- Editor/viewer widget tests for inert links/images, text scaling and selection, editor/preview source preservation, autosave timing, navigation flush, lifecycle background flush, unknown-format read-only behavior, failure/retry and v1 literal preview.
+- Editor/viewer widget tests for inert links/images, text scaling and selection, editor/preview source preservation, autosave timing, toolbar/system-back navigation flush, lifecycle background flush, unknown-format read-only behavior, failure/retry and v1 literal preview.
 - Phase 02 screen tests were updated to assert that pending edits are flushed before navigation; the old discard-confirmation behavior is superseded by autosave-before-navigation.
 
 This is host unit/widget evidence only. Phase 03 physical-device integration testing remains owner-run and pending. No process-kill durability guarantee is made for a debounce that has not completed a flush. The PR is not merged or owner-accepted.
