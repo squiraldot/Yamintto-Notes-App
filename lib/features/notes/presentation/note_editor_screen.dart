@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yamintto/core/errors/domain_failure.dart';
 import 'package:yamintto/core/theme/tokens/app_spacing.dart';
 import 'package:yamintto/features/notes/data/note_providers.dart';
+import 'package:yamintto/features/notes/domain/note_content_format.dart';
+import 'package:yamintto/features/notes/presentation/note_autosave_coordinator.dart';
 import 'package:yamintto/features/notes/presentation/note_providers.dart';
+import 'package:yamintto/features/notes/presentation/safe_markdown_viewer.dart';
 
 class NoteEditorScreen extends ConsumerStatefulWidget {
   const NoteEditorScreen({this.noteId, this.folderId, super.key});
+
   final String? noteId;
   final String? folderId;
 
@@ -15,203 +21,303 @@ class NoteEditorScreen extends ConsumerStatefulWidget {
   ConsumerState<NoteEditorScreen> createState() => _NoteEditorScreenState();
 }
 
-class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
+class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
+    with WidgetsBindingObserver {
   late final TextEditingController _title;
   late final TextEditingController _body;
+  late final NoteAutosaveCoordinator _autosave;
+
   bool _initialized = false;
-  bool _saving = false;
-  bool _dirty = false;
+  bool _showPreview = false;
+  bool _isSaving = false;
+  bool _saveError = false;
+  bool _isDirty = false;
+  bool _unsupportedFormat = false;
+  bool _bodyEdited = false;
+  String? _savedNoteId;
   String? _activeFolderId;
+  String _initialBody = '';
+  int _contentFormatVersion = NoteContentFormat.hybridMarkdown;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _activeFolderId = widget.folderId;
     _title = TextEditingController();
     _body = TextEditingController();
-    _title.addListener(_markDirty);
-    _body.addListener(_markDirty);
+    _autosave = NoteAutosaveCoordinator(
+      save: _persistSnapshot,
+      onStateChanged: _handleAutosaveStateChanged,
+    );
+    if (widget.noteId == null) {
+      _initialized = true;
+      _attachListeners();
+    }
   }
 
-  void _markDirty() {
-    if (_initialized && !_dirty) setState(() => _dirty = true);
+  void _attachListeners() {
+    _title.addListener(_handleEdit);
+    _body.addListener(_handleEdit);
   }
 
-  @override
-  void dispose() {
-    _title.dispose();
-    _body.dispose();
-    super.dispose();
+  void _handleEdit() {
+    if (!_initialized || _unsupportedFormat) return;
+    _bodyEdited = _body.text != _initialBody;
+    _isDirty = true;
+    _saveError = false;
+    _autosave.update(title: _title.text, body: _body.text);
+  }
+
+  void _handleAutosaveStateChanged() {
+    if (!mounted) return;
+    setState(() {
+      _isSaving = _autosave.isSaving;
+      _saveError = _autosave.hasError;
+      if (_autosave.isSaved) {
+        _isDirty = false;
+        _bodyEdited = _body.text != _initialBody;
+      }
+    });
+  }
+
+  void _initializeFromNote(dynamic note) {
+    if (_initialized) return;
+    _activeFolderId = note.folderId as String?;
+    _savedNoteId = note.id as String;
+    _title.text = note.title as String;
+    _body.text = note.body as String;
+    _initialBody = _body.text;
+    _contentFormatVersion = note.contentFormatVersion as int;
+    _unsupportedFormat = !NoteContentFormat.isSupported(
+      _contentFormatVersion,
+    );
+    _initialized = true;
+    _attachListeners();
   }
 
   @override
   Widget build(BuildContext context) {
-    final existing = widget.noteId == null
-        ? null
-        : ref.watch(noteDetailProvider(widget.noteId!));
-    if (existing != null) {
+    if (widget.noteId != null) {
+      final existing = ref.watch(noteDetailProvider(widget.noteId!));
       return existing.when(
-        loading: () =>
-            const Scaffold(body: Center(child: CircularProgressIndicator())),
+        loading: () => const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
         error: (error, _) => Scaffold(
           appBar: AppBar(title: const Text('Note unavailable')),
           body: Center(child: Text(_message(error))),
         ),
         data: (note) {
-          if (!_initialized) {
-            _activeFolderId = note.folderId;
-            _title.text = note.title;
-            _body.text = note.body;
-            _initialized = true;
-          }
+          _initializeFromNote(note);
           return _editor(context);
         },
       );
     }
-    _initialized = true;
     return _editor(context);
   }
 
-  Widget _editor(BuildContext context) => PopScope(
-    canPop: !_dirty && !_saving,
-    onPopInvokedWithResult: (didPop, result) async {
-      if (didPop || _saving) return;
-      if (await _confirmDiscard() && mounted) {
-        setState(() => _dirty = false);
-        await WidgetsBinding.instance.endOfFrame;
-        if (context.mounted) context.pop();
-      }
-    },
-    child: Scaffold(
+  Widget _editor(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           tooltip: 'Back',
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => _handleBack(context),
+          onPressed: _isSaving ? null : _handleBack,
         ),
         title: Text(widget.noteId == null ? 'New note' : 'Edit note'),
         actions: [
+          if (_isSaving)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Center(
+                child: SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            )
+          else if (_saveError)
+            TextButton(onPressed: _retrySave, child: const Text('Retry'))
+          else if (_autosave.isSaved)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Center(child: Text('Saved')),
+            )
+          else if (_isDirty)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Center(child: Text('Saving soon')),
+            ),
           TextButton(
-            onPressed: _saving ? null : _save,
-            child: _saving
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Save'),
+            onPressed: _isSaving ? null : _saveNow,
+            child: const Text('Save'),
           ),
         ],
       ),
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
-          TextField(
-            controller: _title,
-            maxLength: 255,
-            maxLines: 1,
-            textCapitalization: TextCapitalization.sentences,
-            decoration: const InputDecoration(
-              labelText: 'Title',
-              hintText: 'Untitled note',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (_unsupportedFormat) ...[
+              Text(
+                'Unsupported content format',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'This note uses a newer content format. Its source is read-only '
+                'so it cannot be accidentally overwritten.',
+              ),
+              const SizedBox(height: 12),
+            ],
+            TextField(
+              key: const ValueKey('note-title-editor'),
+              controller: _title,
+              readOnly: _unsupportedFormat,
+              maxLength: 255,
+              maxLines: 1,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: const InputDecoration(
+                labelText: 'Title',
+                hintText: 'Untitled note',
+              ),
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          TextField(
-            controller: _body,
-            minLines: 12,
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            textCapitalization: TextCapitalization.sentences,
-            decoration: const InputDecoration(
-              labelText: 'Plain-text body',
-              alignLabelWithHint: true,
-              border: OutlineInputBorder(),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: _showPreview ? () => setState(() => _showPreview = false) : null,
+                  child: const Text('Editor'),
+                ),
+                TextButton(
+                  onPressed: _unsupportedFormat || _showPreview ? null : _openPreview,
+                  child: const Text('Preview'),
+                ),
+                const Spacer(),
+                if (_saveError)
+                  Text(
+                    'Save error',
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+              ],
             ),
-          ),
-        ],
-      ),
-    ),
-  );
-
-  Future<void> _handleBack(BuildContext context) async {
-    if (_saving) return;
-    if (_dirty) {
-      if (!await _confirmDiscard() || !mounted || !context.mounted) return;
-      setState(() => _dirty = false);
-      await WidgetsBinding.instance.endOfFrame;
-    }
-    if (mounted && context.mounted) context.pop();
-  }
-
-  Future<bool> _confirmDiscard() async =>
-      await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) => AlertDialog(
-          title: const Text('Discard unsaved changes?'),
-          content: const Text(
-            'Your edits have not been saved. Leave this note without saving?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Keep editing'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(dialogContext, true),
-              child: const Text('Discard'),
-            ),
+            const SizedBox(height: AppSpacing.sm),
+            Expanded(child: _editorContent(context)),
           ],
         ),
-      ) ??
-      false;
+      ),
+    );
+  }
 
-  Future<void> _save() async {
-    if (_title.text.contains('\u0000') || _title.text.runes.length > 255) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Title must be 255 Unicode code points or fewer and cannot contain NUL.',
-          ),
+  Widget _editorContent(BuildContext context) {
+    if (!_showPreview) {
+      return TextField(
+        key: const ValueKey('note-body-editor'),
+        controller: _body,
+        readOnly: _unsupportedFormat,
+        expands: true,
+        minLines: null,
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        textCapitalization: TextCapitalization.sentences,
+        textAlignVertical: TextAlignVertical.top,
+        decoration: const InputDecoration(
+          labelText: 'Note content',
+          alignLabelWithHint: true,
+          border: OutlineInputBorder(),
         ),
       );
+    }
+
+    if (_contentFormatVersion == NoteContentFormat.plainText && !_bodyEdited) {
+      return SingleChildScrollView(
+        child: SelectableText(_body.text),
+      );
+    }
+    return SingleChildScrollView(
+      child: SafeMarkdownViewer(source: _body.text),
+    );
+  }
+
+  Future<void> _openPreview() async {
+    try {
+      await _autosave.flush();
+      if (!mounted) return;
+      setState(() => _showPreview = true);
+    } catch (_) {
+      // Keep the editable source visible when a save fails.
+    }
+  }
+
+  Future<void> _saveNow() async {
+    try {
+      await _autosave.flush();
+    } catch (_) {
+      // The status row exposes a retry action and keeps the source intact.
+    }
+  }
+
+  Future<void> _retrySave() async {
+    try {
+      await _autosave.retry();
+    } catch (_) {
+      // Keep the error state and source available for another retry.
+    }
+  }
+
+  Future<void> _handleBack() async {
+    try {
+      await _autosave.flush();
+    } catch (_) {
       return;
     }
-    setState(() => _saving = true);
-    try {
-      final repository = await ref.read(noteRepositoryProvider.future);
-      if (widget.noteId == null) {
-        await repository.createNote(
-          folderId: widget.folderId,
-          title: _title.text,
-          body: _body.text,
-        );
-      } else {
-        await repository.updateNote(
-          id: widget.noteId!,
-          title: _title.text,
-          body: _body.text,
-        );
-      }
-      if (!mounted) return;
+    if (mounted) context.pop();
+  }
+
+  Future<void> _persistSnapshot(NoteSaveSnapshot snapshot) async {
+    final repository = await ref.read(noteRepositoryProvider.future);
+    final saved = _savedNoteId == null
+        ? await repository.createNote(
+            folderId: _activeFolderId,
+            title: snapshot.title,
+            body: snapshot.body,
+            contentFormatVersion: NoteContentFormat.hybridMarkdown,
+          )
+        : await repository.updateNote(
+            id: _savedNoteId!,
+            title: snapshot.title,
+            body: snapshot.body,
+          );
+
+    _savedNoteId = saved.id;
+    _contentFormatVersion = saved.contentFormatVersion;
+    _initialBody = snapshot.body;
+    _bodyEdited = _body.text != _initialBody;
+    if (mounted) {
       ref.invalidate(noteListProvider(_activeFolderId));
-      if (widget.noteId != null) {
-        ref.invalidate(noteDetailProvider(widget.noteId!));
-      }
-      setState(() {
-        _dirty = false;
-        _saving = false;
-      });
-      await WidgetsBinding.instance.endOfFrame;
-      if (mounted) context.pop();
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(_message(error))));
-      }
-    } finally {
-      if (mounted) setState(() => _saving = false);
+      ref.invalidate(noteDetailProvider(saved.id));
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      unawaited(_autosave.flush().catchError((Object _) {}));
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _autosave.dispose();
+    _title.dispose();
+    _body.dispose();
+    super.dispose();
   }
 }
 
