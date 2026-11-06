@@ -14,7 +14,6 @@ enum DomainFailureCode {
   databaseInitialization,
   migrationUnsupported,
   unsupportedContentFormat,
-  staleNoteEdit,
 }
 
 /// A typed, presentation-safe domain failure. SQLite details are never exposed.

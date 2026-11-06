@@ -16,7 +16,9 @@ class NoteSaveSnapshot {
 
   @override
   bool operator ==(Object other) =>
-      other is NoteSaveSnapshot && other.title == title && other.body == body;
+      other is NoteSaveSnapshot &&
+      other.title == title &&
+      other.body == body;
 
   @override
   int get hashCode => Object.hash(title, body);
@@ -26,16 +28,18 @@ class NoteSaveSnapshot {
 /// acknowledging a newer in-memory revision.
 class NoteAutosaveCoordinator {
   NoteAutosaveCoordinator({
-    required this.save,
+    required NoteSaveCallback save,
     this.debounce = const Duration(milliseconds: 700),
     NoteTimerFactory? timerFactory,
-    this.onStateChanged,
-  }) : _timerFactory = timerFactory ?? Timer.new;
+    void Function()? onStateChanged,
+  }) : _save = save,
+       _timerFactory = timerFactory ?? Timer.new,
+       _onStateChanged = onStateChanged;
 
-  final NoteSaveCallback save;
+  final NoteSaveCallback _save;
   final Duration debounce;
   final NoteTimerFactory _timerFactory;
-  final void Function()? onStateChanged;
+  final void Function()? _onStateChanged;
 
   Timer? _timer;
   Future<void>? _flushFuture;
@@ -44,17 +48,14 @@ class NoteAutosaveCoordinator {
   int _savedRevision = 0;
   bool _saving = false;
   bool _hasError = false;
-  Object? _lastError;
   bool _disposed = false;
 
   int get editRevision => _editRevision;
   int get savedRevision => _savedRevision;
   bool get isSaving => _saving;
   bool get hasError => _hasError;
-  Object? get lastError => _lastError;
   bool get isDirty => _editRevision > _savedRevision;
   bool get isSaved => _editRevision > 0 && !isDirty && !_hasError;
-
   NoteAutosaveStatus get status {
     if (_hasError) return NoteAutosaveStatus.error;
     if (_saving) return NoteAutosaveStatus.saving;
@@ -68,7 +69,6 @@ class NoteAutosaveCoordinator {
     _latest = NoteSaveSnapshot(title: title, body: body);
     _editRevision++;
     _hasError = false;
-    _lastError = null;
     _timer?.cancel();
     _timer = _timerFactory(debounce, () {
       _timer = null;
@@ -84,17 +84,22 @@ class NoteAutosaveCoordinator {
     if (active != null) return active;
     if (!isDirty) return Future<void>.value();
 
-    final tracked = _runFlush().whenComplete(() {
+    final completer = Completer<void>();
+    _flushFuture = completer.future;
+    _runFlush().then(
+      (_) => completer.complete(),
+      onError: (Object error, StackTrace stackTrace) {
+        completer.completeError(error, stackTrace);
+      },
+    ).whenComplete(() {
       _flushFuture = null;
       _notify();
     });
-    _flushFuture = tracked;
-    return tracked;
+    return completer.future;
   }
 
   Future<void> retry() {
     _hasError = false;
-    _lastError = null;
     _notify();
     return flush();
   }
@@ -107,24 +112,23 @@ class NoteAutosaveCoordinator {
       _hasError = false;
       _notify();
       try {
-        await save(snapshot);
-      } catch (error) {
+        await _save(snapshot);
+      } catch (_) {
         _saving = false;
         _hasError = true;
-        _lastError = error;
         _notify();
         rethrow;
       }
       _savedRevision = revision;
       _saving = false;
       _notify();
-      // If a newer edit arrived during the write, persist that full snapshot
-      // before reporting Saved.
+      // If a newer edit arrived while the write was in flight, loop and
+      // persist that newer complete title/body snapshot before reporting Saved.
     }
   }
 
   void _notify() {
-    if (!_disposed) onStateChanged?.call();
+    if (!_disposed) _onStateChanged?.call();
   }
 
   void dispose() {

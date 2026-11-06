@@ -26,7 +26,7 @@ void main() {
       routes: [
         GoRoute(
           path: '/home',
-          builder: (_, _) => const Scaffold(body: Text('Home')),
+          builder: (context, state) => const Scaffold(body: Text('Home')),
         ),
         GoRoute(
           path: '/notes/new',

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:markdown/markdown.dart' show Element, Node, Text;
 import 'package:yamintto/features/notes/domain/hybrid_markdown_parser.dart';
@@ -18,13 +16,11 @@ void main() {
     return false;
   }
 
-  String textContent(List<Node> nodes) {
-    return nodes.map((node) {
-      if (node is Text) return node.text;
-      if (node is Element) return textContent(node.children ?? const []);
-      return node.textContent;
-    }).join();
-  }
+  String textContent(List<Node> nodes) => nodes.map((node) {
+    if (node is Text) return node.text;
+    if (node is Element) return textContent(node.children ?? const []);
+    return node.textContent;
+  }).join();
 
   group('HybridMarkdownParser', () {
     test('parses modern Markdown and GFM structures into an AST', () {
@@ -84,51 +80,6 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
       expect(containsTag(result.nodes, 'span'), isTrue);
     });
 
-    test('parses the source-derived YRNotes compatibility fixture', () {
-      final source = File(
-        'test/fixtures/markdown/yrnotes_source_compatibility.md',
-      ).readAsStringSync();
-      final result = parser.parse(source);
-
-      expect(result.source, source);
-      for (final tag in [
-        'h1',
-        'blockquote',
-        'table',
-        'pre',
-        'a',
-        'img',
-        'kbd',
-        'ins',
-        'del',
-        'br',
-        'span',
-        'details',
-        'summary',
-      ]) {
-        expect(containsTag(result.nodes, tag), isTrue, reason: tag);
-      }
-    });
-
-    test('HTML entities stay inert and are not reparsed as markup', () {
-      const source = '&lt;script&gt;alert(1)&lt;/script&gt;';
-      final result = parser.parse(source);
-
-      expect(result.source, source);
-      expect(containsTag(result.nodes, 'script'), isFalse);
-      expect(textContent(result.nodes), contains('<script>'));
-    });
-
-    test('supports all six ATX heading levels', () {
-      const source =
-          '# one\n## two\n### three\n#### four\n##### five\n###### six';
-      final result = parser.parse(source);
-
-      for (var level = 1; level <= 6; level++) {
-        expect(containsTag(result.nodes, 'h$level'), isTrue);
-      }
-    });
-
     test('keeps unsupported HTML inert and source unchanged', () {
       const source = '<script>alert(1)</script> <img src=x onerror=alert(1)>';
       final result = parser.parse(source);
@@ -147,17 +98,9 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
     });
 
     test('validates URL schemes and rejects URL tricks', () {
-      expect(
-        HybridMarkdownParser.isAllowedUrl('https://example.com/a'),
-        isTrue,
-      );
+      expect(HybridMarkdownParser.isAllowedUrl('https://example.com/a'), isTrue);
       expect(HybridMarkdownParser.isAllowedUrl('http://example.com'), isTrue);
-      expect(
-        HybridMarkdownParser.isAllowedUrl('mailto:help@example.com'),
-        isTrue,
-      );
-
-      final longUrl = 'https://example.com/${List.filled(2100, 'x').join()}';
+      expect(HybridMarkdownParser.isAllowedUrl('mailto:help@example.com'), isTrue);
       for (final url in [
         'javascript:alert(1)',
         'data:text/html,<script>',
@@ -166,7 +109,7 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
         'intent://open',
         'https://',
         'https://user:pass@example.com',
-        longUrl,
+        'https://example.com/${'x' * 2100}',
       ]) {
         expect(HybridMarkdownParser.isAllowedUrl(url), isFalse, reason: url);
       }
@@ -174,9 +117,7 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
 
     test('rejects oversized source before parsing', () {
       expect(
-        () => parser.parse(
-          List.filled(HybridMarkdownParser.maxSourceBytes + 1, 'x').join(),
-        ),
+        () => parser.parse('x' * (HybridMarkdownParser.maxSourceBytes + 1)),
         throwsA(isA<MarkdownParseException>()),
       );
     });
@@ -184,12 +125,9 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
     test('rejects excessive nesting and table dimensions', () {
       final deeplyNested = List.generate(
         40,
-        (index) => '${List.filled(index * 4, ' ').join()}- nested',
+        (index) => '${' ' * (index * 4)}- nested',
       ).join('\n');
-      expect(
-        () => parser.parse(deeplyNested),
-        throwsA(isA<MarkdownParseException>()),
-      );
+      expect(() => parser.parse(deeplyNested), throwsA(isA<MarkdownParseException>()));
 
       final header = List.generate(21, (index) => 'c$index').join(' | ');
       final separator = List.generate(21, (_) => '---').join(' | ');

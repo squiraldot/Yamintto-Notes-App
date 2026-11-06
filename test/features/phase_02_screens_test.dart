@@ -156,31 +156,29 @@ void main() {
     expect(find.text('Not empty'), findsOneWidget);
   });
 
-  testWidgets('creates and autosaves a Markdown note', (tester) async {
+  testWidgets('creates and saves a plain-text note', (tester) async {
     await mount(tester);
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Meeting');
-    await tester.enterText(find.byType(TextField).last, '# Raw source text');
+    await tester.enterText(find.byType(TextField).last, 'Raw source text');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.text('Meeting'), findsOneWidget);
-    expect((await notes.listNotes()).single.body, '# Raw source text');
-    expect((await notes.listNotes()).single.contentFormatVersion, 2);
+    expect((await notes.listNotes()).single.body, 'Raw source text');
   });
 
-  testWidgets('flushes pending note changes before back navigation', (
-    tester,
-  ) async {
+  testWidgets('prompts before abandoning unsaved note changes', (tester) async {
     await mount(tester);
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Draft');
     await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();
-    expect(find.text('Discard unsaved changes?'), findsNothing);
-    expect((await notes.listNotes()).single.title, 'Draft');
-    expect(find.text('Draft'), findsOneWidget);
+    expect(find.text('Discard unsaved changes?'), findsOneWidget);
+    await tester.tap(find.text('Keep editing'));
+    await tester.pumpAndSettle();
+    expect(find.text('New note'), findsOneWidget);
   });
 
   testWidgets('excludes descendants from folder move destinations', (
@@ -202,7 +200,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('edits an existing note and saves Markdown source', (
+  testWidgets('edits an existing note and explicitly saves plain text', (
     tester,
   ) async {
     final note = await notes.createNote(title: 'Before', body: 'Old body');
@@ -216,10 +214,11 @@ void main() {
     final saved = await notes.getNote(note.id);
     expect(saved.title, 'After');
     expect(saved.body, 'Updated raw body');
-    expect(saved.contentFormatVersion, 2);
   });
 
-  testWidgets('back navigation flushes existing note edits', (tester) async {
+  testWidgets('cancelling existing note edits preserves stored content', (
+    tester,
+  ) async {
     final note = await notes.createNote(
       title: 'Original',
       body: 'Original body',
@@ -230,10 +229,12 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'Unsaved title');
     await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();
-    final updated = await notes.getNote(note.id);
-    expect(updated.title, 'Unsaved title');
-    expect(updated.body, 'Original body');
-    expect(find.text('Unsaved title'), findsOneWidget);
+    await tester.tap(find.text('Discard'));
+    await tester.pumpAndSettle();
+    final unchanged = await notes.getNote(note.id);
+    expect(unchanged.title, 'Original');
+    expect(unchanged.body, 'Original body');
+    expect(find.text('Original'), findsOneWidget);
   });
 
   testWidgets('moves a root note into a selected folder', (tester) async {
