@@ -34,9 +34,7 @@ class NoteAutosaveCoordinator {
     this.debounce = const Duration(milliseconds: 700),
     NoteTimerFactory? timerFactory,
     this.onStateChanged,
-  }) : _save = save,
-       _timerFactory = timerFactory ?? Timer.new,
-       _onStateChanged = onStateChanged;
+  }) : _timerFactory = timerFactory ?? Timer.new;
 
   final NoteSaveCallback save;
   final Duration debounce;
