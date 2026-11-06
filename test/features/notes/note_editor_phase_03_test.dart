@@ -78,7 +78,7 @@ void main() {
 
   testWidgets('preview respects text scaling and selection', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: MediaQuery(
           data: MediaQueryData(textScaler: TextScaler.linear(1.4)),
           child: const Scaffold(
