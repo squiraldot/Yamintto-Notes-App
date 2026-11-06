@@ -56,4 +56,4 @@ New Markdown editor notes are created as version 2. A version-1 note stays versi
 
 Implementation files: `lib/features/notes/domain/hybrid_markdown_parser.dart` and `lib/features/notes/presentation/safe_markdown_viewer.dart`. The viewer renders a bounded AST to native Flutter widgets and uses no WebView/HTML renderer. Markdown links are visually styled but deliberately non-interactive in this phase; image nodes render an alt-text placeholder and do not fetch remote content. Parser and viewer behavior is covered by tests in `test/features/notes/hybrid_markdown_parser_test.dart` and `test/features/notes/note_editor_phase_03_test.dart`.
 
-Exact PR source SHA `fc8912781b4ee38efd22be1dcea24f324674cd40` passed Flutter CI run `42200165499`, including formatting, analyzer and 113/113 unit/widget tests. The PR is not merged; owner physical-device testing remains pending.
+Exact PR source SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25` passed Flutter CI run `42200798879`, including formatting, analyzer and 114/114 unit/widget tests. The PR is not merged; owner physical-device testing remains pending.
