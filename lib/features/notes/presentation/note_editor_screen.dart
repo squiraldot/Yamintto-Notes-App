@@ -33,6 +33,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   bool _isSaving = false;
   bool _saveError = false;
   bool _isDirty = false;
+  bool _allowPop = false;
+  bool _handlingBack = false;
   bool _unsupportedFormat = false;
   bool _bodyEdited = false;
   String? _savedNoteId;
@@ -116,12 +118,18 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   }
 
   Widget _editor(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: _allowPop,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop || _handlingBack) return;
+        unawaited(_handleBack());
+      },
+      child: Scaffold(
       appBar: AppBar(
         leading: IconButton(
           tooltip: 'Back',
           icon: const Icon(Icons.arrow_back),
-          onPressed: _isSaving ? null : _handleBack,
+          onPressed: _handleBack,
         ),
         title: Text(widget.noteId == null ? 'New note' : 'Edit note'),
         actions: [
@@ -213,6 +221,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
           ],
         ),
       ),
+      ),
     );
   }
 
@@ -269,11 +278,17 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   }
 
   Future<void> _handleBack() async {
+    if (_handlingBack) return;
+    _handlingBack = true;
     try {
       await _autosave.flush();
     } catch (_) {
+      _handlingBack = false;
       return;
     }
+    if (!mounted) return;
+    setState(() => _allowPop = true);
+    await WidgetsBinding.instance.endOfFrame;
     if (mounted) context.pop();
   }
 
