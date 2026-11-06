@@ -71,8 +71,14 @@ void main() {
       ),
     );
 
-    expect(find.text('Safe link'), findsOneWidget);
-    expect(find.text('[Image: Alt]'), findsOneWidget);
+    expect(
+      find.textContaining('Safe link', findRichText: true),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('[Image: Alt]', findRichText: true),
+      findsOneWidget,
+    );
     expect(find.byType(Image), findsNothing);
   });
 
