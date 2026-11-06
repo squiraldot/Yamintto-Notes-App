@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-06 (Phase 02 accepted; Phase 03 implementation in PR); branch: `phase-03/markdown-autosave`; current PR head: `237f3d7d940087ab9b76ca3ea2ceaae8e5e241f0`; Phase 03 implementation source SHA: `1cb2558e408a4253ca36abc8a77aeccd9c183e25`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
+Snapshot: 2026-11-06 (Phase 02 accepted; Phase 03 implementation in PR); branch: `phase-03/markdown-autosave`; current PR head: `29bb4628cfcf01a47e8022ec3c861401aaa67657`; Phase 03 implementation source SHA: `1cb2558e408a4253ca36abc8a77aeccd9c183e25`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
 
 ## Phase 01 — Foundation
 
@@ -236,7 +236,7 @@ The earlier “OWNER DEVICE ACCEPTANCE PENDING” statements in the repair imple
 
 - Owner authorization: the owner submitted the complete Phase 03 implementation prompt and explicitly authorized execution on 2026-11-06.
 - Repository: `squiraldot/Yamintto-Notes-App`; branch: `phase-03/markdown-autosave`; pull request: [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
-- Current PR head at this status snapshot: `237f3d7d940087ab9b76ca3ea2ceaae8e5e241f0`. Phase 03 implementation source SHA (last non-documentation code commit): `1cb2558e408a4253ca36abc8a77aeccd9c183e25`.
+- Current PR head at this status snapshot: `29bb4628cfcf01a47e8022ec3c861401aaa67657`. Phase 03 implementation source SHA (last non-documentation code commit): `1cb2558e408a4253ca36abc8a77aeccd9c183e25`.
 - Implemented: documented hybrid Markdown dialect; Dart AST parser; safe native Flutter renderer; editor/preview UI; version-aware plain-text/Markdown behavior; future-format read-only preservation; 700 ms debounced autosave; serialized revision-aware writes; explicit/navigation/lifecycle flush; save error and retry states.
 - Data: no SQLite schema migration. Existing v1 plain-text rows remain literal on open/preview/title-only edits. New editor notes use content format v2. A deliberate body edit upgrades only that v1 note to v2. Unknown versions cannot be overwritten.
 - Safety: raw HTML is not rendered; only exact legacy inline constructs are allowlisted; link schemes are validated and links are inert; images are alt-text placeholders and are never fetched; source remains the persisted data.
