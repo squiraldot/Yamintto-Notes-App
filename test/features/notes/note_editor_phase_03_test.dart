@@ -73,10 +73,7 @@ void main() {
     expect(find.text('Preview heading'), findsOneWidget);
     final savedNote = (await notes.listNotes()).single;
     expect(savedNote.body, source);
-    expect(
-      savedNote.contentFormatVersion,
-      NoteContentFormat.hybridMarkdown,
-    );
+    expect(savedNote.contentFormatVersion, NoteContentFormat.hybridMarkdown);
 
     await tester.tap(find.text('Editor'));
     await tester.pumpAndSettle();
