@@ -1,12 +1,12 @@
 # Yamintto hybrid Markdown dialect
 
-Status: Phase 03 implementation contract. Source remains authoritative; this matrix is the supported product dialect, not a claim of complete CommonMark/GFM conformance.
+Status: Implemented on Phase 03 PR #2; owner physical-device acceptance and merge pending. Source remains authoritative; this matrix is the supported product dialect, not a claim of complete CommonMark/GFM conformance.
 
 ## Parser decision
 
 Use the Dart team's `markdown` package, pinned by `pubspec.lock` to 7.3.1. It produces a structured AST, supports the CommonMark/GFM extension set (including fenced code, tables, strikethrough and task-list nodes), is published by the verified `tools.dart.dev` publisher, uses BSD-3-Clause, requires Dart 3.9+, and has only `args` and `meta` runtime dependencies. Both dependencies are already present in this app's lockfile. The application renders AST nodes as Flutter widgets; it never converts note source to HTML or loads it in a WebView.
 
-The package's GFM extension set recognizes inline HTML. Yamintto deliberately replaces that parser entry with narrowly scoped legacy inline syntaxes. Raw HTML is otherwise inert text. The parser is bounded to 256 KiB of UTF-8 source, 10,000 AST nodes, 32 AST/indent nesting levels, 16 nested details blocks, 20 table columns and 100 table rows.
+The package's GFM extension set recognizes inline HTML. Yamintto deliberately omits that extension while retaining the parser's default CommonMark inline syntaxes (including normal links/images) and narrowly scoped legacy inline syntaxes. Raw HTML is otherwise inert text. The parser uses the Document API's default syntax support plus explicit GFM additions; it does not replace the base link/image/emphasis parser with the GFM-only extension list. The parser is bounded to 256 KiB of UTF-8 source, 10,000 AST nodes, 32 AST/indent nesting levels, 16 nested details blocks, 20 table columns and 100 table rows.
 
 ## Syntax matrix
 
@@ -50,3 +50,10 @@ New Markdown editor notes are created as version 2. A version-1 note stays versi
 - No user-authored style attributes are applied. The one verified legacy red token maps to a semantic theme color.
 - Never log note bodies, rendered text, link targets or image URLs.
 - Parser limits and malicious-input tests are part of the Phase 03 acceptance suite.
+
+
+## Implementation and verification record
+
+Implementation files: `lib/features/notes/domain/hybrid_markdown_parser.dart` and `lib/features/notes/presentation/safe_markdown_viewer.dart`. The viewer renders a bounded AST to native Flutter widgets and uses no WebView/HTML renderer. Markdown links are visually styled but deliberately non-interactive in this phase; image nodes render an alt-text placeholder and do not fetch remote content. Parser and viewer behavior is covered by tests in `test/features/notes/hybrid_markdown_parser_test.dart` and `test/features/notes/note_editor_phase_03_test.dart`.
+
+Exact PR source SHA `fc8912781b4ee38efd22be1dcea24f324674cd40` passed Flutter CI run `42200165499`, including formatting, analyzer and 113/113 unit/widget tests. The PR is not merged; owner physical-device testing remains pending.
