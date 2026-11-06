@@ -31,7 +31,7 @@ This is an ordered plan, not authorization. Phase 02 implementation is explicitl
 ## Phase 03 — Editor
 - Scope: Markdown editor; viewer; autosave.
 - Dependencies: Phase 02 persistence.
-- Prerequisites: approve Markdown dialect, safe renderer, editor UX, autosave debounce/flush.
+- Prerequisites: Phase 02 schema-v2 persistence accepted; owner-selected HYBRID Markdown compatibility is recorded. During Phase 03 planning, inspect actual YRNotes syntax/fixtures and validate the parser package, safe-rendering allowlist, mobile editor/preview UX, debounce/flush and durability policy before implementation.
 - Acceptance: syntax documented; source round-trips; safe viewer; latest edit wins; pending edits flush on lifecycle; errors retain editable text.
 - Unit: parser/serializer, save ordering, stale-write/cancel. Widget: editor/preview/keyboard/save/error. Integration: rapid edits, background/foreground, process termination/restart/data-loss simulations.
 - Docs: editor architecture, requirements, catalog, testing.
