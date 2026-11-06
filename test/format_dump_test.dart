@@ -22,7 +22,9 @@ void main() {
     );
     for (final path in paths) {
       try {
-        final source = File(path).readAsStringSync();
+        final source = File(path)
+            .readAsStringSync()
+            .replaceFirst('// dart format off\n', '');
         final formatted = formatter.format(source, uri: Uri.file(path));
         stdout.writeln('DART_FORMAT_BEGIN:$path');
         stdout.writeln(base64Encode(utf8.encode(formatted)));
