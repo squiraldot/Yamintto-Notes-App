@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:yamintto/core/database/schema_v1.dart';
+import 'package:yamintto/core/database/schema_v2.dart';
 import 'package:yamintto/core/errors/domain_failure.dart';
 import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 
@@ -26,7 +27,7 @@ final class YaminttoDatabase extends GeneratedDatabase {
   }
 
   @override
-  int get schemaVersion => SchemaV1.version;
+  int get schemaVersion => SchemaV2.version;
 
   @override
   Iterable<DatabaseSchemaEntity> get allSchemaEntities =>
@@ -42,8 +43,17 @@ final class YaminttoDatabase extends GeneratedDatabase {
       for (final statement in SchemaV1.createStatements) {
         await customStatement(statement);
       }
+      for (final statement in SchemaV2.upgradeFromV1) {
+        await customStatement(statement);
+      }
     },
     onUpgrade: (_, from, to) async {
+      if (from == 1 && to == 2) {
+        for (final statement in SchemaV2.upgradeFromV1) {
+          await customStatement(statement);
+        }
+        return;
+      }
       throw DomainFailure(
         DomainFailureCode.migrationUnsupported,
         'No approved database migration exists from schema $from to $to.',
@@ -75,11 +85,13 @@ final class YaminttoDatabase extends GeneratedDatabase {
       final functionProbe = await customSelect(
         "SELECT yamintto_nfkc_casefold('A') AS canonical, "
         "yamintto_unicode_trim(' x ') AS trimmed, "
-        "yamintto_folder_name_key(' A ') AS folder_key",
+        "yamintto_folder_name_key(' A ') AS folder_key, "
+        "yamintto_tag_name_key(' A ') AS tag_key",
       ).getSingle();
       if (functionProbe.data['canonical'] != 'a' ||
           functionProbe.data['trimmed'] != 'x' ||
-          functionProbe.data['folder_key'] != 'a') {
+          functionProbe.data['folder_key'] != 'a' ||
+          functionProbe.data['tag_key'] != 'a') {
         throw const DomainFailure(
           DomainFailureCode.databaseInitialization,
           'Unicode canonicalization functions are unavailable.',
@@ -90,10 +102,10 @@ final class YaminttoDatabase extends GeneratedDatabase {
         "SELECT COUNT(*) AS count FROM sqlite_master "
         "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
       ).getSingle();
-      if (tableCount.data['count'] != 2) {
+      if (tableCount.data['count'] != 4) {
         throw const DomainFailure(
           DomainFailureCode.databaseInitialization,
-          'The database schema does not match the approved version 1.',
+          'The database schema does not match the approved version 2.',
         );
       }
     },
@@ -130,6 +142,18 @@ final class YaminttoDatabase extends GeneratedDatabase {
         final value = arguments.single;
         if (value is! String) {
           throw ArgumentError('Folder-name key expects a text argument.');
+        }
+        return UnicodeCanonicalizer.canonicalizeFolderName(value);
+      },
+      deterministic: true,
+      directOnly: false,
+    );
+    database.createFunction(
+      functionName: 'yamintto_tag_name_key',
+      function: (arguments) {
+        final value = arguments.single;
+        if (value is! String) {
+          throw ArgumentError('Tag-name key expects a text argument.');
         }
         return UnicodeCanonicalizer.canonicalizeFolderName(value);
       },

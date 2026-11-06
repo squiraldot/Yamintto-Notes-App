@@ -5,10 +5,12 @@ import 'package:yamintto/core/errors/domain_failure.dart';
 import 'package:yamintto/core/theme/tokens/app_spacing.dart';
 import 'package:yamintto/features/folders/data/folder_providers.dart';
 import 'package:yamintto/features/folders/domain/folder.dart';
+import 'package:yamintto/features/folders/domain/folder_color_palette.dart';
 import 'package:yamintto/features/folders/presentation/folder_providers.dart';
 import 'package:yamintto/features/notes/data/note_providers.dart';
 import 'package:yamintto/features/notes/domain/note.dart';
 import 'package:yamintto/features/notes/presentation/note_providers.dart';
+import 'package:yamintto/features/tags/data/tag_providers.dart';
 
 const _cancel = '__cancel__';
 
@@ -41,6 +43,11 @@ class FolderBrowserScreen extends ConsumerWidget {
             tooltip: 'Appearance preview',
             onPressed: () => context.push('/appearance'),
             icon: const Icon(Icons.palette_outlined),
+          ),
+          IconButton(
+            tooltip: 'Manage tags',
+            onPressed: () => context.push('/tags'),
+            icon: const Icon(Icons.sell_outlined),
           ),
           IconButton(
             tooltip: 'Create folder',
@@ -100,6 +107,7 @@ class FolderBrowserScreen extends ConsumerWidget {
                               rename: () => _rename(context, ref, f),
                               move: () => _moveFolder(context, ref, f),
                               delete: () => _deleteFolder(context, ref, f),
+                              changeColor: () => _changeColor(context, ref, f),
                             ),
                           )
                           .toList(),
@@ -128,6 +136,7 @@ class FolderBrowserScreen extends ConsumerWidget {
                               open: () => context.push('/notes/${n.id}/edit'),
                               move: () => _moveNote(context, ref, n),
                               delete: () => _deleteNote(context, ref, n),
+                              tags: () => context.push('/notes/${n.id}/tags'),
                             ),
                           )
                           .toList(),
@@ -156,11 +165,11 @@ class FolderBrowserScreen extends ConsumerWidget {
   }
 
   Future<void> _create(BuildContext context, WidgetRef ref) async {
-    final name = await _name(context, 'Create folder', '');
-    if (name == null || name.trim().isEmpty) return;
+    final input = await _name(context, 'Create folder', '', null);
+    if (input == null || input.name.trim().isEmpty) return;
     try {
       await (await ref.read(folderRepositoryProvider.future))
-          .createFolder(name: name, parentId: folderId);
+          .createFolder(name: input.name, parentId: folderId, colorArgb: input.colorArgb);
       ref.invalidate(folderListProvider(folderId));
       ref.invalidate(allFoldersProvider);
     } catch (e) {
@@ -173,15 +182,32 @@ class FolderBrowserScreen extends ConsumerWidget {
     WidgetRef ref,
     Folder folder,
   ) async {
-    final name = await _name(context, 'Rename folder', folder.name);
-    if (name == null) return;
+    final input = await _name(context, 'Rename folder', folder.name, folder.colorArgb);
+    if (input == null) return;
     try {
       await (await ref.read(folderRepositoryProvider.future))
-          .renameFolder(folder.id, name);
+          .renameFolder(folder.id, input.name);
+      await (await ref.read(folderRepositoryProvider.future)).setFolderColor(folder.id, input.colorArgb);
       ref.invalidate(folderListProvider(folder.parentId));
       ref.invalidate(folderDetailProvider(folder.id));
     } catch (e) {
       if (context.mounted) _error(context, e);
+    }
+  }
+
+  Future<void> _changeColor(BuildContext context, WidgetRef ref, Folder folder) async {
+    final choice = await showDialog<({bool apply, int? colorArgb})>(
+      context: context,
+      builder: (_) => _FolderColorDialog(initial: folder.colorArgb),
+    );
+    if (choice == null || !choice.apply || !context.mounted) return;
+    try {
+      await (await ref.read(folderRepositoryProvider.future)).setFolderColor(folder.id, choice.colorArgb);
+      ref.invalidate(folderListProvider(folder.parentId));
+      ref.invalidate(folderDetailProvider(folder.id));
+      ref.invalidate(allFoldersProvider);
+    } catch (error) {
+      if (context.mounted) _error(context, error);
     }
   }
 
@@ -263,56 +289,92 @@ class FolderBrowserScreen extends ConsumerWidget {
   }
 }
 
-Future<String?> _name(BuildContext context, String title, String initial) =>
-    showDialog<String>(
-      context: context,
-      builder: (dialogContext) =>
-          _FolderNameDialog(title: title, initial: initial),
-    );
+Future<({String name, int? colorArgb})?> _name(
+  BuildContext context, String title, String initial, int? initialColor,
+) => showDialog<({String name, int? colorArgb})>(
+  context: context,
+  builder: (dialogContext) => _FolderNameDialog(
+    title: title, initial: initial, initialColor: initialColor,
+  ),
+);
 
 class _FolderNameDialog extends StatefulWidget {
-  const _FolderNameDialog({required this.title, required this.initial});
-
+  const _FolderNameDialog({required this.title, required this.initial, required this.initialColor});
   final String title;
   final String initial;
-
+  final int? initialColor;
   @override
   State<_FolderNameDialog> createState() => _FolderNameDialogState();
 }
-
 class _FolderNameDialogState extends State<_FolderNameDialog> {
   late final TextEditingController _controller;
-
+  int? _colorArgb;
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initial);
+    _colorArgb = widget.initialColor;
   }
-
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
+  void dispose() { _controller.dispose(); super.dispose(); }
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: Text(widget.title),
-    content: TextField(
-      controller: _controller,
-      autofocus: true,
-      maxLength: 255,
-      decoration: const InputDecoration(labelText: 'Folder name'),
-    ),
+    content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
+      TextField(controller: _controller, autofocus: true, maxLength: 255,
+        decoration: const InputDecoration(labelText: 'Folder name')),
+      const SizedBox(height: 12),
+      const Align(alignment: Alignment.centerLeft, child: Text('Folder color')),
+      Wrap(spacing: 8, runSpacing: 4, children: [
+        ChoiceChip(label: const Text('Default'), selected: _colorArgb == null,
+          onSelected: (_) => setState(() => _colorArgb = null)),
+        ...FolderColorPalette.values.map((value) => ChoiceChip(
+          label: Semantics(label: 'Folder color ${value.toRadixString(16)}',
+            child: CircleAvatar(radius: 11, backgroundColor: Color(value),
+              child: _colorArgb == value ? Icon(Icons.check, size: 14,
+                color: FolderColorPalette.foreground(value)) : null)),
+          selected: _colorArgb == value,
+          onSelected: (_) => setState(() => _colorArgb = value),
+        )),
+      ]),
+    ])),
     actions: [
-      TextButton(
-        onPressed: () => Navigator.pop(context),
-        child: const Text('Cancel'),
-      ),
-      FilledButton(
-        onPressed: () => Navigator.pop(context, _controller.text),
-        child: const Text('Save'),
-      ),
+      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+      FilledButton(onPressed: () => Navigator.pop(context,
+        (name: _controller.text, colorArgb: _colorArgb)), child: const Text('Save')),
+    ],
+  );
+}
+
+class _FolderColorDialog extends StatefulWidget {
+  const _FolderColorDialog({required this.initial});
+  final int? initial;
+  @override
+  State<_FolderColorDialog> createState() => _FolderColorDialogState();
+}
+class _FolderColorDialogState extends State<_FolderColorDialog> {
+  int? selected;
+  @override
+  void initState() { super.initState(); selected = widget.initial; }
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Text('Folder color'),
+    content: Wrap(spacing: 8, runSpacing: 8, children: [
+      ChoiceChip(label: const Text('Default'), selected: selected == null,
+        onSelected: (_) => setState(() => selected = null)),
+      ...FolderColorPalette.values.map((value) => ChoiceChip(
+        label: Semantics(label: 'Folder color ${value.toRadixString(16)}',
+          child: CircleAvatar(radius: 12, backgroundColor: Color(value),
+            child: selected == value ? Icon(Icons.check, size: 14,
+              color: FolderColorPalette.foreground(value)) : null)),
+        selected: selected == value,
+        onSelected: (_) => setState(() => selected = value),
+      )),
+    ]),
+    actions: [
+      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+      FilledButton(onPressed: () => Navigator.pop(context,
+        (apply: true, colorArgb: selected)), child: const Text('Apply')),
     ],
   );
 }
@@ -413,12 +475,13 @@ class _FolderRow extends StatelessWidget {
     required this.rename,
     required this.move,
     required this.delete,
+    required this.changeColor,
   });
   final Folder folder;
-  final VoidCallback open, rename, move, delete;
+  final VoidCallback open, rename, move, delete, changeColor;
   @override
   Widget build(BuildContext context) => ListTile(
-    leading: const Icon(Icons.folder_outlined),
+    leading: Icon(Icons.folder, color: FolderColorPalette.color(folder.colorArgb, Theme.of(context).colorScheme.primary)),
     title: Text(folder.name),
     onTap: open,
     trailing: PopupMenuButton<String>(
@@ -427,9 +490,11 @@ class _FolderRow extends StatelessWidget {
         if (v == 'rename') rename();
         if (v == 'move') move();
         if (v == 'delete') delete();
+        if (v == 'color') changeColor();
       },
       itemBuilder: (_) => const [
         PopupMenuItem(value: 'rename', child: Text('Rename')),
+        PopupMenuItem(value: 'color', child: Text('Change color')),
         PopupMenuItem(value: 'move', child: Text('Move')),
         PopupMenuItem(value: 'delete', child: Text('Delete')),
       ],
@@ -437,21 +502,38 @@ class _FolderRow extends StatelessWidget {
   );
 }
 
-class _NoteRow extends StatelessWidget {
+class _NoteRow extends ConsumerWidget {
   const _NoteRow({
     required this.note,
     required this.open,
     required this.move,
     required this.delete,
+    required this.tags,
   });
   final Note note;
-  final VoidCallback open, move, delete;
+  final VoidCallback open, move, delete, tags;
   @override
-  Widget build(BuildContext context) => ListTile(
+  Widget build(BuildContext context, WidgetRef ref) => ListTile(
     leading: const Icon(Icons.description_outlined),
     title: Text(note.title.isEmpty ? 'Untitled note' : note.title),
-    subtitle: Text(
-      'Updated ${DateTime.fromMillisecondsSinceEpoch(note.updatedAt, isUtc: true).toLocal()}',
+    subtitle: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('Updated ${DateTime.fromMillisecondsSinceEpoch(note.updatedAt, isUtc: true).toLocal()}'),
+        ref.watch(noteTagListProvider(note.id)).when(
+          loading: () => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
+          data: (items) => items.isEmpty ? const SizedBox.shrink() : Wrap(
+            spacing: 4,
+            children: items.map((tag) => Chip(
+              label: Text(tag.name),
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            )).toList(),
+          ),
+        ),
+      ],
     ),
     onTap: open,
     trailing: PopupMenuButton<String>(
@@ -459,9 +541,11 @@ class _NoteRow extends StatelessWidget {
       onSelected: (v) {
         if (v == 'move') move();
         if (v == 'delete') delete();
+        if (v == 'tags') tags();
       },
       itemBuilder: (_) => const [
         PopupMenuItem(value: 'move', child: Text('Move')),
+        PopupMenuItem(value: 'tags', child: Text('Tags')),
         PopupMenuItem(value: 'delete', child: Text('Delete')),
       ],
     ),

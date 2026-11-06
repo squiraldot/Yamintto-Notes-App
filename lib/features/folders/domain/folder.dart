@@ -4,6 +4,7 @@ class Folder {
     required this.parentId,
     required this.name,
     required this.nameKey,
+    required this.colorArgb,
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -16,6 +17,7 @@ class Folder {
       parentId: row['parent_id'] as String?,
       name: row['name']! as String,
       nameKey: row['name_key']! as String,
+      colorArgb: row['color_argb'] as int?,
       sortOrder: row['sort_order']! as int,
       createdAt: row['created_at']! as int,
       updatedAt: row['updated_at']! as int,
@@ -27,6 +29,7 @@ class Folder {
   final String? parentId;
   final String name;
   final String nameKey;
+  final int? colorArgb;
   final int sortOrder;
   final int createdAt;
   final int updatedAt;

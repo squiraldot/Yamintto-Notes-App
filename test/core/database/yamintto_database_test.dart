@@ -7,7 +7,7 @@ import 'package:yamintto/core/ids/uuid_v4.dart';
 import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 
 void main() {
-  group('YaminttoDatabase schema v1', () {
+  group('YaminttoDatabase schema v2', () {
     late YaminttoDatabase database;
     var fixtureClosed = false;
 
@@ -21,7 +21,7 @@ void main() {
     });
 
     test(
-      'creates exactly two domain tables and enables foreign keys',
+      'creates schema v2 tables and enables foreign keys',
       () async {
         final tables = await database
             .customSelect(
@@ -32,6 +32,8 @@ void main() {
         expect(tables.map((row) => row.data['name']), <String>[
           'folders',
           'notes',
+          'note_tags',
+          'tags',
         ]);
 
         final foreignKeys = await database
@@ -182,7 +184,7 @@ void main() {
         final file = File('${directory.path}/newer.sqlite');
         final initial = YaminttoDatabase.open(file);
         await initial.customSelect('SELECT 1').get();
-        await initial.customStatement('PRAGMA user_version = 2');
+        await initial.customStatement('PRAGMA user_version = 3');
         await initial.close();
 
         final reopened = YaminttoDatabase.open(file);

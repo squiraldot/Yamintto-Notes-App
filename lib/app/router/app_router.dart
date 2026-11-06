@@ -6,6 +6,8 @@ import 'package:yamintto/features/folders/presentation/folder_browser_screen.dar
 import 'package:yamintto/features/foundation/presentation/foundation_screen.dart';
 import 'package:yamintto/features/foundation/presentation/splash_screen.dart';
 import 'package:yamintto/features/notes/presentation/note_editor_screen.dart';
+import 'package:yamintto/features/tags/presentation/tag_management_screen.dart';
+import 'package:yamintto/features/tags/presentation/note_tag_assignment_screen.dart';
 
 GoRouter appRouter({
   required ValueListenable<YaminttoThemeMode> themeMode,
@@ -42,6 +44,12 @@ GoRouter appRouter({
         builder: (context, state) =>
             NoteEditorScreen(noteId: state.pathParameters['noteId']),
       ),
+      GoRoute(path: '/tags', name: 'tag-management',
+        builder: (context, state) => const TagManagementScreen()),
+      GoRoute(path: '/notes/:noteId/tags', name: 'note-tags',
+        builder: (context, state) => NoteTagAssignmentScreen(
+          noteId: state.pathParameters['noteId']!,
+        )),
       GoRoute(
         path: '/appearance',
         name: 'appearance-preview',

@@ -1,5 +1,7 @@
 enum DomainFailureCode {
   invalidName,
+  invalidTagName,
+  invalidColor,
   invalidTitle,
   nameConflict,
   notFound,

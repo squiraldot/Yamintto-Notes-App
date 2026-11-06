@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:yamintto/core/database/yamintto_database.dart';
 import 'package:yamintto/features/folders/data/folder_repository.dart';
 import 'package:yamintto/features/notes/data/note_repository.dart';
+import 'package:yamintto/features/tags/data/tag_repository.dart';
 
 /// Owner-run on a real Android/iOS device only. Never run in virtual-device CI.
 void main() {
@@ -24,19 +25,25 @@ void main() {
     final notes = NoteRepository(database);
 
     final marker = DateTime.now().toUtc().microsecondsSinceEpoch;
-    final folder = await folders.createFolder(name: 'device-smoke-$marker');
+    final folder = await folders.createFolder(name: 'device-smoke-$marker', colorArgb: 0xFF673AB7);
     final note = await notes.createNote(
       folderId: folder.id,
       title: 'Phase 02 device smoke',
       body: 'Persistent source body',
     );
     final originalOrder = note.sortOrder;
+    final tags = TagRepository(database);
+    final tag = await tags.createTag('device-tag-$marker');
+    await tags.assignTags(note.id, <String>[tag.id]);
     await database.close();
 
     final reopened = YaminttoDatabase.open(file);
     final reopenedFolders = FolderRepository(reopened);
     final reopenedNotes = NoteRepository(reopened);
+    final reopenedTags = TagRepository(reopened);
     expect((await reopenedFolders.getFolder(folder.id)).name, folder.name);
+    expect((await reopenedFolders.getFolder(folder.id)).colorArgb, 0xFF673AB7);
+    expect((await reopenedTags.listNoteTags(note.id)).single.name, 'device-tag-$marker');
     expect(
       (await reopenedNotes.getNote(note.id)).body,
       'Persistent source body',
@@ -44,6 +51,7 @@ void main() {
 
     await reopenedNotes.softDeleteNote(note.id);
     expect(await reopenedNotes.listNotes(folderId: folder.id), isEmpty);
+    expect((await reopenedTags.listNoteTags(note.id)).single.id, tag.id);
     final retained = await reopened
         .customSelect(
           'SELECT folder_id, body, sort_order, deleted_at FROM notes WHERE id = ?',
