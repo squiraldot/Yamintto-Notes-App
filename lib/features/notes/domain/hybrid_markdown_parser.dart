@@ -178,7 +178,7 @@ class _LegacyInlineSyntax extends md.InlineSyntax {
     final value = match[0]!;
     final lower = value.toLowerCase();
     if (lower.startsWith('<br')) {
-      parser.addNode(md.Element.empty('br'));
+      parser.addNode(md.Element('br', const []));
       return true;
     }
 

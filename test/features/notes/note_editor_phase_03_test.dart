@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:yamintto/core/database/yamintto_database.dart';
 import 'package:yamintto/features/notes/data/note_providers.dart';
 import 'package:yamintto/features/notes/data/note_repository.dart';
+import 'package:yamintto/features/notes/domain/note.dart';
 import 'package:yamintto/features/notes/domain/note_content_format.dart';
 import 'package:yamintto/features/notes/presentation/note_editor_screen.dart';
 
@@ -166,9 +167,43 @@ void main() {
       await mount(tester, path: '/notes/${note.id}/edit');
 
       expect(find.text('Unsupported content format'), findsOneWidget);
-      expect(find.byKey(const ValueKey('note-body-editor')), findsNothing);
+      final sourceEditor = tester.widget<TextField>(
+        find.byKey(const ValueKey('note-body-editor')),
+      );
+      expect(sourceEditor.readOnly, isTrue);
+      expect(sourceEditor.controller!.text, 'preserve source');
       expect(find.textContaining('newer content format'), findsOneWidget);
       expect((await notes.getNote(note.id)).body, 'preserve source');
+    },
+  );
+
+  testWidgets(
+    'retains editable source and exposes retry after a save failure',
+    (tester) async {
+      final failing = _FailingNoteRepository(database);
+      notes = failing;
+      await mount(tester, path: '/notes/new');
+      await tester.enterText(
+        find.byKey(const ValueKey('note-body-editor')),
+        'Retry source',
+      );
+
+      await tester.pump(const Duration(milliseconds: 701));
+      await tester.pumpAndSettle();
+      expect(find.text('Save error'), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+      expect(
+        tester.widget<TextField>(
+          find.byKey(const ValueKey('note-body-editor')),
+        ).controller!.text,
+        'Retry source',
+      );
+
+      failing.failWrites = false;
+      await tester.tap(find.text('Retry'));
+      await tester.pumpAndSettle();
+      expect(find.text('Saved'), findsOneWidget);
+      expect((await notes.listNotes()).single.body, 'Retry source');
     },
   );
 
@@ -187,4 +222,29 @@ void main() {
       expect((await notes.getNote(note.id)).contentFormatVersion, 1);
     },
   );
+}
+
+
+class _FailingNoteRepository extends NoteRepository {
+  _FailingNoteRepository(super.database);
+
+  bool failWrites = true;
+
+  @override
+  Future<Note> createNote({
+    String? folderId,
+    required String title,
+    String body = '',
+    int contentFormatVersion = NoteContentFormat.plainText,
+  }) {
+    if (failWrites) {
+      return Future<Note>.error(StateError('simulated storage failure'));
+    }
+    return super.createNote(
+      folderId: folderId,
+      title: title,
+      body: body,
+      contentFormatVersion: contentFormatVersion,
+    );
+  }
 }
