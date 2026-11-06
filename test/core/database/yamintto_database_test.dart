@@ -20,28 +20,25 @@ void main() {
       if (!fixtureClosed) await database.close();
     });
 
-    test(
-      'creates schema v2 tables and enables foreign keys',
-      () async {
-        final tables = await database
-            .customSelect(
-              "SELECT name FROM sqlite_master "
-              "WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
-            )
-            .get();
-        expect(tables.map((row) => row.data['name']), <String>[
-          'folders',
-          'notes',
-          'note_tags',
-          'tags',
-        ]);
+    test('creates schema v2 tables and enables foreign keys', () async {
+      final tables = await database
+          .customSelect(
+            "SELECT name FROM sqlite_master "
+            "WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
+          )
+          .get();
+      expect(tables.map((row) => row.data['name']), <String>[
+        'folders',
+        'notes',
+        'note_tags',
+        'tags',
+      ]);
 
-        final foreignKeys = await database
-            .customSelect('PRAGMA foreign_keys')
-            .getSingle();
-        expect(foreignKeys.data['foreign_keys'], 1);
-      },
-    );
+      final foreignKeys = await database
+          .customSelect('PRAGMA foreign_keys')
+          .getSingle();
+      expect(foreignKeys.data['foreign_keys'], 1);
+    });
 
     test('registers deterministic Unicode functions usable by schema checks', () async {
       final key = await database

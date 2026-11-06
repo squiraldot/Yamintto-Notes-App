@@ -44,12 +44,17 @@ GoRouter appRouter({
         builder: (context, state) =>
             NoteEditorScreen(noteId: state.pathParameters['noteId']),
       ),
-      GoRoute(path: '/tags', name: 'tag-management',
-        builder: (context, state) => const TagManagementScreen()),
-      GoRoute(path: '/notes/:noteId/tags', name: 'note-tags',
-        builder: (context, state) => NoteTagAssignmentScreen(
-          noteId: state.pathParameters['noteId']!,
-        )),
+      GoRoute(
+        path: '/tags',
+        name: 'tag-management',
+        builder: (context, state) => const TagManagementScreen(),
+      ),
+      GoRoute(
+        path: '/notes/:noteId/tags',
+        name: 'note-tags',
+        builder: (context, state) =>
+            NoteTagAssignmentScreen(noteId: state.pathParameters['noteId']!),
+      ),
       GoRoute(
         path: '/appearance',
         name: 'appearance-preview',

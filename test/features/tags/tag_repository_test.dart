@@ -21,12 +21,15 @@ void main() {
   });
   tearDown(() => database.close());
 
-  test('trims and Unicode-canonicalizes names and rejects duplicate tags', () async {
-    final first = await tags.createTag('  Ｓｔｕｄｙ  ');
-    expect(first.name, 'Ｓｔｕｄｙ');
-    expect(first.nameKey, 'study');
-    await expectLater(tags.createTag('STUDY'), throwsA(isA<DomainFailure>()));
-  });
+  test(
+    'trims and Unicode-canonicalizes names and rejects duplicate tags',
+    () async {
+      final first = await tags.createTag('  Ｓｔｕｄｙ  ');
+      expect(first.name, 'Ｓｔｕｄｙ');
+      expect(first.nameKey, 'study');
+      await expectLater(tags.createTag('STUDY'), throwsA(isA<DomainFailure>()));
+    },
+  );
 
   test('rejects empty, NUL and overlong tag names', () async {
     for (final value in <String>['  \u2003 ', 'bad\u0000tag', 'x' * 65]) {
@@ -34,16 +37,22 @@ void main() {
     }
   });
 
-  test('reuses tags across notes and orders assignments by canonical name', () async {
-    final noteA = await notes.createNote(title: 'A');
-    final noteB = await notes.createNote(title: 'B');
-    final z = await tags.createTag('Zulu');
-    final a = await tags.createTag('alpha');
-    await tags.assignTags(noteA.id, <String>[z.id, a.id, a.id]);
-    await tags.assignTags(noteB.id, <String>[a.id]);
-    expect((await tags.listNoteTags(noteA.id)).map((tag) => tag.name), <String>['alpha', 'Zulu']);
-    expect((await tags.listNoteTags(noteB.id)).single.id, a.id);
-  });
+  test(
+    'reuses tags across notes and orders assignments by canonical name',
+    () async {
+      final noteA = await notes.createNote(title: 'A');
+      final noteB = await notes.createNote(title: 'B');
+      final z = await tags.createTag('Zulu');
+      final a = await tags.createTag('alpha');
+      await tags.assignTags(noteA.id, <String>[z.id, a.id, a.id]);
+      await tags.assignTags(noteB.id, <String>[a.id]);
+      expect(
+        (await tags.listNoteTags(noteA.id)).map((tag) => tag.name),
+        <String>['alpha', 'Zulu'],
+      );
+      expect((await tags.listNoteTags(noteB.id)).single.id, a.id);
+    },
+  );
 
   test('rename changes shared display name without changing note content or timestamps', () async {
     final note = await notes.createNote(title: 'Keep title', body: 'Keep body');
@@ -70,22 +79,31 @@ void main() {
     expect(await tags.listTags(), isEmpty);
   });
 
-  test('soft-deleted notes retain assignments and reject assignment changes', () async {
-    final note = await notes.createNote(title: 'Retained');
-    final tag = await tags.createTag('Keep');
-    await tags.assignTags(note.id, <String>[tag.id]);
-    await notes.softDeleteNote(note.id);
-    expect((await tags.listNoteTags(note.id)).single.id, tag.id);
-    await expectLater(tags.assignTags(note.id, <String>[]), throwsA(isA<DomainFailure>()));
-    expect((await tags.listNoteTags(note.id)).single.id, tag.id);
-  });
+  test(
+    'soft-deleted notes retain assignments and reject assignment changes',
+    () async {
+      final note = await notes.createNote(title: 'Retained');
+      final tag = await tags.createTag('Keep');
+      await tags.assignTags(note.id, <String>[tag.id]);
+      await notes.softDeleteNote(note.id);
+      expect((await tags.listNoteTags(note.id)).single.id, tag.id);
+      await expectLater(
+        tags.assignTags(note.id, <String>[]),
+        throwsA(isA<DomainFailure>()),
+      );
+      expect((await tags.listNoteTags(note.id)).single.id, tag.id);
+    },
+  );
 
-  test('removes one assignment without affecting other note assignments', () async {
-    final note = await notes.createNote();
-    final one = await tags.createTag('One');
-    final two = await tags.createTag('Two');
-    await tags.assignTags(note.id, <String>[one.id, two.id]);
-    await tags.removeTagFromNote(note.id, one.id);
-    expect((await tags.listNoteTags(note.id)).single.id, two.id);
-  });
+  test(
+    'removes one assignment without affecting other note assignments',
+    () async {
+      final note = await notes.createNote();
+      final one = await tags.createTag('One');
+      final two = await tags.createTag('Two');
+      await tags.assignTags(note.id, <String>[one.id, two.id]);
+      await tags.removeTagFromNote(note.id, one.id);
+      expect((await tags.listNoteTags(note.id)).single.id, two.id);
+    },
+  );
 }

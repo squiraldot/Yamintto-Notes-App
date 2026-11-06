@@ -19,36 +19,58 @@ class TagManagementScreen extends ConsumerWidget {
       body: tags.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Text('Tags could not be loaded.'),
-            TextButton(onPressed: () => ref.invalidate(tagListProvider), child: const Text('Retry')),
-          ]),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Tags could not be loaded.'),
+              TextButton(
+                onPressed: () => ref.invalidate(tagListProvider),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
         ),
         data: (items) => items.isEmpty
             ? const Center(child: Text('No tags yet. Create your first tag.'))
             : ListView(
                 padding: const EdgeInsets.all(16),
-                children: items.map((tag) => ListTile(
-                  leading: const Icon(Icons.sell_outlined),
-                  title: Text(tag.name),
-                  trailing: PopupMenuButton<String>(
-                    tooltip: 'Tag actions',
-                    onSelected: (action) async {
-                      if (action == 'rename') await _edit(context, ref, tag);
-                      if (action == 'delete') await _delete(context, ref, tag);
-                    },
-                    itemBuilder: (_) => const [
-                      PopupMenuItem(value: 'rename', child: Text('Rename')),
-                      PopupMenuItem(value: 'delete', child: Text('Delete')),
-                    ],
-                  ),
-                )).toList(),
+                children: items
+                    .map(
+                      (tag) => ListTile(
+                        leading: const Icon(Icons.sell_outlined),
+                        title: Text(tag.name),
+                        trailing: PopupMenuButton<String>(
+                          tooltip: 'Tag actions',
+                          onSelected: (action) async {
+                            if (action == 'rename')
+                              await _edit(context, ref, tag);
+                            if (action == 'delete')
+                              await _delete(context, ref, tag);
+                          },
+                          itemBuilder: (_) => const [
+                            PopupMenuItem(
+                              value: 'rename',
+                              child: Text('Rename'),
+                            ),
+                            PopupMenuItem(
+                              value: 'delete',
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                    .toList(),
               ),
       ),
     );
   }
 
-  Future<void> _edit(BuildContext context, WidgetRef ref, [NoteTag? tag]) async {
+  Future<void> _edit(
+    BuildContext context,
+    WidgetRef ref, [
+    NoteTag? tag,
+  ]) async {
     final controller = TextEditingController(text: tag?.name ?? '');
     final value = await showDialog<String>(
       context: context,
@@ -61,8 +83,14 @@ class TagManagementScreen extends ConsumerWidget {
           decoration: const InputDecoration(labelText: 'Tag name'),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(dialogContext, controller.text), child: const Text('Save')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, controller.text),
+            child: const Text('Save'),
+          ),
         ],
       ),
     );
@@ -79,9 +107,8 @@ class TagManagementScreen extends ConsumerWidget {
       ref.invalidate(noteTagListProvider);
     } catch (error) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.toString())),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error.toString())));
       }
     }
   }
@@ -93,8 +120,14 @@ class TagManagementScreen extends ConsumerWidget {
         title: const Text('Delete tag?'),
         content: Text('Delete “${tag.name}” and remove it from every note?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: const Text('Delete')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Delete'),
+          ),
         ],
       ),
     );
@@ -104,7 +137,8 @@ class TagManagementScreen extends ConsumerWidget {
       ref.invalidate(tagListProvider);
     } catch (error) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error.toString())));
       }
     }
   }

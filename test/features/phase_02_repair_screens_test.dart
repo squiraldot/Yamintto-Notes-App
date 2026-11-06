@@ -29,11 +29,17 @@ void main() {
       initialLocation: '/',
       routes: [
         GoRoute(path: '/', builder: (_, _) => const FolderBrowserScreen()),
-        GoRoute(path: '/folders/:folderId', builder: (_, state) =>
-          FolderBrowserScreen(folderId: state.pathParameters['folderId'])),
+        GoRoute(
+          path: '/folders/:folderId',
+          builder: (_, state) =>
+              FolderBrowserScreen(folderId: state.pathParameters['folderId']),
+        ),
         GoRoute(path: '/tags', builder: (_, _) => const TagManagementScreen()),
-        GoRoute(path: '/notes/:noteId/tags', builder: (_, state) =>
-          NoteTagAssignmentScreen(noteId: state.pathParameters['noteId']!)),
+        GoRoute(
+          path: '/notes/:noteId/tags',
+          builder: (_, state) =>
+              NoteTagAssignmentScreen(noteId: state.pathParameters['noteId']!),
+        ),
       ],
     );
   });
@@ -86,7 +92,9 @@ void main() {
     expect(await tags.listTags(), isEmpty);
   });
 
-  testWidgets('assigns multiple tags to a note and displays them in its list', (tester) async {
+  testWidgets('assigns multiple tags to a note and displays them in its list', (
+    tester,
+  ) async {
     final note = await notes.createNote(title: 'Tagged note');
     await tags.createTag('Personal');
     await tags.createTag('Work');
@@ -105,7 +113,9 @@ void main() {
     expect(find.text('Work'), findsOneWidget);
   });
 
-  testWidgets('selects and resets a folder color in the folder browser', (tester) async {
+  testWidgets('selects and resets a folder color in the folder browser', (
+    tester,
+  ) async {
     final folder = await folders.createFolder(name: 'Colored');
     await mount(tester);
     await tester.tap(find.byTooltip('Folder actions'));
@@ -128,9 +138,14 @@ void main() {
     expect((await folders.getFolder(folder.id)).colorArgb, isNull);
   });
 
-  testWidgets('shows nested folder color in the folder browser', (tester) async {
+  testWidgets('shows nested folder color in the folder browser', (
+    tester,
+  ) async {
     final parent = await folders.createFolder(name: 'Parent');
-    final child = await folders.createFolder(name: 'Child', parentId: parent.id);
+    final child = await folders.createFolder(
+      name: 'Child',
+      parentId: parent.id,
+    );
     await folders.setFolderColor(child.id, 0xFF673AB7);
     await mount(tester);
     router.go('/folders/${parent.id}');

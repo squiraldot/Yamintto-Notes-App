@@ -16,7 +16,8 @@ class NoteTag {
 
   static String normalizeName(String input) {
     final name = UnicodeCanonicalizer.trimWhiteSpace(input);
-    if (name.isEmpty || name.contains('\u0000') ||
+    if (name.isEmpty ||
+        name.contains('\u0000') ||
         UnicodeCanonicalizer.codePointLength(name) > 64) {
       throw const DomainFailure(
         DomainFailureCode.invalidTagName,

@@ -13,36 +13,46 @@ void main() {
   });
   tearDown(() => database.close());
 
-  test('stores, changes and resets a folder color without changing metadata', () async {
-    final folder = await folders.createFolder(name: 'Color test');
-    expect(folder.colorArgb, isNull);
-    final color = await folders.setFolderColor(folder.id, 0xFFF44336);
-    expect(color.colorArgb, 0xFFF44336);
-    expect(color.id, folder.id);
-    expect(color.name, folder.name);
-    expect(color.parentId, folder.parentId);
-    expect(color.sortOrder, folder.sortOrder);
-    expect(color.createdAt, folder.createdAt);
-    expect(color.updatedAt, folder.updatedAt);
-    final reset = await folders.setFolderColor(folder.id, null);
-    expect(reset.colorArgb, isNull);
-  });
+  test(
+    'stores, changes and resets a folder color without changing metadata',
+    () async {
+      final folder = await folders.createFolder(name: 'Color test');
+      expect(folder.colorArgb, isNull);
+      final color = await folders.setFolderColor(folder.id, 0xFFF44336);
+      expect(color.colorArgb, 0xFFF44336);
+      expect(color.id, folder.id);
+      expect(color.name, folder.name);
+      expect(color.parentId, folder.parentId);
+      expect(color.sortOrder, folder.sortOrder);
+      expect(color.createdAt, folder.createdAt);
+      expect(color.updatedAt, folder.updatedAt);
+      final reset = await folders.setFolderColor(folder.id, null);
+      expect(reset.colorArgb, isNull);
+    },
+  );
 
   test('rejects colors outside the finite ARGB palette', () async {
     final folder = await folders.createFolder(name: 'Invalid color');
-    await expectLater(folders.setFolderColor(folder.id, 0xFF123456),
-      throwsA(isA<DomainFailure>()));
+    await expectLater(
+      folders.setFolderColor(folder.id, 0xFF123456),
+      throwsA(isA<DomainFailure>()),
+    );
     expect((await folders.getFolder(folder.id)).colorArgb, isNull);
   });
 
   test('persists color on a nested folder in SQLite', () async {
     final parent = await folders.createFolder(name: 'Parent');
-    final child = await folders.createFolder(name: 'Child', parentId: parent.id);
+    final child = await folders.createFolder(
+      name: 'Child',
+      parentId: parent.id,
+    );
     await folders.setFolderColor(child.id, 0xFF673AB7);
-    final stored = await database.customSelect(
-      'SELECT color_argb FROM folders WHERE id = ?',
-      variables: [Variable.withString(child.id)],
-    ).getSingle();
+    final stored = await database
+        .customSelect(
+          'SELECT color_argb FROM folders WHERE id = ?',
+          variables: [Variable.withString(child.id)],
+        )
+        .getSingle();
     expect(stored.data['color_argb'], 0xFF673AB7);
   });
 }

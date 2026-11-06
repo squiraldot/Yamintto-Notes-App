@@ -168,8 +168,11 @@ class FolderBrowserScreen extends ConsumerWidget {
     final input = await _name(context, 'Create folder', '', null);
     if (input == null || input.name.trim().isEmpty) return;
     try {
-      await (await ref.read(folderRepositoryProvider.future))
-          .createFolder(name: input.name, parentId: folderId, colorArgb: input.colorArgb);
+      await (await ref.read(folderRepositoryProvider.future)).createFolder(
+        name: input.name,
+        parentId: folderId,
+        colorArgb: input.colorArgb,
+      );
       ref.invalidate(folderListProvider(folderId));
       ref.invalidate(allFoldersProvider);
     } catch (e) {
@@ -182,12 +185,18 @@ class FolderBrowserScreen extends ConsumerWidget {
     WidgetRef ref,
     Folder folder,
   ) async {
-    final input = await _name(context, 'Rename folder', folder.name, folder.colorArgb);
+    final input = await _name(
+      context,
+      'Rename folder',
+      folder.name,
+      folder.colorArgb,
+    );
     if (input == null) return;
     try {
       await (await ref.read(folderRepositoryProvider.future))
           .renameFolder(folder.id, input.name);
-      await (await ref.read(folderRepositoryProvider.future)).setFolderColor(folder.id, input.colorArgb);
+      await (await ref.read(folderRepositoryProvider.future))
+          .setFolderColor(folder.id, input.colorArgb);
       ref.invalidate(folderListProvider(folder.parentId));
       ref.invalidate(folderDetailProvider(folder.id));
     } catch (e) {
@@ -195,14 +204,19 @@ class FolderBrowserScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _changeColor(BuildContext context, WidgetRef ref, Folder folder) async {
+  Future<void> _changeColor(
+    BuildContext context,
+    WidgetRef ref,
+    Folder folder,
+  ) async {
     final choice = await showDialog<({bool apply, int? colorArgb})>(
       context: context,
       builder: (_) => _FolderColorDialog(initial: folder.colorArgb),
     );
     if (choice == null || !choice.apply || !context.mounted) return;
     try {
-      await (await ref.read(folderRepositoryProvider.future)).setFolderColor(folder.id, choice.colorArgb);
+      await (await ref.read(folderRepositoryProvider.future))
+          .setFolderColor(folder.id, choice.colorArgb);
       ref.invalidate(folderListProvider(folder.parentId));
       ref.invalidate(folderDetailProvider(folder.id));
       ref.invalidate(allFoldersProvider);
@@ -290,22 +304,32 @@ class FolderBrowserScreen extends ConsumerWidget {
 }
 
 Future<({String name, int? colorArgb})?> _name(
-  BuildContext context, String title, String initial, int? initialColor,
+  BuildContext context,
+  String title,
+  String initial,
+  int? initialColor,
 ) => showDialog<({String name, int? colorArgb})>(
   context: context,
   builder: (dialogContext) => _FolderNameDialog(
-    title: title, initial: initial, initialColor: initialColor,
+    title: title,
+    initial: initial,
+    initialColor: initialColor,
   ),
 );
 
 class _FolderNameDialog extends StatefulWidget {
-  const _FolderNameDialog({required this.title, required this.initial, required this.initialColor});
+  const _FolderNameDialog({
+    required this.title,
+    required this.initial,
+    required this.initialColor,
+  });
   final String title;
   final String initial;
   final int? initialColor;
   @override
   State<_FolderNameDialog> createState() => _FolderNameDialogState();
 }
+
 class _FolderNameDialogState extends State<_FolderNameDialog> {
   late final TextEditingController _controller;
   int? _colorArgb;
@@ -315,33 +339,77 @@ class _FolderNameDialogState extends State<_FolderNameDialog> {
     _controller = TextEditingController(text: widget.initial);
     _colorArgb = widget.initialColor;
   }
+
   @override
-  void dispose() { _controller.dispose(); super.dispose(); }
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: Text(widget.title),
-    content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
-      TextField(controller: _controller, autofocus: true, maxLength: 255,
-        decoration: const InputDecoration(labelText: 'Folder name')),
-      const SizedBox(height: 12),
-      const Align(alignment: Alignment.centerLeft, child: Text('Folder color')),
-      Wrap(spacing: 8, runSpacing: 4, children: [
-        ChoiceChip(label: const Text('Default'), selected: _colorArgb == null,
-          onSelected: (_) => setState(() => _colorArgb = null)),
-        ...FolderColorPalette.values.map((value) => ChoiceChip(
-          label: Semantics(label: 'Folder color ${value.toRadixString(16)}',
-            child: CircleAvatar(radius: 11, backgroundColor: Color(value),
-              child: _colorArgb == value ? Icon(Icons.check, size: 14,
-                color: FolderColorPalette.foreground(value)) : null)),
-          selected: _colorArgb == value,
-          onSelected: (_) => setState(() => _colorArgb = value),
-        )),
-      ]),
-    ])),
+    content: SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            maxLength: 255,
+            decoration: const InputDecoration(labelText: 'Folder name'),
+          ),
+          const SizedBox(height: 12),
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Text('Folder color'),
+          ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              ChoiceChip(
+                label: const Text('Default'),
+                selected: _colorArgb == null,
+                onSelected: (_) => setState(() => _colorArgb = null),
+              ),
+              ...FolderColorPalette.values.map(
+                (value) => ChoiceChip(
+                  label: Semantics(
+                    label: 'Folder color ${value.toRadixString(16)}',
+                    child: CircleAvatar(
+                      radius: 11,
+                      backgroundColor: Color(value),
+                      child: _colorArgb == value
+                          ? Icon(
+                              Icons.check,
+                              size: 14,
+                              color: FolderColorPalette.foreground(value),
+                            )
+                          : null,
+                    ),
+                  ),
+                  selected: _colorArgb == value,
+                  onSelected: (_) => setState(() => _colorArgb = value),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
     actions: [
-      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-      FilledButton(onPressed: () => Navigator.pop(context,
-        (name: _controller.text, colorArgb: _colorArgb)), child: const Text('Save')),
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: () => Navigator.pop(context, (
+          name: _controller.text,
+          colorArgb: _colorArgb,
+        )),
+        child: const Text('Save'),
+      ),
     ],
   );
 }
@@ -352,29 +420,59 @@ class _FolderColorDialog extends StatefulWidget {
   @override
   State<_FolderColorDialog> createState() => _FolderColorDialogState();
 }
+
 class _FolderColorDialogState extends State<_FolderColorDialog> {
   int? selected;
   @override
-  void initState() { super.initState(); selected = widget.initial; }
+  void initState() {
+    super.initState();
+    selected = widget.initial;
+  }
+
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: const Text('Folder color'),
-    content: Wrap(spacing: 8, runSpacing: 8, children: [
-      ChoiceChip(label: const Text('Default'), selected: selected == null,
-        onSelected: (_) => setState(() => selected = null)),
-      ...FolderColorPalette.values.map((value) => ChoiceChip(
-        label: Semantics(label: 'Folder color ${value.toRadixString(16)}',
-          child: CircleAvatar(radius: 12, backgroundColor: Color(value),
-            child: selected == value ? Icon(Icons.check, size: 14,
-              color: FolderColorPalette.foreground(value)) : null)),
-        selected: selected == value,
-        onSelected: (_) => setState(() => selected = value),
-      )),
-    ]),
+    content: Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        ChoiceChip(
+          label: const Text('Default'),
+          selected: selected == null,
+          onSelected: (_) => setState(() => selected = null),
+        ),
+        ...FolderColorPalette.values.map(
+          (value) => ChoiceChip(
+            label: Semantics(
+              label: 'Folder color ${value.toRadixString(16)}',
+              child: CircleAvatar(
+                radius: 12,
+                backgroundColor: Color(value),
+                child: selected == value
+                    ? Icon(
+                        Icons.check,
+                        size: 14,
+                        color: FolderColorPalette.foreground(value),
+                      )
+                    : null,
+              ),
+            ),
+            selected: selected == value,
+            onSelected: (_) => setState(() => selected = value),
+          ),
+        ),
+      ],
+    ),
     actions: [
-      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-      FilledButton(onPressed: () => Navigator.pop(context,
-        (apply: true, colorArgb: selected)), child: const Text('Apply')),
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: () =>
+            Navigator.pop(context, (apply: true, colorArgb: selected)),
+        child: const Text('Apply'),
+      ),
     ],
   );
 }
@@ -481,7 +579,13 @@ class _FolderRow extends StatelessWidget {
   final VoidCallback open, rename, move, delete, changeColor;
   @override
   Widget build(BuildContext context) => ListTile(
-    leading: Icon(Icons.folder, color: FolderColorPalette.color(folder.colorArgb, Theme.of(context).colorScheme.primary)),
+    leading: Icon(
+      Icons.folder,
+      color: FolderColorPalette.color(
+        folder.colorArgb,
+        Theme.of(context).colorScheme.primary,
+      ),
+    ),
     title: Text(folder.name),
     onTap: open,
     trailing: PopupMenuButton<String>(
@@ -520,19 +624,30 @@ class _NoteRow extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Updated ${DateTime.fromMillisecondsSinceEpoch(note.updatedAt, isUtc: true).toLocal()}'),
-        ref.watch(noteTagListProvider(note.id)).when(
-          loading: () => const SizedBox.shrink(),
-          error: (_, _) => const SizedBox.shrink(),
-          data: (items) => items.isEmpty ? const SizedBox.shrink() : Wrap(
-            spacing: 4,
-            children: items.map((tag) => Chip(
-              label: Text(tag.name),
-              visualDensity: VisualDensity.compact,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            )).toList(),
-          ),
+        Text(
+          'Updated ${DateTime.fromMillisecondsSinceEpoch(note.updatedAt, isUtc: true).toLocal()}',
         ),
+        ref
+            .watch(noteTagListProvider(note.id))
+            .when(
+              loading: () => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
+              data: (items) => items.isEmpty
+                  ? const SizedBox.shrink()
+                  : Wrap(
+                      spacing: 4,
+                      children: items
+                          .map(
+                            (tag) => Chip(
+                              label: Text(tag.name),
+                              visualDensity: VisualDensity.compact,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            ),
+                          )
+                          .toList(),
+                    ),
+            ),
       ],
     ),
     onTap: open,

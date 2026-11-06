@@ -23,18 +23,36 @@ void main() {
     await legacy.customStatement(
       'INSERT INTO folders(id, parent_id, name, name_key, sort_order, created_at, updated_at, deleted_at) '
       'VALUES (?, NULL, ?, ?, ?, ?, ?, ?)',
-      <Object?>['00000000-0000-4000-8000-000000000001', 'Legacy', 'legacy', 7, 11, 12, 13],
+      <Object?>[
+        '00000000-0000-4000-8000-000000000001',
+        'Legacy',
+        'legacy',
+        7,
+        11,
+        12,
+        13,
+      ],
     );
     await legacy.customStatement(
       'INSERT INTO notes(id, folder_id, title, body, content_format_version, sort_order, created_at, updated_at, deleted_at) '
       'VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?)',
-      <Object?>['00000000-0000-4000-8000-000000000002',
-        '00000000-0000-4000-8000-000000000001', 'Old title', 'Old body', 9, 21, 22, 23],
+      <Object?>[
+        '00000000-0000-4000-8000-000000000002',
+        '00000000-0000-4000-8000-000000000001',
+        'Old title',
+        'Old body',
+        9,
+        21,
+        22,
+        23,
+      ],
     );
     await legacy.close();
 
     final upgraded = YaminttoDatabase.open(file);
-    final folder = await upgraded.customSelect('SELECT * FROM folders').getSingle();
+    final folder = await upgraded
+        .customSelect('SELECT * FROM folders')
+        .getSingle();
     final note = await upgraded.customSelect('SELECT * FROM notes').getSingle();
     expect(folder.data['id'], '00000000-0000-4000-8000-000000000001');
     expect(folder.data['name'], 'Legacy');
@@ -59,8 +77,10 @@ void main() {
       'VALUES (?, NULL, ?, ?, 1, 0, 30, 30)',
       <Object?>[newNoteId, 'New', 'Body'],
     );
-    final tags = TagRepository(upgraded,
-      createId: () => '00000000-0000-4000-8000-000000000004');
+    final tags = TagRepository(
+      upgraded,
+      createId: () => '00000000-0000-4000-8000-000000000004',
+    );
     final tag = await tags.createTag('Migrated');
     await tags.assignTags(newNoteId, <String>[tag.id]);
     await upgraded.customStatement(
@@ -70,49 +90,68 @@ void main() {
     expect((await tags.listNoteTags(newNoteId)).single.name, 'Migrated');
     final fk = await upgraded.customSelect('PRAGMA foreign_key_check').get();
     expect(fk, isEmpty);
-    final integrity = await upgraded.customSelect('PRAGMA integrity_check').getSingle();
+    final integrity = await upgraded
+        .customSelect('PRAGMA integrity_check')
+        .getSingle();
     expect(integrity.data.values.single, 'ok');
     await upgraded.close();
 
     final reopened = YaminttoDatabase.open(file);
-    final persisted = await reopened.customSelect(
-      'SELECT color_argb FROM folders WHERE id = ?',
-      variables: [Variable.withString('00000000-0000-4000-8000-000000000001')],
-    ).getSingle();
+    final persisted = await reopened
+        .customSelect(
+          'SELECT color_argb FROM folders WHERE id = ?',
+          variables: [
+            Variable.withString('00000000-0000-4000-8000-000000000001'),
+          ],
+        )
+        .getSingle();
     expect(persisted.data['color_argb'], 0xFFF44336);
     await reopened.close();
   });
 
-  test('failed migration rolls back the schema change and retains v1 data', () async {
-    final file = File('${directory.path}/failed.sqlite');
-    final legacy = _V1Fixture(file);
-    await legacy.customStatement(
-      'INSERT INTO folders(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
-      'VALUES (?, NULL, ?, ?, 0, 1, 1)',
-      <Object?>['00000000-0000-4000-8000-000000000011', 'Keep', 'keep'],
-    );
-    // Force the v2 CREATE TABLE step to fail after ALTER TABLE has begun.
-    await legacy.customStatement('CREATE TABLE tags (conflicting INTEGER)');
-    await legacy.close();
+  test(
+    'failed migration rolls back the schema change and retains v1 data',
+    () async {
+      final file = File('${directory.path}/failed.sqlite');
+      final legacy = _V1Fixture(file);
+      await legacy.customStatement(
+        'INSERT INTO folders(id, parent_id, name, name_key, sort_order, created_at, updated_at) '
+        'VALUES (?, NULL, ?, ?, 0, 1, 1)',
+        <Object?>['00000000-0000-4000-8000-000000000011', 'Keep', 'keep'],
+      );
+      // Force the v2 CREATE TABLE step to fail after ALTER TABLE has begun.
+      await legacy.customStatement('CREATE TABLE tags (conflicting INTEGER)');
+      await legacy.close();
 
-    final failed = YaminttoDatabase.open(file);
-    await expectLater(failed.customSelect('SELECT 1').get(), throwsA(anything));
-    await failed.close();
+      final failed = YaminttoDatabase.open(file);
+      await expectLater(
+        failed.customSelect('SELECT 1').get(),
+        throwsA(anything),
+      );
+      await failed.close();
 
-    final inspect = _V1Fixture(file);
-    final retained = await inspect.customSelect('SELECT id, name FROM folders').getSingle();
-    expect(retained.data['id'], '00000000-0000-4000-8000-000000000011');
-    expect(retained.data['name'], 'Keep');
-    final version = await inspect.customSelect('PRAGMA user_version').getSingle();
-    expect(version.data.values.single, 1);
-    final columns = await inspect.customSelect('PRAGMA table_info(folders)').get();
-    expect(columns.any((row) => row.data['name'] == 'color_argb'), isFalse);
-    await inspect.close();
-  });
+      final inspect = _V1Fixture(file);
+      final retained = await inspect
+          .customSelect('SELECT id, name FROM folders')
+          .getSingle();
+      expect(retained.data['id'], '00000000-0000-4000-8000-000000000011');
+      expect(retained.data['name'], 'Keep');
+      final version = await inspect
+          .customSelect('PRAGMA user_version')
+          .getSingle();
+      expect(version.data.values.single, 1);
+      final columns = await inspect
+          .customSelect('PRAGMA table_info(folders)')
+          .get();
+      expect(columns.any((row) => row.data['name'] == 'color_argb'), isFalse);
+      await inspect.close();
+    },
+  );
 }
 
 class _V1Fixture extends GeneratedDatabase {
-  _V1Fixture(File file) : super(NativeDatabase(file, setup: _registerFunctions));
+  _V1Fixture(File file)
+    : super(NativeDatabase(file, setup: _registerFunctions));
 
   @override
   int get schemaVersion => 1;
@@ -130,7 +169,8 @@ class _V1Fixture extends GeneratedDatabase {
         await customStatement(statement);
       }
     },
-    onUpgrade: (_, from, to) async => throw StateError('Unsupported fixture upgrade'),
+    onUpgrade: (_, from, to) async =>
+        throw StateError('Unsupported fixture upgrade'),
     beforeOpen: (_) async {
       await customStatement('PRAGMA foreign_keys = ON');
       await customStatement('PRAGMA trusted_schema = ON');
@@ -140,19 +180,22 @@ class _V1Fixture extends GeneratedDatabase {
   static void _registerFunctions(dynamic db) {
     db.createFunction(
       functionName: 'yamintto_unicode_trim',
-      function: (args) => UnicodeCanonicalizer.trimWhiteSpace(args.single as String),
+      function: (args) =>
+          UnicodeCanonicalizer.trimWhiteSpace(args.single as String),
       deterministic: true,
       directOnly: false,
     );
     db.createFunction(
       functionName: 'yamintto_nfkc_casefold',
-      function: (args) => UnicodeCanonicalizer.nfkcCasefold(args.single as String),
+      function: (args) =>
+          UnicodeCanonicalizer.nfkcCasefold(args.single as String),
       deterministic: true,
       directOnly: false,
     );
     db.createFunction(
       functionName: 'yamintto_folder_name_key',
-      function: (args) => UnicodeCanonicalizer.canonicalizeFolderName(args.single as String),
+      function: (args) =>
+          UnicodeCanonicalizer.canonicalizeFolderName(args.single as String),
       deterministic: true,
       directOnly: false,
     );

@@ -20,7 +20,11 @@ class FolderRepository {
 
   static int _utcNow() => DateTime.now().toUtc().millisecondsSinceEpoch;
 
-  Future<Folder> createFolder({required String name, String? parentId, int? colorArgb}) async {
+  Future<Folder> createFolder({
+    required String name,
+    String? parentId,
+    int? colorArgb,
+  }) async {
     final displayName = _validatedName(name);
     _validateColor(colorArgb);
     final nameKey = UnicodeCanonicalizer.canonicalizeFolderName(displayName);
@@ -50,7 +54,16 @@ class FolderRepository {
           'INSERT INTO folders '
           '(id, parent_id, name, name_key, sort_order, created_at, updated_at, color_argb) '
           'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-          <Object?>[id, parentId, displayName, nameKey, order, now, now, colorArgb],
+          <Object?>[
+            id,
+            parentId,
+            displayName,
+            nameKey,
+            order,
+            now,
+            now,
+            colorArgb,
+          ],
         );
         return _requireActiveFolder(id);
       });
@@ -184,23 +197,32 @@ class FolderRepository {
     );
   }
 
-
   Future<Folder> setFolderColor(String id, int? colorArgb) async {
     _validateColor(colorArgb);
-    return DatabaseBoundary.guard(() => _database.transaction(() async {
-      await _requireActiveFolder(id);
-      await _database.customStatement(
-        'UPDATE folders SET color_argb = ? WHERE id = ? AND deleted_at IS NULL',
-        <Object?>[colorArgb, id],
-      );
-      return _requireActiveFolder(id);
-    }));
+    return DatabaseBoundary.guard(
+      () => _database.transaction(() async {
+        await _requireActiveFolder(id);
+        await _database.customStatement(
+          'UPDATE folders SET color_argb = ? WHERE id = ? AND deleted_at IS NULL',
+          <Object?>[colorArgb, id],
+        );
+        return _requireActiveFolder(id);
+      }),
+    );
   }
 
   void _validateColor(int? colorArgb) {
     const allowed = <int>{
-      4294198070, 4293467747, 4294940672, 4294961979, 4283215696,
-      4278228616, 4282339765, 4284955319, 4278430196, 4294951175,
+      4294198070,
+      4293467747,
+      4294940672,
+      4294961979,
+      4283215696,
+      4278228616,
+      4282339765,
+      4284955319,
+      4278430196,
+      4294951175,
     };
     if (colorArgb != null && !allowed.contains(colorArgb)) {
       throw const DomainFailure(

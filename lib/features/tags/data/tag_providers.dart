@@ -13,7 +13,10 @@ final tagListProvider = FutureProvider<List<NoteTag>>((ref) async {
   return repository.listTags();
 });
 
-final noteTagListProvider = FutureProvider.family<List<NoteTag>, String>((ref, noteId) async {
+final noteTagListProvider = FutureProvider.family<List<NoteTag>, String>((
+  ref,
+  noteId,
+) async {
   final repository = await ref.watch(tagRepositoryProvider.future);
   return repository.listNoteTags(noteId);
 });

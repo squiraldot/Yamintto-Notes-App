@@ -25,7 +25,10 @@ void main() {
     final notes = NoteRepository(database);
 
     final marker = DateTime.now().toUtc().microsecondsSinceEpoch;
-    final folder = await folders.createFolder(name: 'device-smoke-$marker', colorArgb: 0xFF673AB7);
+    final folder = await folders.createFolder(
+      name: 'device-smoke-$marker',
+      colorArgb: 0xFF673AB7,
+    );
     final note = await notes.createNote(
       folderId: folder.id,
       title: 'Phase 02 device smoke',
@@ -43,7 +46,10 @@ void main() {
     final reopenedTags = TagRepository(reopened);
     expect((await reopenedFolders.getFolder(folder.id)).name, folder.name);
     expect((await reopenedFolders.getFolder(folder.id)).colorArgb, 0xFF673AB7);
-    expect((await reopenedTags.listNoteTags(note.id)).single.name, 'device-tag-$marker');
+    expect(
+      (await reopenedTags.listNoteTags(note.id)).single.name,
+      'device-tag-$marker',
+    );
     expect(
       (await reopenedNotes.getNote(note.id)).body,
       'Persistent source body',
