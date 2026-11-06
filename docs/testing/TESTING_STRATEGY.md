@@ -57,3 +57,21 @@ Record owner-reported device results separately from automated CI; do not invent
 ## Phase 02 implementation evidence notes
 
 The current Drift warning investigation traced the multiple-database debug messages to database unit tests that retained their group-level in-memory fixture while opening an additional file-backed database for reopen/fail-closed cases. The fixture is now explicitly closed before those file-backed instances are constructed. Each uses a distinct executor; the warning did not demonstrate that production Riverpod creates duplicate app databases. Exact-HEAD CI must still verify that the revised teardown is warning-free and that tests pass.
+
+
+## Phase 02 reopened repair — required test coverage
+
+The historical 69-test CI run did not test note tags or folder colors. Before Phase 02 acceptance:
+- Test tag create/list/rename/delete according to approved semantics; multiple tag assignment/removal; duplicate/normalization policy; referential integrity; soft-deleted-note behavior; and prove tag operations never mutate note body/title.
+- Test folder color null/default, valid/invalid values, persistence after restart, nested rendering, theme fallback and contrast; color must not alter IDs, hierarchy, names or sort order.
+- Migrate a populated schema-v1 fixture and verify every existing folder/note ID, content, relationship, order, timestamp and deleted_at value is unchanged. Test migration rollback/fail-closed behavior.
+- Add tag-management/assignment and folder-color widget tests.
+- Re-run locked dependency resolution, format, analyzer, full unit/widget tests and all three protected workflows on the exact repair SHA. Owner repeats the physical Android smoke test.
+
+## Phase 03 hybrid Markdown/autosave coverage
+
+- Parser/serializer tests for the documented modern syntax and verified legacy YRNotes golden fixtures; no silent source rewriting.
+- Security tests for raw HTML/script/event handlers, dangerous URL schemes, malformed/nested tags, external images, oversized input and deeply nested documents. Only explicitly allowlisted legacy tags may render as safe widgets.
+- Viewer/editor tests for syntax matrix, unknown constructs, accessibility semantics, keyboard/focus, selection and text scaling.
+- Autosave tests for debounce, immediate flush, same-note serialization/revision guards, stale completions, note switching, navigation, background/resume, failure/retry and dirty-state retention.
+- Process kill cannot guarantee a pending debounce was flushed; document the durability boundary and test restart after a completed flush.
