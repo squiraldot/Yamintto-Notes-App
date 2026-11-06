@@ -31,3 +31,10 @@ This is the project knowledge base. Source/config/tests determine current implem
 
 ## Decisions
 [ADR index](decisions/README.md). Status vocabulary: Implemented = code and evidence; Configured = scaffold/dependency; In progress = partial; Planned = target; Not implemented = absent; Requires verification = not yet evidenced.
+
+
+## Current owner decisions (2026-11-06)
+
+- [Phase 02 is reopened for note-tag and folder-color repair](STATUS.md).
+- [Phase 03 final implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md) — prepared, gated, and not authorized for execution.
+- Existing three protected GitHub Actions workflows remain in force.
