@@ -220,9 +220,7 @@ class SafeMarkdownViewer extends StatelessWidget {
     final children = item.children ?? const <md.Node>[];
     final checkbox = _firstElement(children, 'input');
     final content = children
-        .where(
-          (child) => !(child is md.Element && child.tag == 'input'),
-        )
+        .where((child) => !(child is md.Element && child.tag == 'input'))
         .toList();
     final checked = checkbox?.attributes.containsKey('checked') ?? false;
 
@@ -238,9 +236,7 @@ class SafeMarkdownViewer extends StatelessWidget {
                 value: checked,
                 onChanged: null,
                 visualDensity: VisualDensity.compact,
-                semanticLabel: checked
-                    ? 'Completed task'
-                    : 'Incomplete task',
+                semanticLabel: checked ? 'Completed task' : 'Incomplete task',
               ),
             )
           else
@@ -364,9 +360,7 @@ class SafeMarkdownViewer extends StatelessWidget {
       case 'strike':
         return TextSpan(
           children: children,
-          style: base?.copyWith(
-            decoration: TextDecoration.lineThrough,
-          ),
+          style: base?.copyWith(decoration: TextDecoration.lineThrough),
         );
       case 'ins':
         return TextSpan(

@@ -1,6 +1,7 @@
 import 'dart:async';
 
-typedef NoteSaveCallback = Future<void> Function(NoteSaveSnapshot snapshot);
+typedef NoteSaveCallback =
+    Future<void> Function(NoteSaveSnapshot snapshot);
 typedef NoteTimerFactory = Timer Function(
   Duration duration,
   void Function() callback,

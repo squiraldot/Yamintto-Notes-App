@@ -37,8 +37,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   int _contentFormatVersion = NoteContentFormat.hybridMarkdown;
   int? _expectedUpdatedAt;
 
-  bool get _readOnly =>
-      !NoteContentFormat.isSupported(_contentFormatVersion);
+  bool get _readOnly => !NoteContentFormat.isSupported(_contentFormatVersion);
   bool get _isPending => _autosave?.isDirty ?? false;
   bool get _isSaving => _autosave?.isSaving ?? false;
   bool get _hasError => _autosave?.hasError ?? false;
