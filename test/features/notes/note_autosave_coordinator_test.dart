@@ -9,7 +9,9 @@ void main() {
 
     setUp(() => timers = _FakeTimerFactory());
 
-    test('debounces edits for the configured 700 ms interval', () async {
+    test(
+      'debounces edits for the configured 700 ms interval',
+      () async {
       final saved = <NoteSaveSnapshot>[];
       final coordinator = NoteAutosaveCoordinator(
         save: (snapshot) async => saved.add(snapshot),
@@ -29,7 +31,8 @@ void main() {
         [const NoteSaveSnapshot(title: 'One', body: 'Body one')],
       );
       expect(coordinator.isSaved, isTrue);
-    });
+      },
+    );
 
     test(
       'serializes rapid edits and persists the latest revision last',
@@ -61,7 +64,9 @@ void main() {
       },
     );
 
-    test('keeps dirty state and exposes retry after a write failure', () async {
+    test(
+      'keeps dirty state and exposes retry after a write failure',
+      () async {
       var shouldFail = true;
       final coordinator = NoteAutosaveCoordinator(
         save: (_) async {
@@ -84,9 +89,12 @@ void main() {
       await coordinator.retry();
       expect(coordinator.isSaved, isTrue);
       expect(coordinator.hasError, isFalse);
-    });
+      },
+    );
 
-    test('keeps title and body in the same atomic revision snapshot', () async {
+    test(
+      'keeps title and body in the same atomic revision snapshot',
+      () async {
       final saved = <NoteSaveSnapshot>[];
       final coordinator = NoteAutosaveCoordinator(
         save: (snapshot) async => saved.add(snapshot),
@@ -104,9 +112,12 @@ void main() {
           body: 'Body revision 2',
         ),
       ]);
-    });
+      },
+    );
 
-    test('does not let a stale completion mark a newer edit saved', () async {
+    test(
+      'does not let a stale completion mark a newer edit saved',
+      () async {
       final firstWrite = Completer<void>();
       final saved = <NoteSaveSnapshot>[];
       final coordinator = NoteAutosaveCoordinator(
@@ -127,7 +138,8 @@ void main() {
       expect(coordinator.savedRevision, 2);
       expect(coordinator.editRevision, 2);
       expect(coordinator.isDirty, isFalse);
-    });
+      },
+    );
 
     test(
       'uses independent revision streams for separate note sessions',

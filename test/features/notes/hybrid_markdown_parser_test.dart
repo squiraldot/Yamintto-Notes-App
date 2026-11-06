@@ -135,7 +135,9 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
 
     test('rejects oversized source before parsing', () {
       expect(
-        () => parser.parse('x' * (HybridMarkdownParser.maxSourceBytes + 1)),
+        () => parser.parse(
+          List.filled(HybridMarkdownParser.maxSourceBytes + 1, 'x').join(),
+        ),
         throwsA(isA<MarkdownParseException>()),
       );
     });

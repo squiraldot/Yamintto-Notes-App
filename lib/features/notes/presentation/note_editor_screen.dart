@@ -37,7 +37,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   int _contentFormatVersion = NoteContentFormat.hybridMarkdown;
   int? _expectedUpdatedAt;
 
-  bool get _readOnly => !NoteContentFormat.isSupported(_contentFormatVersion);
+  bool get _readOnly =>
+      !NoteContentFormat.isSupported(_contentFormatVersion);
   bool get _isPending => _autosave?.isDirty ?? false;
   bool get _isSaving => _autosave?.isSaving ?? false;
   bool get _hasError => _autosave?.hasError ?? false;
@@ -171,13 +172,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
             icon: const Icon(Icons.arrow_back),
             onPressed: _handleBack,
           ),
-          title: Text(
-            _readOnly
-                ? 'View note'
-                : _activeNoteId == null
-                ? 'New note'
-                : 'Edit note',
-          ),
+          title: Text(_screenTitle),
           actions: [
             if (!_readOnly)
               TextButton(
@@ -325,6 +320,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
       return SafeMarkdownViewer(source: _body.text);
     }
     return SelectableText(_body.text);
+  }
+
+  String get _screenTitle {
+    if (_readOnly) return 'View note';
+    if (_activeNoteId == null) return 'New note';
+    return 'Edit note';
   }
 
   String get _statusLabel {

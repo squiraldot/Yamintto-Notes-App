@@ -278,12 +278,14 @@ class SafeMarkdownViewer extends StatelessWidget {
       return SelectableText(table.textContent);
     }
 
-    final firstCells = rows.isEmpty
-        ? const <md.Element>[]
-        : (rows.first.children ?? const <md.Node>[])
-              .whereType<md.Element>()
-              .where((element) => element.tag == 'th' || element.tag == 'td')
-              .toList();
+    final firstCells = <md.Element>[];
+    if (rows.isNotEmpty) {
+      firstCells.addAll(
+        (rows.first.children ?? const <md.Node>[])
+            .whereType<md.Element>()
+            .where((element) => element.tag == 'th' || element.tag == 'td'),
+      );
+    }
     if (firstCells.length > HybridMarkdownParser.maxTableColumns) {
       return SelectableText(table.textContent);
     }

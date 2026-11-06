@@ -181,7 +181,8 @@ void main() {
     expect(find.text('Discard unsaved changes?'), findsNothing);
     expect((await notes.listNotes()).single.title, 'Draft');
     expect(find.text('Draft'), findsOneWidget);
-  });
+    },
+  );
 
   testWidgets('excludes descendants from folder move destinations', (
     tester,
