@@ -53,8 +53,8 @@
 - Added a native Flutter AST viewer. Raw HTML is not rendered; links are styled but inert, images remain alt-text placeholders, and arbitrary HTML/CSS/scripts/handlers are not executed.
 - Added note content-format semantics: v1 remains literal plain text; new editor notes use v2 hybrid Markdown; editing a v1 body upgrades only that note; unknown future formats remain read-only and cannot be overwritten.
 - Added serialized per-editor autosave with a 700 ms debounce, revision-aware writes, latest-snapshot persistence, explicit/navigation/lifecycle flush, dirty/error state and retry.
-- Added repository and widget coverage for source preservation, parser limits, malicious input, version behavior, autosave races/failures, preview, navigation and lifecycle flush.
+- Added repository and widget coverage for source preservation, parser limits, malicious input, version behavior, autosave races/failures, preview, navigation and lifecycle flush; added owner-run physical-device integration source for system-back flush, lifecycle backgrounding and database reopen.
 - Fixed the initial CI formatting and analyzer blockers, the markdown AST element-constructor API mismatch, missing repository format-version handling, and rich-text test assumptions.
 - Updated the previous Phase 02 discard-confirmation tests to assert Phase 03 autosave-before-navigation behavior.
-- Exact PR source SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25` passed Flutter CI run `42200798879`: Dart formatting, `flutter analyze --fatal-infos`, and **114/114 unit/widget tests**.
+- Exact PR source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run `42200798879`: Dart formatting, `flutter analyze --fatal-infos`, and **114/114 unit/widget tests**.
 - Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), not merged. Phase 03 owner physical-device acceptance remains pending; no APK artifact or iOS native build/device pass is claimed.
