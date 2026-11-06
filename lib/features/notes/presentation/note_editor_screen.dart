@@ -14,6 +14,7 @@ import 'package:yamintto/features/notes/presentation/safe_markdown_viewer.dart';
 
 class NoteEditorScreen extends ConsumerStatefulWidget {
   const NoteEditorScreen({this.noteId, this.folderId, super.key});
+
   final String? noteId;
   final String? folderId;
 
@@ -26,6 +27,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   late final TextEditingController _title;
   late final TextEditingController _body;
   late final ScrollController _previewScroll;
+
   NoteAutosaveCoordinator? _autosave;
   bool _initialized = false;
   bool _preview = false;
@@ -35,8 +37,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   int _contentFormatVersion = NoteContentFormat.hybridMarkdown;
   int? _expectedUpdatedAt;
 
-  bool get _readOnly =>
-      !NoteContentFormat.isSupported(_contentFormatVersion);
+  bool get _readOnly => !NoteContentFormat.isSupported(_contentFormatVersion);
   bool get _isPending => _autosave?.isDirty ?? false;
   bool get _isSaving => _autosave?.isSaving ?? false;
   bool get _hasError => _autosave?.hasError ?? false;
@@ -156,157 +157,162 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     _initialized = true;
   }
 
-  Widget _editor(BuildContext context) => PopScope(
-    canPop:
-        _allowPop || (!_isPending && !_isSaving && !_hasError),
-    onPopInvokedWithResult: (didPop, result) async {
-      if (didPop || _allowPop) return;
-      await _flushAndPop();
-    },
-    child: Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          tooltip: 'Back',
-          icon: const Icon(Icons.arrow_back),
-          onPressed: _handleBack,
-        ),
-        title: Text(
-          _readOnly
-              ? 'View note'
-              : _activeNoteId == null
-              ? 'New note'
-              : 'Edit note',
-        ),
-        actions: [
-          if (!_readOnly)
-            TextButton(
-              onPressed: _isSaving ? null : _flushAndPop,
-              child: const Text('Save'),
-            ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
-              AppSpacing.sm,
-              AppSpacing.md,
-              0,
-            ),
-            child: Row(
-              children: [
-                if (!_readOnly)
-                  SegmentedButton<bool>(
-                    segments: const [
-                      ButtonSegment<bool>(
-                        value: false,
-                        icon: Icon(Icons.edit_outlined),
-                        label: Text('Editor'),
-                      ),
-                      ButtonSegment<bool>(
-                        value: true,
-                        icon: Icon(Icons.visibility_outlined),
-                        label: Text('Preview'),
-                      ),
-                    ],
-                    selected: <bool>{_preview},
-                    onSelectionChanged: (selection) {
-                      setState(() => _preview = selection.first);
-                    },
-                    showSelectedIcon: false,
-                  )
-                else
-                  const Text('Unsupported content format'),
-                const Spacer(),
-                Semantics(
-                  liveRegion: true,
-                  label: _statusLabel,
-                  child: Text(
-                    _statusLabel,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: _hasError
-                          ? Theme.of(context).colorScheme.error
-                          : Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+  Widget _editor(BuildContext context) {
+    return PopScope(
+      canPop: _allowPop || (!_isPending && !_isSaving && !_hasError),
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop || _allowPop) return;
+        await _flushAndPop();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            tooltip: 'Back',
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _handleBack,
           ),
-          if (_readOnly)
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Text(
-                'This note uses a newer content format. Its original source is preserved and editing is disabled until this app supports that format.',
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+          title: Text(
+            _readOnly
+                ? 'View note'
+                : _activeNoteId == null
+                ? 'New note'
+                : 'Edit note',
+          ),
+          actions: [
+            if (!_readOnly)
+              TextButton(
+                onPressed: _isSaving ? null : _flushAndPop,
+                child: const Text('Save'),
               ),
-            ),
-          Expanded(
-            child: ListView(
-              controller: _preview ? _previewScroll : null,
-              padding: const EdgeInsets.all(AppSpacing.md),
-              children: [
-                TextField(
-                  key: const ValueKey('note-title-editor'),
-                  controller: _title,
-                  readOnly: _readOnly,
-                  maxLength: 255,
-                  maxLines: 1,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    hintText: 'Untitled note',
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                if (_preview)
-                  _contentPreview(context)
-                else
-                  TextField(
-                    key: const ValueKey('note-body-editor'),
-                    controller: _body,
-                    readOnly: _readOnly,
-                    minLines: 12,
-                    maxLines: null,
-                    keyboardType: TextInputType.multiline,
-                    textCapitalization: TextCapitalization.sentences,
-                    enableSuggestions: true,
-                    autocorrect: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Markdown source',
-                      alignLabelWithHint: true,
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                if (_hasError)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.md),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Could not save. Your edits are still here.',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                          ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.sm,
+                AppSpacing.md,
+                0,
+              ),
+              child: Row(
+                children: [
+                  if (!_readOnly)
+                    SegmentedButton<bool>(
+                      segments: const [
+                        ButtonSegment<bool>(
+                          value: false,
+                          icon: Icon(Icons.edit_outlined),
+                          label: Text('Editor'),
                         ),
-                        TextButton.icon(
-                          onPressed: _retrySave,
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('Retry'),
+                        ButtonSegment<bool>(
+                          value: true,
+                          icon: Icon(Icons.visibility_outlined),
+                          label: Text('Preview'),
                         ),
                       ],
+                      selected: <bool>{_preview},
+                      onSelectionChanged: (selection) {
+                        setState(() => _preview = selection.first);
+                      },
+                      showSelectedIcon: false,
+                    )
+                  else
+                    const Text('Unsupported content format'),
+                  const Spacer(),
+                  Semantics(
+                    liveRegion: true,
+                    label: _statusLabel,
+                    child: Text(
+                      _statusLabel,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: _hasError
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+            if (_readOnly)
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Text(
+                  'This note uses a newer content format. '
+                  'Its original source is preserved and editing is disabled '
+                  'until this app supports that format.',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+              ),
+            Expanded(
+              child: ListView(
+                controller: _preview ? _previewScroll : null,
+                padding: const EdgeInsets.all(AppSpacing.md),
+                children: [
+                  TextField(
+                    key: const ValueKey('note-title-editor'),
+                    controller: _title,
+                    readOnly: _readOnly,
+                    maxLength: 255,
+                    maxLines: 1,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      hintText: 'Untitled note',
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  if (_preview)
+                    _contentPreview(context)
+                  else
+                    TextField(
+                      key: const ValueKey('note-body-editor'),
+                      controller: _body,
+                      readOnly: _readOnly,
+                      minLines: 12,
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                      textCapitalization: TextCapitalization.sentences,
+                      enableSuggestions: true,
+                      autocorrect: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Markdown source',
+                        alignLabelWithHint: true,
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  if (_hasError)
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.md),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Could not save. Your edits are still here.',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: _retrySave,
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget _contentPreview(BuildContext context) {
     if (_contentFormatVersion == NoteContentFormat.plainText) {
@@ -350,6 +356,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     } else if (_hasError) {
       return;
     }
+
     if (!mounted) return;
     setState(() => _allowPop = true);
     await WidgetsBinding.instance.endOfFrame;
@@ -365,6 +372,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   }
 }
 
-String _message(Object error) => error is DomainFailure
-    ? error.message
-    : 'The note could not be loaded safely. Please try again.';
+String _message(Object error) {
+  if (error is DomainFailure) return error.message;
+  return 'The note could not be loaded safely. Please try again.';
+}

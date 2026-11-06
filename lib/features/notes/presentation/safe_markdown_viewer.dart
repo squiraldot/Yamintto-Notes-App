@@ -126,10 +126,12 @@ class SafeMarkdownViewer extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 8),
           padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
           decoration: BoxDecoration(
-            border: BorderSide(
-              color: colorScheme.primary,
-              width: 3,
-            ).toBorder(),
+            border: Border(
+              left: BorderSide(
+                color: colorScheme.primary,
+                width: 3,
+              ),
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
