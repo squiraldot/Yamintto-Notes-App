@@ -33,8 +33,8 @@ This is an ordered plan, not blanket authorization. Phase 02 was explicitly auth
 - Dependencies: Phase 02 persistence — satisfied; owner-selected HYBRID compatibility — satisfied.
 - Authorization: owner submitted the final implementation prompt and explicitly authorized execution on 2026-11-06.
 - Implementation branch/PR: `phase-03/markdown-autosave`, [PR #2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
-- Exact source SHA: `fc8912781b4ee38efd22be1dcea24f324674cd40`.
-- Acceptance evidence: Flutter CI run [#42200165499](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200165499) passed formatting, analyzer and **113/113 unit/widget tests**.
+- Exact source SHA: `1cb2558e408a4253ca36abc8a77aeccd9c183e25`.
+- Acceptance evidence: Flutter CI run [#42200798879](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200798879) passed formatting, analyzer and **114/114 unit/widget tests**.
 - Implemented: documented dialect and legacy source inspection; AST parser with limits; explicit allowlisted safe rendering; inert URL handling and image placeholders; v1 plain-text/v2 Markdown semantics; unknown future formats read-only; serialized 700 ms autosave with revision guard, navigation/lifecycle flush and retry.
 - Data migration: none. Existing schema v2 remains unchanged; no mass rewrite.
 - Unit/widget: passed on the exact PR SHA. The integration/device tests remain owner-run on real physical devices; Phase 03 physical-device acceptance is pending.
@@ -156,4 +156,4 @@ The prior Phase 02 REOPENED/PENDING statements above are historical snapshots an
 
 ## Phase 03 latest execution reconciliation — 2026-11-06
 
-The owner authorized Phase 03 through submission of the final implementation prompt. Implementation is present on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`, source SHA `fc8912781b4ee38efd22be1dcea24f324674cd40`. Flutter CI run `42200165499` passed formatting, analyzer and 113/113 tests. Owner physical-device testing, PR review/merge and final owner acceptance remain pending. Phase 04–09 remain unauthorized.
+The owner authorized Phase 03 through submission of the final implementation prompt. Implementation is present on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`, source SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25`. Flutter CI run `42200798879` passed formatting, analyzer and 114/114 tests. Owner physical-device testing, PR review/merge and final owner acceptance remain pending. Phase 04–09 remain unauthorized.
