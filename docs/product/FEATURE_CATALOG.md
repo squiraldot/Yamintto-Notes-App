@@ -78,3 +78,19 @@ Behavior: choose/persist note/editor size. Acceptance: approved bounds, no clipp
 Acceptance: approved design review; TalkBack/VoiceOver, semantics, contrast, focus, large text, touch targets; performance budgets measured then met; complete unit/widget/integration/security/platform regression. Status: Not implemented.
 
 Ownership summary: 02 folders/notes; 03 Markdown/autosave; 04 search/pin/trash; 05 history/local attachments/statistics; 06 encryption/password/recovery key/search-index migration; 07 app/vault biometrics; 08 legacy/new backup/restore; 09 settings/theme preference/font size/polish/accessibility/performance/regression.
+
+
+## Owner-directed scope reconciliation — 2026-11-06
+
+**Phase 02 is REOPENED.** The implemented folders/notes baseline is historical and does not include two required capabilities selected for repair:
+
+### Note tags (primary Phase 02 — missing, repair required)
+Support reusable tags and multiple tag assignments per note with persistent local storage. Inspect the original Phase 02 prompt to establish normalization, duplicate handling, ordering, deletion semantics and behavior for soft-deleted notes. Tag changes must not mutate note body/title.
+
+### Folder colors (primary Phase 02 — missing, repair required)
+Support an optional persisted, validated color per folder and consistent rendering for nested folders. Define the approved palette/serialization, theme fallback and contrast before implementation. Color must not affect folder identity, hierarchy, name uniqueness or order.
+
+### Phase 03 hybrid editor contract
+The owner selected **HYBRID** compatibility: a modern Markdown baseline plus explicitly verified legacy YRNotes constructs. Raw HTML is disabled by default; only safe allowlisted legacy constructs may render. Preserve source text and define `content_format_version` semantics. Autosave must prevent stale writes from overwriting newer edits and retain dirty text on failure.
+
+Phase 03 is blocked until Phase 02 repair is accepted and separate Phase 03 authorization is given. See [the gated Phase 03 implementation prompt](../development/PHASE_03_IMPLEMENTATION_PROMPT.md).
