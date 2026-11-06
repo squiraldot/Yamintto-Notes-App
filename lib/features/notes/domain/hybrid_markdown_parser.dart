@@ -188,9 +188,9 @@ class _LegacyInlineSyntax extends md.InlineSyntax {
     final inner = start >= 1 && end >= start ? value.substring(start, end) : '';
     final children = parser.document.parseInline(inner);
     if (tag == 'span') {
-      parser.addNode(
-        md.Element('span', children, const {'data-semantic-color': 'danger'}),
-      );
+      final span = md.Element('span', children);
+      span.attributes['data-semantic-color'] = 'danger';
+      parser.addNode(span);
     } else {
       parser.addNode(md.Element(tag, children));
     }
