@@ -158,3 +158,23 @@ Beta policy remains Debug APK only: no release APK/AAB, release signing or publi
 - Intermediate validation history: earlier runs on implementation commits failed the format gate, so analyzer/tests were skipped on those intermediate SHAs and dependent APK workflows were skipped. Those failures were corrected; source revision `36a27212dadda99fbb7bb333a93a3568c967869d` passed Flutter CI (67/67 tests) and both Debug APK workflows uploaded artifacts for that same SHA. The documentation-only final revision is validated separately by the three protected workflows on its exact SHA. No Phase 02 physical-device integration run is verified.
 - **Historical acceptance reconciliation:** the earlier pending statement is superseded by the final acceptance record above. Phase 03 has not started and is not authorized.
 
+
+
+## Owner decision reconciliation — 2026-11-06
+
+- **Workflows:** retain exactly the three existing protected workflows: `.github/workflows/flutter-ci.yml`, `.github/workflows/yamintto-debug-apk.yml`, and `.github/workflows/yamintto-arm64-debug-apk.yml`. No consolidation, deletion, rename, disablement or addition is authorized.
+- **Markdown:** Phase 03 uses the owner-selected **hybrid** dialect: a documented modern Markdown baseline plus explicitly verified legacy YRNotes compatibility.
+- **Tags and folder colors:** the owner selected **REPAIR**, not defer. The previous Phase 02 acceptance is superseded for phase progression. Phase 02 is **REOPENED — REPAIR REQUIRED** because note tags and persisted folder colors are absent from the current source.
+- Historical Phase 02 CI/APK evidence (69/69 tests and both APK artifacts) remains valid for the exact tested folders/notes baseline only. It does not prove tags or folder colors. The earlier owner-reported physical-device result likewise applies only to the baseline tested at that time.
+
+### Phase 02 — Reopened repair scope
+
+Required missing capabilities:
+1. **Note tags:** create/manage reusable tags and assign/remove multiple tags on notes, with persistent local relationships.
+2. **Folder colors:** persist and display an optional validated color for each folder, including nested folders.
+
+The repair must inspect the original Phase 02 prompt and actual Drift migration/source state before freezing tag normalization, duplicate/deletion semantics, color palette/serialization and fallback behavior. Preserve schema v1 as an immutable baseline; implement any extension through a forward-only, data-preserving migration. Preserve existing IDs, content, relationships, ordering, timestamps, soft-delete semantics, Unicode folder-name rules and depth constraints.
+
+Phase 02 can close only after implementation, migration tests, tag/color unit and widget tests, full Flutter validation, all three protected workflows on the exact repair SHA, owner-run Android physical-device retest, documentation reconciliation and explicit owner acceptance.
+
+**Phase 03 remains NOT STARTED and NOT AUTHORIZED.** The prepared [Phase 03 implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md) is gated and must not be executed until Phase 02 repair is accepted and the owner separately authorizes Phase 03.
