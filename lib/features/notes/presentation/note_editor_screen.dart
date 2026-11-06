@@ -351,14 +351,6 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     if (mounted) context.pop();
   }
 
-  Future<void> _saveNow() async {
-    try {
-      await _autosave?.flush();
-    } catch (_) {
-      if (mounted) setState(() {});
-    }
-  }
-
   Future<void> _retrySave() async {
     try {
       await _autosave?.retry();

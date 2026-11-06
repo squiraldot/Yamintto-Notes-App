@@ -131,8 +131,8 @@ class SafeMarkdownViewer extends StatelessWidget {
       case 'table':
         return _table(context, node, depth);
       case 'details':
-        final summary = children.whereType<md.Element>().where((e) => e.tag == 'summary').firstOrNull;
-        final body = children.whereType<md.Element>().where((e) => e.tag == 'div').firstOrNull;
+        final summary = _firstElement(children, 'summary');
+        final body = _firstElement(children, 'div');
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 8),
           child: ExpansionTile(
@@ -176,7 +176,7 @@ class SafeMarkdownViewer extends StatelessWidget {
 
   Widget _listItem(BuildContext context, md.Element item, String marker, int depth) {
     final children = item.children ?? const <md.Node>[];
-    final checkbox = children.whereType<md.Element>().where((e) => e.tag == 'input').firstOrNull;
+    final checkbox = _firstElement(children, 'input');
     final content = children.where((child) => !(child is md.Element && child.tag == 'input')).toList();
     final checked = checkbox?.attributes.containsKey('checked') ?? false;
     return Padding(
@@ -318,4 +318,12 @@ class SafeMarkdownViewer extends StatelessWidget {
         return TextSpan(children: children);
     }
   }
+}
+
+
+md.Element? _firstElement(Iterable<md.Node> nodes, String tag) {
+  for (final node in nodes) {
+    if (node is md.Element && node.tag == tag) return node;
+  }
+  return null;
 }
