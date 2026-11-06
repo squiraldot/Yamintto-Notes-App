@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:yamintto/core/errors/domain_failure.dart';
 import 'package:yamintto/core/theme/tokens/app_spacing.dart';
 import 'package:yamintto/features/notes/data/note_providers.dart';
+import 'package:yamintto/features/notes/domain/note.dart';
 import 'package:yamintto/features/notes/domain/note_content_format.dart';
 import 'package:yamintto/features/notes/presentation/note_autosave_coordinator.dart';
 import 'package:yamintto/features/notes/presentation/note_providers.dart';
@@ -81,7 +82,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     });
   }
 
-  void _initializeFromNote(dynamic note) {
+  void _initializeFromNote(Note note) {
     if (_initialized) return;
     _activeFolderId = note.folderId as String?;
     _savedNoteId = note.id as String;
