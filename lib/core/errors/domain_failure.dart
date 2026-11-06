@@ -13,6 +13,7 @@ enum DomainFailureCode {
   databaseConstraint,
   databaseInitialization,
   migrationUnsupported,
+  unsupportedContentFormat,
 }
 
 /// A typed, presentation-safe domain failure. SQLite details are never exposed.
