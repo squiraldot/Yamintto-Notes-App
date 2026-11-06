@@ -120,7 +120,8 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
     });
 
     test('supports all six ATX heading levels', () {
-      const source = '# one\n## two\n### three\n#### four\n##### five\n###### six';
+      const source =
+          '# one\n## two\n### three\n#### four\n##### five\n###### six';
       final result = parser.parse(source);
 
       for (var level = 1; level <= 6; level++) {

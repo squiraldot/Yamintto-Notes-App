@@ -72,7 +72,6 @@ void main() {
   });
 }
 
-
 class _LifecycleAutosaveObserver with WidgetsBindingObserver {
   _LifecycleAutosaveObserver(this.coordinator);
 
