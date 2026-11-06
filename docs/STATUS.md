@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-06 (final owner acceptance); branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
+Snapshot: 2026-11-06 (Phase 02 accepted; Phase 03 implementation in PR); branch: `phase-03/markdown-autosave`; current PR head: `fc8912781b4ee38efd22be1dcea24f324674cd40`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
 
 ## Phase 01 — Foundation
 
@@ -228,3 +228,22 @@ This section supersedes historical Phase 02 ACCEPTED / schema-v1-only / repair-r
 The earlier “OWNER DEVICE ACCEPTANCE PENDING” statements in the repair implementation history are historical snapshots and are superseded by this final owner acceptance. Exactly three protected workflows remain; no workflow changes are authorized or included in this closure.
 
 **PHASE 03 — NOT STARTED / NOT AUTHORIZED.** A separate explicit owner authorization is still required before any Phase 03 work.
+
+
+## Current Phase 03 implementation status — 2026-11-06
+
+**PHASE 03 — IMPLEMENTED ON PR BRANCH; OWNER ACCEPTANCE AND MERGE PENDING.**
+
+- Owner authorization: the owner submitted the complete Phase 03 implementation prompt and explicitly authorized execution on 2026-11-06.
+- Repository: `squiraldot/Yamintto-Notes-App`; branch: `phase-03/markdown-autosave`; pull request: [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
+- Current implementation head at this status snapshot: `fc8912781b4ee38efd22be1dcea24f324674cd40`.
+- Implemented: documented hybrid Markdown dialect; Dart AST parser; safe native Flutter renderer; editor/preview UI; version-aware plain-text/Markdown behavior; future-format read-only preservation; 700 ms debounced autosave; serialized revision-aware writes; explicit/navigation/lifecycle flush; save error and retry states.
+- Data: no SQLite schema migration. Existing v1 plain-text rows remain literal on open/preview/title-only edits. New editor notes use content format v2. A deliberate body edit upgrades only that v1 note to v2. Unknown versions cannot be overwritten.
+- Safety: raw HTML is not rendered; only exact legacy inline constructs are allowlisted; link schemes are validated and links are inert; images are alt-text placeholders and are never fetched; source remains the persisted data.
+- Exact-SHA Flutter CI run [#42200165499](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200165499): **success** on source SHA `fc8912781b4ee38efd22be1dcea24f324674cd40`; locked dependencies, Dart formatting, analyzer and **113/113 unit/widget tests** passed.
+- The earlier formatting, analyzer and widget-test failures occurred on intermediate commits and were corrected. They are historical iteration evidence, not the current PR-head result.
+- PR #2 is not merged. No APK build or artifact workflow is claimed for this PR SHA. Owner physical-device testing for Phase 03 is pending. iOS native build/device verification remains unavailable and is not inferred from host CI.
+- The temporary formatter helper workflow used during correction was removed. The final branch retains exactly the three protected workflows: Flutter CI, universal Debug APK and ARM64 Debug APK.
+- Phase 02 remains **ACCEPTED** with its separate owner-reported physical-device PASS. Phase 04–09 remain planned and are not authorized.
+
+This current section supersedes all earlier pre-authorization statements in this historical status record that Phase 03 had not started or was not authorized. It does not mark Phase 03 owner-accepted or merged.
