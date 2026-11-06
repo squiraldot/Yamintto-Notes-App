@@ -10,7 +10,7 @@ Exactly two Phase 02 domain tables:
 - `folders` — nested folder metadata, ordering and soft-delete marker.
 - `notes` — note metadata/content, ordering and soft-delete marker.
 
-Do not create `note_revisions`, `attachments`, `note_tags`, `trash_items`, `encryption_metadata` or `app_settings` in Phase 02. Revisions/attachments belong to Phase 05, encryption metadata to Phase 06, settings to Phase 09. Search, pinning and Trash UI belong to Phase 04. Deleted state is stored on the entity row, not in a separate polymorphic table.
+The immutable schema v1 baseline did not create `note_revisions`, `attachments`, `note_tags`, `trash_items`, `encryption_metadata` or `app_settings`. The authorized schema v2 repair adds `tags`, `note_tags` and `folders.color_argb`; it does not add revisions, attachments, a separate trash table, encryption metadata or settings. Revisions/attachments belong to Phase 05, encryption metadata to Phase 06, settings to Phase 09. Search, pinning and Trash UI belong to Phase 04. Deleted state is stored on the entity row, not in a separate polymorphic table.
 
 ## Shared conventions
 

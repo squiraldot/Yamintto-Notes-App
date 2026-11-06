@@ -15,7 +15,7 @@ Native Flutter notes application for Android and iOS; offline-first by design. Y
 
 ## Current project status
 
-<badge>Phase 02 — ACCEPTED</badge>
+**Phase 02 — ACCEPTED**
 
 Phase 01 foundation and Phase 02 core management are implemented. Phase 02 includes nested folders, notes CRUD and soft-delete, reusable note tags with multiple persistent assignments, and optional persisted colors for root and nested folders. The database uses Drift/SQLite schema v2; schema v1 remains the immutable migration baseline.
 
