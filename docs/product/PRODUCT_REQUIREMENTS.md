@@ -50,8 +50,8 @@ Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](
 
 ## Phase 02 data lifecycle — IMPLEMENTED AND ACCEPTED (2026-11-06)
 
-- Drift + SQLite is implemented: schema v1 and the Drift database wrapper are present in source; the schema contains exactly the `folders` and `notes` domain tables.
-- Accepted schema v1 contains only `folders` and `notes`. Revisions/attachments are Phase 05, encryption metadata Phase 06, settings Phase 09; no separate polymorphic trash table is proposed.
+- Drift + SQLite is implemented. Schema v1 remains the immutable baseline with `folders` and `notes`; current schema v2 adds `tags`, `note_tags` and nullable `folders.color_argb` through an additive, forward-only migration.
+- Revisions/attachments are Phase 05, encryption metadata Phase 06, settings Phase 09; no separate polymorphic trash table is proposed.
 - Nested folders use NULL as root. Moves reject self/descendant cycles and run transactionally.
 - Folder depth is capped at 32 levels (virtual root level 0; top-level folders level 1). Validate creates and complete moved subtrees; reject cycles and any move exceeding level 32.
 - Folder names are trimmed, non-empty, maximum 255 Unicode code points, and case-insensitively unique per parent using the same Unicode NFKC_Casefold canonicalizer in app validation and the root-aware database unique constraint. The constraint includes soft-deleted folders; the name is unavailable until permanent deletion. Note titles are maximum 255 Unicode code points.
