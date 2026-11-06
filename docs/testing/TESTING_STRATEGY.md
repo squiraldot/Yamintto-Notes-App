@@ -118,7 +118,7 @@ No device model, OS version, screenshots, logs, or exact test command were suppl
 
 Exact PR source SHA: `cc8295293e85380cd964e26bfc890b0da063643c`.
 
-Flutter CI run [#42200798879](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200798879) succeeded on Flutter 3.47.9:
+Flutter CI run [#42202330375](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42202330375) succeeded on Flutter 3.47.9:
 - Locked dependency resolution: passed.
 - `dart format --output=none --set-exit-if-changed .`: passed.
 - `flutter analyze --fatal-infos`: passed.
