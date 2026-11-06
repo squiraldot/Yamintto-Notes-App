@@ -74,7 +74,7 @@ class HybridMarkdownParser {
           maximumDetailsDepth = detailsDepth;
         }
       } else if (trimmed == '</details>') {
-        detailsDepth = (detailsDepth - 1).clamp(0, maxDetailsDepth);
+        if (detailsDepth > 0) detailsDepth--;
       }
     }
     if (maximumDetailsDepth > maxDetailsDepth) {

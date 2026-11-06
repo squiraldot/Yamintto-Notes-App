@@ -33,6 +33,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   String? _activeFolderId;
   String? _activeNoteId;
   int _contentFormatVersion = NoteContentFormat.hybridMarkdown;
+  int? _expectedUpdatedAt;
 
   bool get _readOnly =>
       !NoteContentFormat.isSupported(_contentFormatVersion);
@@ -76,6 +77,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
       );
       _activeNoteId = created.id;
       _contentFormatVersion = created.contentFormatVersion;
+      _expectedUpdatedAt = created.updatedAt;
       ref.invalidate(noteListProvider(_activeFolderId));
       return;
     }
@@ -84,8 +86,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
       id: _activeNoteId!,
       title: snapshot.title,
       body: snapshot.body,
+      expectedUpdatedAt: _expectedUpdatedAt,
     );
     _contentFormatVersion = updated.contentFormatVersion;
+    _expectedUpdatedAt = updated.updatedAt;
     ref.invalidate(noteDetailProvider(_activeNoteId!));
     ref.invalidate(noteListProvider(_activeFolderId));
   }
@@ -148,6 +152,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     _title.text = note.title;
     _body.text = note.body;
     _contentFormatVersion = note.contentFormatVersion;
+    _expectedUpdatedAt = note.updatedAt;
     _initialized = true;
   }
 

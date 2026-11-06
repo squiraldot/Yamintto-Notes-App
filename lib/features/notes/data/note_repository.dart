@@ -6,6 +6,7 @@ import 'package:yamintto/core/ids/uuid_v4.dart';
 import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 import 'package:yamintto/features/notes/domain/note.dart';
 import 'package:yamintto/features/notes/domain/note_content_format.dart';
+import 'package:yamintto/features/notes/domain/note_content_format.dart';
 
 class NoteRepository {
   NoteRepository(
@@ -89,6 +90,7 @@ class NoteRepository {
     required String id,
     required String title,
     required String body,
+    int? expectedUpdatedAt,
   }) async {
     _validateTitle(title);
     return DatabaseBoundary.guard(

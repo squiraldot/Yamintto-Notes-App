@@ -27,13 +27,16 @@ void main() {
       body: 'initial',
       contentFormatVersion: NoteContentFormat.hybridMarkdown,
     );
+    var expectedUpdatedAt = note.updatedAt;
     final autosave = NoteAutosaveCoordinator(
       save: (snapshot) async {
-        await notes.updateNote(
+        final updated = await notes.updateNote(
           id: note.id,
           title: snapshot.title,
           body: snapshot.body,
+          expectedUpdatedAt: expectedUpdatedAt,
         );
+        expectedUpdatedAt = updated.updatedAt;
       },
     );
 
