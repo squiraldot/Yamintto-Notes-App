@@ -1,22 +1,22 @@
 # YAMINTTO — PHASE 03 FINAL IMPLEMENTATION PROMPT
 ## Markdown Editor, Safe Hybrid Renderer, Viewer, and Reliable Autosave
 
-> **AUTHORIZATION GATE — NOT AUTHORIZED YET**
+> **PHASE 02 PREREQUISITE — ACCEPTED; PHASE 03 EXECUTION AUTHORIZATION IS THIS PROMPT**
 >
-> This is a prepared prompt only. Do not start Phase 03 now. Phase 02 was reopened on 2026-11-06 because note tags and folder colors required by the original Phase 02 scope are missing from the implemented baseline.
+> Phase 02 Note Tags + Folder Colors repair is accepted. The implementation source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` (85/85 tests); universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` succeeded for that exact SHA. The owner confirmed successful Android physical-device smoke testing. Integration-test source exists, but its execution is not independently evidenced and must not be claimed.
 >
-> Phase 03 may begin only after: (1) tags and folder colors are implemented; (2) a forward-only, data-preserving migration from the existing schema-v1 database is verified; (3) unit/widget and migration tests pass; (4) all three protected workflows pass on the exact repair SHA; (5) the owner repeats and confirms the Android physical-device smoke test; (6) documentation records Phase 02 acceptance; and (7) the owner separately gives explicit Phase 03 implementation authorization. If any condition is absent, stop without editing app code.
+> **This prompt is prepared for execution, not executed by the audit/documentation task.** When the owner submits this complete prompt to an execution-capable agent as a new implementation request, that submission is the separate explicit authorization required by `AGENTS.md` and the phase execution rules. Until then, make no Phase 03 source changes.
 
 ## 1. Role and repository
 
 Act as Principal Flutter Architect, Markdown/Parser Engineer, Application Security Reviewer, Offline Data Integrity Engineer, QA Lead, and GitHub Actions Verification Engineer.
 
-Repository: `squiraldot/Yamintto-Notes-App`; Flutter/Dart, Riverpod, GoRouter, Drift + SQLite. Existing note source is `notes.body`; existing format marker is `notes.content_format_version`. Work on `main` only after explicit Phase 03 authorization. The separate legacy YRNotes app/repository is read-only; never modify it.
+Repository: `squiraldot/Yamintto-Notes-App`; Flutter/Dart, Riverpod, GoRouter, Drift + SQLite. Phase 02 current DB schema is v2 (immutable v1 baseline + tags/note_tags/folder color). Existing note source is `notes.body`; existing format marker is `notes.content_format_version` (existing plain-text records use version 1). Start from the latest `main` HEAD at execution time; never reset or rewrite history. The separate legacy YRNotes app/repository is read-only; never modify it.
 
 ## 2. Mandatory start sequence
 
 1. Read `AGENTS.md`, `docs/README.md`, status, AI execution rules, roadmap, product requirements/catalog, architecture, database/migrations, security, design and testing docs.
-2. Verify every Phase 02 gate above and separate Phase 03 authorization. Otherwise STOP.
+2. Verify Phase 02 acceptance evidence above against current `main` and verify that the owner has submitted this prompt as an implementation request. If the prompt is merely being reviewed/edited or the owner has not invoked it for execution, STOP without source changes.
 3. Inspect branch/head/working tree, actual source, routes/providers/repositories, database schema/migrations, format-version handling, lockfile, Android/iOS projects, all three workflows and recent exact-SHA Actions results.
 4. Inspect old YRNotes renderer/source and real legacy fixtures read-only. Record the actual syntax found; do not rely on assumptions or modify YRNotes.
 5. Before implementation, write a concise plan naming files, package choices, tests, security decisions, migration risks and exclusions.
@@ -125,4 +125,4 @@ No search/pinning/Trash, history/attachments/statistics, encryption, biometrics,
 
 Report authorization/gate evidence; scope/files/architecture; dialect and inspected legacy fixtures; security policy and malicious-input results; autosave race/lifecycle/durability behavior; migration decision; exact commands/test counts; three exact-SHA workflow IDs/artifacts; owner physical-device evidence separately from CI; iOS verification status; commit SHA; docs links; unresolved risks.
 
-**STOP CONDITION:** If Phase 02 repair acceptance or separate Phase 03 authorization is absent, make no source changes and do not start Phase 03.
+**STOP CONDITION:** If Phase 02 acceptance evidence no longer matches current source, or this prompt has not been submitted by the owner as an explicit Phase 03 implementation request, make no source changes and do not start Phase 03.
