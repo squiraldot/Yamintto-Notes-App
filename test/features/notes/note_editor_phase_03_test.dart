@@ -71,7 +71,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Preview heading'), findsOneWidget);
-    expect(await notes.listNotes(), isEmpty);
+    final savedNote = (await notes.listNotes()).single;
+    expect(savedNote.body, source);
+    expect(
+      savedNote.contentFormatVersion,
+      NoteContentFormat.hybridMarkdown,
+    );
 
     await tester.tap(find.text('Editor'));
     await tester.pumpAndSettle();
@@ -82,6 +87,7 @@ void main() {
           .text,
       source,
     );
+    expect((await notes.getNote(savedNote.id)).body, source);
   });
 
   testWidgets('autosaves after 700 ms and persists Markdown format v2', (
