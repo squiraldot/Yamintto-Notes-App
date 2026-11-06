@@ -116,13 +116,13 @@ No device model, OS version, screenshots, logs, or exact test command were suppl
 
 ## Phase 03 implementation verification — PR #2
 
-Exact PR source SHA: `fc8912781b4ee38efd22be1dcea24f324674cd40`.
+Exact PR source SHA: `1cb2558e408a4253ca36abc8a77aeccd9c183e25`.
 
-Flutter CI run [#42200165499](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200165499) succeeded on Flutter 3.47.9:
+Flutter CI run [#42200798879](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200798879) succeeded on Flutter 3.47.9:
 - Locked dependency resolution: passed.
 - `dart format --output=none --set-exit-if-changed .`: passed.
 - `flutter analyze --fatal-infos`: passed.
-- `flutter test`: **113/113 passed**.
+- `flutter test`: **114/114 passed**.
 
 Phase 03 coverage includes:
 - Hybrid Markdown parser tests for modern block/inline syntax, task lists, tables, links, images, verified legacy details/summary and inline tags, raw HTML inertness, unsafe URLs, malformed details, source preservation, byte/node/depth/table limits.
