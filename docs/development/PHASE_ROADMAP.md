@@ -12,7 +12,7 @@ This is an ordered plan, not authorization. Phase 02 implementation is explicitl
 - Checklist: [x] scope [x] identity [x] tokens/themes/components [x] splash/root/unknown route [x] unit/widget tests [x] docs [x] repository-wide format [x] analyzer [x] Flutter tests (15) [x] integration smoke source retained [x] host-only Flutter CI [x] universal Debug APK artifact [x] ARM64 Debug APK artifact [x] owner-reported successful physical Android testing (detailed evidence not attached; not independently verified) [ ] iOS native build/device verification (Not Verified — Environment Unavailable; non-blocking).
 - Status: Phase 01 source implementation is present. Latest host-only Flutter CI and both APK artifact workflows succeeded on commit 76ba10c04f0ec421f54e5d6252dd6745058611f9 (run IDs 41981911424, 41982079883 and 41982079971). Android real-device testing is owner-reported successful, with detailed evidence not attached. Phase 01 acceptance is recorded as an owner-reported Android pass, not independent device-log verification. No Android device-test failure is currently outstanding. iOS verification is non-gating; continue iOS implementation with applicable phases.
 
-## Phase 02 — Core Management — IMPLEMENTATION COMPLETE; OWNER DEVICE ACCEPTANCE PENDING
+## Phase 02 — Core Management — ACCEPTED (2026-11-06)
 - Scope: implement approved Drift schema version 1/migrations; nested folder management; note CRUD with soft-delete foundation. No Trash UI, physical permanent deletion, search, pinning, revisions, attachments, encryption, biometrics, backup or import implementation.
 - Dependencies: Phase 01 accepted; owner-approved architecture freeze recorded in [decision register](../database/PHASE_02_DECISION_REGISTER.md) and [ADR-0013](../decisions/0013-phase-02-data-model-lifecycle.md).
 - Prerequisite: **satisfied** — owner explicitly authorized Phase 02 implementation on 2026-11-05. Starting baseline `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; continue from the newer `main` head without resetting history.
@@ -129,7 +129,7 @@ Owner-selected Markdown direction: **HYBRID** — modern Markdown baseline plus 
 
 ## Phase 02 reopened repair — current gate status (2026-11-06)
 
-**IMPLEMENTATION COMPLETE — OWNER DEVICE ACCEPTANCE PENDING. Do not start Phase 03.**
+**PHASE 02 — ACCEPTED (2026-11-06). Phase 03 remains not started and unauthorized.**
 
 The repair adds reusable note tags and persisted folder colors via schema v2 while preserving schema v1. Implementation source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` succeeded on Flutter 3.47.9 with format, analyzer and 85/85 tests passing.
 
@@ -140,6 +140,11 @@ Exact-SHA Debug APK evidence (source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`)
 Archive sizes are ZIP sizes, not extracted APK sizes. Both artifact records showed expiry 2026-11-20.
 
 
-The physical-device integration test source covers tags and folder colors across close/reopen, but has not been executed. Owner must repeat the Android physical-device smoke test for both repaired features. The prior device report covers the earlier folder/note baseline only.
+The physical-device integration test source covers tags and folder colors across close/reopen; its execution is not independently evidenced and is not claimed. The owner separately confirmed successful physical-device testing of the repaired features.
 
-The prior Phase 02 ACCEPTED checklist above is historical and superseded for progression. Phase 03 remains blocked until owner device acceptance, final documentation reconciliation and separate explicit Phase 03 authorization.
+The prior Phase 02 REOPENED/PENDING statements above are historical snapshots and are superseded by the final owner acceptance and documentation reconciliation. Phase 03 remains blocked until separate explicit owner authorization.
+
+
+## Phase 02 final acceptance — 2026-11-06
+
+**ACCEPTED.** Owner-reported physical-device testing of the Note Tags + Folder Colors repair passed. Repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; Flutter CI `42177776797` passed 85/85 tests; universal and ARM64 Debug APK runs `42177872597` and `42177872567` succeeded. The automated integration-test source's execution is not independently evidenced and is not claimed. **Phase 03 is NOT STARTED / NOT AUTHORIZED.**

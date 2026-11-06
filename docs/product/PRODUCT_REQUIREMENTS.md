@@ -69,8 +69,8 @@ The owner selected repair for missing Phase 02 note tags and folder colors. Phas
 
 | ID | Requirement | Priority | Primary phase | Acceptance | Status |
 |---|---|---:|---:|---|---|
-| FR-27 | Create/manage reusable tags and assign/remove multiple tags on notes | P1 | 02 | Persistent local tag definitions/assignments; deterministic normalization, duplicate, ordering and deletion behavior; no note-body mutation; migration preserves existing data | Missing — Phase 02 repair required |
-| FR-28 | Set and display folder colors | P2 | 02 | Optional validated persisted color per folder; nested folder display; theme fallback/contrast; no effect on identity, hierarchy or ordering | Missing — Phase 02 repair required |
+| FR-27 | Create/manage reusable tags and assign/remove multiple tags on notes | P1 | 02 | Persistent local tag definitions/assignments; deterministic normalization, duplicate, ordering and deletion behavior; no note-body mutation; migration preserves existing data | Implemented; Phase 02 accepted |
+| FR-28 | Set and display folder colors | P2 | 02 | Optional validated persisted color per folder; nested folder display; theme fallback/contrast; no effect on identity, hierarchy or ordering | Implemented; Phase 02 accepted |
 
 Tag semantics and color representation must be frozen from the original Phase 02 prompt and an explicit implementation design before coding. Preserve schema v1 and migrate forward without data loss.
 
@@ -90,4 +90,9 @@ Tag names shall be Unicode-trimmed, non-empty, NUL-free and limited to 64 Unicod
 ### FR-FOLDER-COLOR-01 — Persistent folder colors
 The application shall allow a user to select, change and reset a folder color during folder creation/editing and from folder actions. Colors shall persist for root and nested folders. A finite, validated opaque ARGB palette is stored as nullable SQLite INTEGER; NULL is the theme-aware default. Color shall not affect folder identity, hierarchy, name uniqueness, order or timestamps.
 
-**Implementation status:** implemented in schema v2 and feature UI. Automated evidence: Flutter CI run `42177776797`, source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`, 85/85 tests passed. Owner physical-device acceptance remains pending.
+**Implementation and acceptance status:** implemented in schema v2 and feature UI. Flutter CI run `42177776797`, source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`, passed 85/85 tests; both exact-SHA APK workflows succeeded. Owner confirmed successful physical-device testing. **Phase 02 — ACCEPTED.**
+
+
+## Final Phase 02 acceptance — 2026-11-06
+
+FR-27 (reusable note tags) and FR-28 (persistent folder colors) are **Implemented and Accepted**. The owner confirmed successful physical-device testing of the repaired application. Automated evidence: repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`, Flutter CI `42177776797` (85/85 tests), universal APK `42177872597`, ARM64 APK `42177872567`. The automated integration-test source's execution is not independently evidenced and is not claimed. Phase 03 remains gated by separate explicit owner authorization.

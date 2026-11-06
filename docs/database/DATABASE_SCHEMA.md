@@ -1,7 +1,7 @@
 # Phase 02 database schema — CURRENT SCHEMA VERSION 2 (v1 immutable)
 
 **Architecture status:** Accepted by owner on 2026-11-05.  
-**Implementation status:** Schema v1, Drift database wrapper, Unicode canonicalization, folder/note repositories and presentation screens are implemented. Source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed Flutter CI run `42097059083` (69/69 tests); universal and ARM64 Debug APK artifacts uploaded on runs `42097260846` and `42097260894`. Owner physical-device persistence smoke testing and final acceptance remain pending. Executable schema source: `lib/core/database/schema_v1.dart`; database/migration owner: `lib/core/database/yamintto_database.dart`. Drift + SQLite remains the accepted architecture.
+**Implementation status:** Schema v1 remains the immutable baseline; current schema v2 adds reusable `tags`, `note_tags` and nullable `folders.color_argb`. Executable sources: `lib/core/database/schema_v1.dart`, `schema_v2.dart` and `yamintto_database.dart`. Repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` (85/85 tests); both exact-SHA Debug APK workflows succeeded. Owner confirmed successful physical-device testing; **Phase 02 is ACCEPTED**. Drift + SQLite remains the accepted architecture.
 
 ## Schema version 1 inventory
 
@@ -149,7 +149,7 @@ Phase 02 implementation source is present for the two-table database, folder/not
 
 ## Owner-directed Phase 02 repair — note tags and folder colors (2026-11-06)
 
-The schema v1 definition in this document is the immutable baseline already implemented. It contains exactly `folders` and `notes`, and it does **not** contain note tags or persisted folder colors. The owner selected repair; Phase 02 is reopened until both capabilities are delivered.
+The schema v1 definition in this document is the immutable baseline already implemented. It contains exactly `folders` and `notes`, and it does **not** contain note tags or persisted folder colors. The owner selected repair; the capabilities have since been delivered in schema v2 and Phase 02 is accepted. This section records the historical repair authorization.
 
 Repair requirements:
 - Support multiple reusable tags per note, with persistent local tag definitions and note-tag assignments. Define normalization, duplicate handling, ordering, deletion semantics and behavior for soft-deleted notes by inspecting the original Phase 02 prompt; record any unresolved product choice before implementation.

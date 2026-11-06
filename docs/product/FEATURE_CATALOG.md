@@ -1,6 +1,6 @@
 # Feature catalog and phase ownership
 
-Each feature has exactly one primary implementation phase. Cross-phase obligations are explicit. Phase 01 foundation is present. Phase 02 database/repositories and the folder/notes presentation source are implemented and host-validated on source revision `745b8f589afceb783a9b39bafcd03c123e50c395` (Flutter CI run `42097059083`, 69/69 tests). owner-reported Android physical-device smoke testing passed; Phase 02 final acceptance is recorded.
+Each feature has exactly one primary implementation phase. Cross-phase obligations are explicit. Phase 01 foundation is present. Phase 02 database/repositories and the folder/notes presentation source are implemented and host-validated on source revision `745b8f589afceb783a9b39bafcd03c123e50c395` (Flutter CI run `42097059083`, 69/69 tests). owner-reported Android physical-device testing of the repaired tags/colors features passed; Phase 02 is ACCEPTED.
 
 ## Phase 01 — Foundation
 
@@ -99,14 +99,14 @@ Phase 03 is blocked until Phase 02 repair is accepted and separate Phase 03 auth
 ## Phase 02 repair features — implemented in source
 
 ### Note tags
-Status: **Implemented; automated tests passed; owner device acceptance pending.**
+Status: **Implemented; automated tests passed; owner-reported physical-device acceptance passed. Phase 02 ACCEPTED.**
 
 Reusable global tags, normalized names, duplicate rejection, rename/delete, multiple note assignments, assignment removal, tag chips in active note lists, tag management and note assignment screens are implemented. Assignments use a normalized `note_tags` junction. Rename preserves links; delete removes links transactionally. Soft-deleted notes retain assignments and reject assignment edits. Tag operations do not change note content or timestamps.
 
 ### Folder colors
-Status: **Implemented; automated tests passed; owner device acceptance pending.**
+Status: **Implemented; automated tests passed; owner-reported physical-device acceptance passed. Phase 02 ACCEPTED.**
 
 Ten validated opaque ARGB palette values, nullable default, creation/edit selection, folder action color selection, reset, theme fallback and nested folder display are implemented. Color changes preserve folder identity, hierarchy, sort order and timestamps.
 
 ### Current Phase 02 schema and evidence
-Schema v1 remains immutable; current schema is v2 with `tags`, `note_tags` and nullable `folders.color_argb`. Repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; Flutter CI run `42177776797`; 85/85 tests passed. The prior v1-only prohibition of `note_tags` and earlier missing/repair-required status are historical and superseded. Phase 03 remains unauthorized.
+Schema v1 remains immutable; current schema is v2 with `tags`, `note_tags` and nullable `folders.color_argb`. Repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; Flutter CI run `42177776797`; 85/85 tests passed; both exact-SHA APK workflows succeeded. Owner-reported physical-device testing passed and Phase 02 is ACCEPTED. Earlier missing/repair-required statuses are historical and superseded. Phase 03 remains unauthorized.

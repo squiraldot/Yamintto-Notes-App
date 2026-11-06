@@ -33,3 +33,8 @@ Run identical product scenarios on physical Android and iOS devices when those p
 
 ## Physical-device-only validation
 GitHub Actions must remain host-only and must not provision or run Android emulators or iOS simulators. The owner performs platform integration/E2E testing on real physical devices. For Android integration tests, connect the device, run flutter devices, then flutter test integration_test -d <physical-device-id>. AI agents must not create/use virtual devices or add KVM/emulator-runner steps. If a physical device is unavailable, report testing as pending.
+
+
+## Phase 02 repair device acceptance — 2026-11-06
+
+The owner confirmed successful physical-device testing of the Note Tags + Folder Colors repair. This is recorded as owner-reported PASS and closes the Android device-acceptance gate for Phase 02. Device model, OS version, screenshots, logs and exact command were not supplied and are not asserted. The automated integration-test source remains separately unverified. iOS native build/device verification remains Not Verified — Environment Unavailable.
