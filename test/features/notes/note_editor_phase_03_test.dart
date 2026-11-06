@@ -81,7 +81,7 @@ void main() {
       const MaterialApp(
         home: MediaQuery(
           data: MediaQueryData(textScaler: TextScaler.linear(1.4)),
-          child: const Scaffold(
+          child: Scaffold(
             body: SafeMarkdownViewer(source: '# Accessible heading'),
           ),
         ),
