@@ -84,12 +84,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
 
   void _initializeFromNote(Note note) {
     if (_initialized) return;
-    _activeFolderId = note.folderId as String?;
-    _savedNoteId = note.id as String;
-    _title.text = note.title as String;
-    _body.text = note.body as String;
+    _activeFolderId = note.folderId;
+    _savedNoteId = note.id;
+    _title.text = note.title;
+    _body.text = note.body;
     _initialBody = _body.text;
-    _contentFormatVersion = note.contentFormatVersion as int;
+    _contentFormatVersion = note.contentFormatVersion;
     _unsupportedFormat = !NoteContentFormat.isSupported(_contentFormatVersion);
     _initialized = true;
     _attachListeners();
