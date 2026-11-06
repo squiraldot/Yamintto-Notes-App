@@ -1,4 +1,3 @@
-// dart format off
 import 'package:drift/drift.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yamintto/core/database/yamintto_database.dart';
@@ -28,10 +27,7 @@ void main() {
   });
 
   test('opening and title-only edits preserve version-1 plain text', () async {
-    final note = await notes.createNote(
-      title: 'Plain',
-      body: 'literal *text*',
-    );
+    final note = await notes.createNote(title: 'Plain', body: 'literal *text*');
     expect(note.contentFormatVersion, NoteContentFormat.plainText);
 
     final updated = await notes.updateNote(
@@ -57,10 +53,7 @@ void main() {
   test(
     'rejects a stale editor revision without overwriting newer source',
     () async {
-      final note = await notes.createNote(
-        title: 'Shared',
-        body: 'original',
-      );
+      final note = await notes.createNote(title: 'Shared', body: 'original');
       final first = await notes.updateNote(
         id: note.id,
         title: 'First writer',

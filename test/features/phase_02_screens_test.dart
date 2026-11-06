@@ -1,4 +1,3 @@
-// dart format off
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -167,26 +166,22 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Meeting'), findsOneWidget);
     expect((await notes.listNotes()).single.body, '# Raw source text');
-    expect(
-      (await notes.listNotes()).single.contentFormatVersion,
-      2,
-    );
+    expect((await notes.listNotes()).single.contentFormatVersion, 2);
   });
 
-  testWidgets(
-    'flushes pending note changes before back navigation',
-    (tester) async {
-      await mount(tester);
-      await tester.tap(find.text('New note'));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField).first, 'Draft');
-      await tester.tap(find.byTooltip('Back'));
-      await tester.pumpAndSettle();
-      expect(find.text('Discard unsaved changes?'), findsNothing);
-      expect((await notes.listNotes()).single.title, 'Draft');
-      expect(find.text('Draft'), findsOneWidget);
-    },
-  );
+  testWidgets('flushes pending note changes before back navigation', (
+    tester,
+  ) async {
+    await mount(tester);
+    await tester.tap(find.text('New note'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'Draft');
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    expect(find.text('Discard unsaved changes?'), findsNothing);
+    expect((await notes.listNotes()).single.title, 'Draft');
+    expect(find.text('Draft'), findsOneWidget);
+  });
 
   testWidgets('excludes descendants from folder move destinations', (
     tester,
@@ -224,9 +219,7 @@ void main() {
     expect(saved.contentFormatVersion, 2);
   });
 
-  testWidgets('back navigation flushes existing note edits', (
-    tester,
-  ) async {
+  testWidgets('back navigation flushes existing note edits', (tester) async {
     final note = await notes.createNote(
       title: 'Original',
       body: 'Original body',

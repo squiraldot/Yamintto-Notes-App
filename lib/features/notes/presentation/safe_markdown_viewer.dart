@@ -1,4 +1,3 @@
-// dart format off
 import 'package:flutter/material.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:yamintto/features/notes/domain/hybrid_markdown_parser.dart';
@@ -25,9 +24,8 @@ class SafeMarkdownViewer extends StatelessWidget {
         children: [
           Text(
             'Preview unavailable: ${error.message}',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.error,
-            ),
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: Theme.of(context).colorScheme.error),
           ),
           const SizedBox(height: 8),
           SelectableText(source),
@@ -42,9 +40,7 @@ class SafeMarkdownViewer extends StatelessWidget {
     return SelectionArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: parsed.nodes
-            .map((node) => _block(context, node, 0))
-            .toList(),
+        children: parsed.nodes.map((node) => _block(context, node, 0)).toList(),
       ),
     );
   }
@@ -59,9 +55,7 @@ class SafeMarkdownViewer extends StatelessWidget {
     final children = node.children ?? const <md.Node>[];
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textStyle = theme.textTheme.bodyMedium?.copyWith(
-      fontSize: fontSize,
-    );
+    final textStyle = theme.textTheme.bodyMedium?.copyWith(fontSize: fontSize);
 
     switch (node.tag) {
       case 'p':
@@ -128,10 +122,7 @@ class SafeMarkdownViewer extends StatelessWidget {
           padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
           decoration: BoxDecoration(
             border: Border(
-              left: BorderSide(
-                color: colorScheme.primary,
-                width: 3,
-              ),
+              left: BorderSide(color: colorScheme.primary, width: 3),
             ),
           ),
           child: Column(
@@ -327,11 +318,7 @@ class SafeMarkdownViewer extends StatelessWidget {
     );
   }
 
-  InlineSpan _inline(
-    BuildContext context,
-    md.Node node,
-    TextStyle? inherited,
-  ) {
+  InlineSpan _inline(BuildContext context, md.Node node, TextStyle? inherited) {
     if (node is md.Text) {
       return TextSpan(text: node.text, style: inherited);
     }

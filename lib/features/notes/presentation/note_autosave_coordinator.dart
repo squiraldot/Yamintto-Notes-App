@@ -1,8 +1,6 @@
-// dart format off
 import 'dart:async';
 
-typedef NoteSaveCallback =
-    Future<void> Function(NoteSaveSnapshot snapshot);
+typedef NoteSaveCallback = Future<void> Function(NoteSaveSnapshot snapshot);
 typedef NoteTimerFactory = Timer Function(
   Duration duration,
   void Function() callback,
@@ -18,9 +16,7 @@ class NoteSaveSnapshot {
 
   @override
   bool operator ==(Object other) =>
-      other is NoteSaveSnapshot &&
-      other.title == title &&
-      other.body == body;
+      other is NoteSaveSnapshot && other.title == title && other.body == body;
 
   @override
   int get hashCode => Object.hash(title, body);

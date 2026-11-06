@@ -1,4 +1,3 @@
-// dart format off
 import 'package:drift/drift.dart';
 import 'package:yamintto/core/database/database_boundary.dart';
 import 'package:yamintto/core/database/yamintto_database.dart';
@@ -122,9 +121,7 @@ class NoteRepository {
             ? current.contentFormatVersion
             : NoteContentFormat.hybridMarkdown;
         final now = _now();
-        final updatedAt = now > current.updatedAt
-            ? now
-            : current.updatedAt + 1;
+        final updatedAt = now > current.updatedAt ? now : current.updatedAt + 1;
         await _database.customStatement(
           'UPDATE notes SET title = ?, body = ?, '
           'content_format_version = ?, updated_at = ? '

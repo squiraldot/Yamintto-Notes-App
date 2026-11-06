@@ -1,4 +1,3 @@
-// dart format off
 import 'package:flutter_test/flutter_test.dart';
 import 'package:markdown/markdown.dart' show Element, Node, Text;
 import 'package:yamintto/features/notes/domain/hybrid_markdown_parser.dart';
@@ -105,17 +104,13 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
         HybridMarkdownParser.isAllowedUrl('https://example.com/a'),
         isTrue,
       );
-      expect(
-        HybridMarkdownParser.isAllowedUrl('http://example.com'),
-        isTrue,
-      );
+      expect(HybridMarkdownParser.isAllowedUrl('http://example.com'), isTrue);
       expect(
         HybridMarkdownParser.isAllowedUrl('mailto:help@example.com'),
         isTrue,
       );
 
-      final longUrl =
-          'https://example.com/${List.filled(2100, 'x').join()}';
+      final longUrl = 'https://example.com/${List.filled(2100, 'x').join()}';
       for (final url in [
         'javascript:alert(1)',
         'data:text/html,<script>',
@@ -126,11 +121,7 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
         'https://user:pass@example.com',
         longUrl,
       ]) {
-        expect(
-          HybridMarkdownParser.isAllowedUrl(url),
-          isFalse,
-          reason: url,
-        );
+        expect(HybridMarkdownParser.isAllowedUrl(url), isFalse, reason: url);
       }
     });
 

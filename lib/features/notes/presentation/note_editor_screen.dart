@@ -1,4 +1,3 @@
-// dart format off
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -237,9 +236,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                   'This note uses a newer content format. '
                   'Its original source is preserved and editing is disabled '
                   'until this app supports that format.',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
             Expanded(
