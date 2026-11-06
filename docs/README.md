@@ -36,7 +36,7 @@ This is the project knowledge base. Source/config/tests determine current implem
 ## Current owner decisions (2026-11-06)
 
 - [Phase 02 Note Tags + Folder Colors repair is ACCEPTED, including owner-reported physical-device PASS](STATUS.md).
-- [Phase 03 final implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md) — prepared, gated, and not authorized for execution.
+- [Phase 03 final implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md) — ready-to-run. Submitting that prompt to an execution-capable agent is the separate explicit Phase 03 implementation authorization; this documentation update does not start implementation.
 - Existing three protected GitHub Actions workflows remain in force.
 
 
