@@ -5,7 +5,7 @@
 >
 > Phase 02 Note Tags + Folder Colors repair is accepted. The implementation source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` (85/85 tests); universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` succeeded for that exact SHA. The owner confirmed successful Android physical-device smoke testing. Integration-test source exists, but its execution is not independently evidenced and must not be claimed.
 >
-> **Execution authorization was granted:** the owner submitted this complete prompt as an implementation request on 2026-11-06. Implementation was carried out on branch `phase-03/markdown-autosave`, PR #2. Exact PR source SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25` passed Flutter CI run `42200798879` (formatting, analyzer, 114/114 tests). The PR is not merged; owner physical-device acceptance remains pending.
+> **Execution authorization was granted:** the owner submitted this complete prompt as an implementation request on 2026-11-06. Implementation was carried out on branch `phase-03/markdown-autosave`, PR #2. Exact PR source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run `42200798879` (formatting, analyzer, 114/114 tests). The PR is not merged; owner physical-device acceptance remains pending.
 
 ## 1. Role and repository
 
@@ -132,7 +132,8 @@ Report authorization/gate evidence; scope/files/architecture; dialect and inspec
 
 - Authorization: owner submitted this prompt and explicitly authorized Phase 03 implementation.
 - Branch/PR: `phase-03/markdown-autosave`, [PR #2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
-- Verified source SHA: `1cb2558e408a4253ca36abc8a77aeccd9c183e25`.
+- Verified source SHA: `cc8295293e85380cd964e26bfc890b0da063643c`.
 - Flutter CI run: [#42200798879](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200798879), success; formatting and analyzer passed; 114/114 unit/widget tests passed.
+- Added owner-run physical-device integration source at `integration_test/phase_03_editor_autosave_test.dart` for system-back flush, preview, lifecycle background/resume and database reopen; it has not been executed yet.
 - No schema migration or workflow change remains in the final PR tree. Exactly the three protected workflows remain.
 - Owner physical-device test, PR review/merge and final Phase 03 acceptance remain pending. iOS native build/device verification is not claimed.
