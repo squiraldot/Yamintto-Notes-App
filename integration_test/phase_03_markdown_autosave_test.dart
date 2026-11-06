@@ -47,18 +47,20 @@ void main() {
     );
     await autosave.flush();
     expect(autosave.isSaved, isTrue);
+    autosave.dispose();
     await database.close();
 
     final reopened = YaminttoDatabase.open(file);
-    final persisted = await NoteRepository(reopened).getNote(note.id);
+    final reopenedNotes = NoteRepository(reopened);
+    final persisted = await reopenedNotes.getNote(note.id);
     expect(persisted.title, 'Final title');
     expect(persisted.body, '# final revision\n\n- [ ] source preserved');
     expect(persisted.contentFormatVersion, NoteContentFormat.hybridMarkdown);
 
     final beforePreview = persisted.body;
     const HybridMarkdownParser().parse(beforePreview);
-    expect((await NoteRepository(reopened).getNote(note.id)).body, beforePreview);
-    autosave.dispose();
+    final afterPreview = await reopenedNotes.getNote(note.id);
+    expect(afterPreview.body, beforePreview);
     await reopened.close();
   });
 }

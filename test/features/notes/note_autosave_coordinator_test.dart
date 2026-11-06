@@ -24,33 +24,42 @@ void main() {
       timers.latest.fire();
       await coordinator.flush();
 
-      expect(saved, [const NoteSaveSnapshot(title: 'One', body: 'Body one')]);
-      expect(coordinator.isSaved, isTrue);
-    });
-
-    test('serializes rapid edits and persists the latest revision last', () async {
-      final firstWrite = Completer<void>();
-      final saved = <NoteSaveSnapshot>[];
-      final coordinator = NoteAutosaveCoordinator(
-        save: (snapshot) async {
-          saved.add(snapshot);
-          if (saved.length == 1) await firstWrite.future;
-        },
-        timerFactory: timers.create,
+      expect(
+        saved,
+        [const NoteSaveSnapshot(title: 'One', body: 'Body one')],
       );
-      addTearDown(coordinator.dispose);
-
-      coordinator.update(title: 'First title', body: 'First body');
-      final flush = coordinator.flush();
-      coordinator.update(title: 'Latest title', body: 'Latest body');
-      firstWrite.complete();
-      await flush;
-
-      expect(saved.map((item) => item.title), ['First title', 'Latest title']);
-      expect(saved.last.body, 'Latest body');
       expect(coordinator.isSaved, isTrue);
-      expect(coordinator.savedRevision, coordinator.editRevision);
     });
+
+    test(
+      'serializes rapid edits and persists the latest revision last',
+      () async {
+        final firstWrite = Completer<void>();
+        final saved = <NoteSaveSnapshot>[];
+        final coordinator = NoteAutosaveCoordinator(
+          save: (snapshot) async {
+            saved.add(snapshot);
+            if (saved.length == 1) await firstWrite.future;
+          },
+          timerFactory: timers.create,
+        );
+        addTearDown(coordinator.dispose);
+
+        coordinator.update(title: 'First title', body: 'First body');
+        final flush = coordinator.flush();
+        coordinator.update(title: 'Latest title', body: 'Latest body');
+        firstWrite.complete();
+        await flush;
+
+        expect(
+          saved.map((item) => item.title),
+          ['First title', 'Latest title'],
+        );
+        expect(saved.last.body, 'Latest body');
+        expect(coordinator.isSaved, isTrue);
+        expect(coordinator.savedRevision, coordinator.editRevision);
+      },
+    );
 
     test('keeps dirty state and exposes retry after a write failure', () async {
       var shouldFail = true;
@@ -63,7 +72,10 @@ void main() {
       addTearDown(coordinator.dispose);
 
       coordinator.update(title: 'Draft', body: 'Retained source');
-      await expectLater(coordinator.flush(), throwsA(isA<StateError>()));
+      await expectLater(
+        coordinator.flush(),
+        throwsA(isA<StateError>()),
+      );
       expect(coordinator.hasError, isTrue);
       expect(coordinator.isDirty, isTrue);
       expect(coordinator.isSaved, isFalse);
@@ -117,65 +129,31 @@ void main() {
       expect(coordinator.isDirty, isFalse);
     });
 
-    test('uses independent revision streams for separate note sessions', () async {
-      final firstSaved = <NoteSaveSnapshot>[];
-      final secondSaved = <NoteSaveSnapshot>[];
-      final first = NoteAutosaveCoordinator(
-        save: (snapshot) async => firstSaved.add(snapshot),
-        timerFactory: timers.create,
-      );
-      final second = NoteAutosaveCoordinator(
-        save: (snapshot) async => secondSaved.add(snapshot),
-        timerFactory: timers.create,
-      );
-      addTearDown(first.dispose);
-      addTearDown(second.dispose);
+    test(
+      'uses independent revision streams for separate note sessions',
+      () async {
+        final firstSaved = <NoteSaveSnapshot>[];
+        final secondSaved = <NoteSaveSnapshot>[];
+        final first = NoteAutosaveCoordinator(
+          save: (snapshot) async => firstSaved.add(snapshot),
+          timerFactory: timers.create,
+        );
+        final second = NoteAutosaveCoordinator(
+          save: (snapshot) async => secondSaved.add(snapshot),
+          timerFactory: timers.create,
+        );
+        addTearDown(first.dispose);
+        addTearDown(second.dispose);
 
-      first.update(title: 'Note one', body: 'one');
-      second.update(title: 'Note two', body: 'two');
-      await first.flush();
+        first.update(title: 'Note one', body: 'one');
+        second.update(title: 'Note two', body: 'two');
+        await first.flush();
 
-      expect(firstSaved.single.title, 'Note one');
-      expect(secondSaved, isEmpty);
-      await second.flush();
-      expect(secondSaved.single.title, 'Note two');
-    });
+        expect(firstSaved.single.title, 'Note one');
+        expect(secondSaved, isEmpty);
+        await second.flush();
+        expect(secondSaved.single.title, 'Note two');
+      },
+    );
   });
-}
-
-class _FakeTimerFactory {
-  final timers = <_FakeTimer>[];
-
-  _FakeTimer get latest => timers.last;
-
-  Timer create(Duration duration, void Function() callback) {
-    final timer = _FakeTimer(duration, callback);
-    timers.add(timer);
-    return timer;
-  }
-}
-
-class _FakeTimer implements Timer {
-  _FakeTimer(this.duration, this.callback);
-
-  final Duration duration;
-  final void Function() callback;
-  bool _active = true;
-  int _tick = 0;
-
-  @override
-  bool get isActive => _active;
-
-  @override
-  int get tick => _tick;
-
-  @override
-  void cancel() => _active = false;
-
-  void fire() {
-    if (!_active) return;
-    _active = false;
-    _tick++;
-    callback();
-  }
 }

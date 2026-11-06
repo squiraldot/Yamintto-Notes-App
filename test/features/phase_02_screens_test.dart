@@ -169,7 +169,9 @@ void main() {
     expect((await notes.listNotes()).single.contentFormatVersion, 2);
   });
 
-  testWidgets('flushes pending note changes before back navigation', (tester) async {
+  testWidgets(
+    'flushes pending note changes before back navigation',
+    (tester) async {
     await mount(tester);
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
@@ -217,7 +219,7 @@ void main() {
     expect(saved.contentFormatVersion, 2);
   });
 
-  testWidgets('cancelling existing note edits preserves stored content', (
+  testWidgets('back navigation flushes existing note edits', (
     tester,
   ) async {
     final note = await notes.createNote(

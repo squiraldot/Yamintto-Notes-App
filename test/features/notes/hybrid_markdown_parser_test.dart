@@ -16,11 +16,13 @@ void main() {
     return false;
   }
 
-  String textContent(List<Node> nodes) => nodes.map((node) {
-    if (node is Text) return node.text;
-    if (node is Element) return textContent(node.children ?? const []);
-    return node.textContent;
-  }).join();
+  String textContent(List<Node> nodes) {
+    return nodes.map((node) {
+      if (node is Text) return node.text;
+      if (node is Element) return textContent(node.children ?? const []);
+      return node.textContent;
+    }).join();
+  }
 
   group('HybridMarkdownParser', () {
     test('parses modern Markdown and GFM structures into an AST', () {
@@ -98,9 +100,21 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
     });
 
     test('validates URL schemes and rejects URL tricks', () {
-      expect(HybridMarkdownParser.isAllowedUrl('https://example.com/a'), isTrue);
-      expect(HybridMarkdownParser.isAllowedUrl('http://example.com'), isTrue);
-      expect(HybridMarkdownParser.isAllowedUrl('mailto:help@example.com'), isTrue);
+      expect(
+        HybridMarkdownParser.isAllowedUrl('https://example.com/a'),
+        isTrue,
+      );
+      expect(
+        HybridMarkdownParser.isAllowedUrl('http://example.com'),
+        isTrue,
+      );
+      expect(
+        HybridMarkdownParser.isAllowedUrl('mailto:help@example.com'),
+        isTrue,
+      );
+
+      final longUrl =
+          'https://example.com/${List.filled(2100, 'x').join()}';
       for (final url in [
         'javascript:alert(1)',
         'data:text/html,<script>',
@@ -109,9 +123,13 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
         'intent://open',
         'https://',
         'https://user:pass@example.com',
-        'https://example.com/${'x' * 2100}',
+        longUrl,
       ]) {
-        expect(HybridMarkdownParser.isAllowedUrl(url), isFalse, reason: url);
+        expect(
+          HybridMarkdownParser.isAllowedUrl(url),
+          isFalse,
+          reason: url,
+        );
       }
     });
 
@@ -125,9 +143,12 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
     test('rejects excessive nesting and table dimensions', () {
       final deeplyNested = List.generate(
         40,
-        (index) => '${' ' * (index * 4)}- nested',
+        (index) => '${List.filled(index * 4, ' ').join()}- nested',
       ).join('\n');
-      expect(() => parser.parse(deeplyNested), throwsA(isA<MarkdownParseException>()));
+      expect(
+        () => parser.parse(deeplyNested),
+        throwsA(isA<MarkdownParseException>()),
+      );
 
       final header = List.generate(21, (index) => 'c$index').join(' | ');
       final separator = List.generate(21, (_) => '---').join(' | ');

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -53,7 +55,7 @@ void main() {
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     if (path != null) {
-      router.push(path);
+      unawaited(router.push(path));
       await tester.pumpAndSettle();
     }
   }
@@ -63,7 +65,10 @@ void main() {
   ) async {
     await mount(tester, path: '/notes/new');
     const source = '# Preview heading\n\n**Bold source**';
-    await tester.enterText(find.byKey(const ValueKey('note-body-editor')), source);
+    await tester.enterText(
+      find.byKey(const ValueKey('note-body-editor')),
+      source,
+    );
     await tester.tap(find.text('Preview'));
     await tester.pumpAndSettle();
 
@@ -85,8 +90,14 @@ void main() {
   ) async {
     await mount(tester, path: '/notes/new');
     const source = '# Durable source\n\n- [ ] pending';
-    await tester.enterText(find.byKey(const ValueKey('note-title-editor')), 'Autosave');
-    await tester.enterText(find.byKey(const ValueKey('note-body-editor')), source);
+    await tester.enterText(
+      find.byKey(const ValueKey('note-title-editor')),
+      'Autosave',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('note-body-editor')),
+      source,
+    );
 
     await tester.pump(const Duration(milliseconds: 699));
     expect(await notes.listNotes(), isEmpty);
@@ -102,8 +113,14 @@ void main() {
 
   testWidgets('flushes pending edits before navigation', (tester) async {
     await mount(tester, path: '/notes/new');
-    await tester.enterText(find.byKey(const ValueKey('note-title-editor')), 'Before back');
-    await tester.enterText(find.byKey(const ValueKey('note-body-editor')), 'Immediate flush');
+    await tester.enterText(
+      find.byKey(const ValueKey('note-title-editor')),
+      'Before back',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('note-body-editor')),
+      'Immediate flush',
+    );
 
     await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();
@@ -114,9 +131,14 @@ void main() {
     expect(saved.body, 'Immediate flush');
   });
 
-  testWidgets('flushes pending edits on lifecycle backgrounding', (tester) async {
+  testWidgets(
+    'flushes pending edits on lifecycle backgrounding',
+    (tester) async {
     await mount(tester, path: '/notes/new');
-    await tester.enterText(find.byKey(const ValueKey('note-body-editor')), 'Lifecycle flush');
+    await tester.enterText(
+      find.byKey(const ValueKey('note-body-editor')),
+      'Lifecycle flush',
+    );
 
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
     await tester.pumpAndSettle();
@@ -127,7 +149,10 @@ void main() {
   testWidgets('unknown future formats remain visible and read-only', (
     tester,
   ) async {
-    final note = await notes.createNote(title: 'Future', body: 'preserve source');
+    final note = await notes.createNote(
+      title: 'Future',
+      body: 'preserve source',
+    );
     await database.customStatement(
       'UPDATE notes SET content_format_version = 99 WHERE id = ?',
       [note.id],
@@ -143,7 +168,10 @@ void main() {
   testWidgets('version-1 plain text preview does not reinterpret Markdown', (
     tester,
   ) async {
-    final note = await notes.createNote(title: 'Legacy', body: 'literal **text**');
+    final note = await notes.createNote(
+      title: 'Legacy',
+      body: 'literal **text**',
+    );
     await mount(tester, path: '/notes/${note.id}/edit');
     await tester.tap(find.text('Preview'));
     await tester.pumpAndSettle();

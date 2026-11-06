@@ -52,7 +52,16 @@ class NoteRepository {
           'INSERT INTO notes '
           '(id, folder_id, title, body, content_format_version, sort_order, '
           'created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-          <Object?>[id, folderId, title, body, contentFormatVersion, order, now, now],
+          <Object?>[
+            id,
+            folderId,
+            title,
+            body,
+            contentFormatVersion,
+            order,
+            now,
+            now,
+          ],
         );
         return _requireActiveNote(id);
       }),
@@ -115,7 +124,8 @@ class NoteRepository {
         final updatedAt =
             now > current.updatedAt ? now : current.updatedAt + 1;
         await _database.customStatement(
-          'UPDATE notes SET title = ?, body = ?, content_format_version = ?, updated_at = ? '
+          'UPDATE notes SET title = ?, body = ?, '
+          'content_format_version = ?, updated_at = ? '
           'WHERE id = ? AND deleted_at IS NULL',
           <Object?>[title, body, nextFormatVersion, updatedAt, id],
         );

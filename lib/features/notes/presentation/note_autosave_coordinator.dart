@@ -1,10 +1,9 @@
 import 'dart:async';
 
-typedef NoteSaveCallback = Future<void> Function(NoteSaveSnapshot snapshot);
-typedef NoteTimerFactory = Timer Function(
-  Duration duration,
-  void Function() callback,
-);
+typedef NoteSaveCallback =
+    Future<void> Function(NoteSaveSnapshot snapshot);
+typedef NoteTimerFactory =
+    Timer Function(Duration duration, void Function() callback);
 
 enum NoteAutosaveStatus { idle, dirty, saving, saved, error }
 
@@ -56,6 +55,7 @@ class NoteAutosaveCoordinator {
   bool get hasError => _hasError;
   bool get isDirty => _editRevision > _savedRevision;
   bool get isSaved => _editRevision > 0 && !isDirty && !_hasError;
+
   NoteAutosaveStatus get status {
     if (_hasError) return NoteAutosaveStatus.error;
     if (_saving) return NoteAutosaveStatus.saving;
@@ -116,8 +116,8 @@ class NoteAutosaveCoordinator {
       _savedRevision = revision;
       _saving = false;
       _notify();
-      // If a newer edit arrived while the write was in flight, loop and
-      // persist that newer complete title/body snapshot before reporting Saved.
+      // If a newer edit arrived during the write, persist that full snapshot
+      // before reporting Saved.
     }
   }
 
