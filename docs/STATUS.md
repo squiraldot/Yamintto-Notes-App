@@ -1,6 +1,6 @@
 # Documentation and implementation status
 
-Snapshot: 2026-11-06; branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
+Snapshot: 2026-11-06 (final owner acceptance); branch: `main`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
 
 ## Phase 01 — Foundation
 
@@ -210,3 +210,21 @@ Sizes are GitHub artifact ZIP archive sizes, not extracted APK sizes. Both artif
 - Phase 03 remains unauthorized and has not started.
 
 This section supersedes historical Phase 02 ACCEPTED / schema-v1-only / repair-required statements earlier in this file. Those statements remain historical records, not current status.
+
+
+## Phase 02 final owner acceptance — 2026-11-06
+
+**PHASE 02 — ACCEPTED.** The owner explicitly confirmed in the project conversation that physical-device testing of the repaired application was successful and that everything works as expected. This closes the remaining owner-device acceptance gate for the Note Tags + Folder Colors repair.
+
+- Repair source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`.
+- Final documentation baseline before this acceptance record: `19a40823507207187a850997c955131aef53b0e0`.
+- Automated Flutter CI on repair source: run `42177776797`, success; 85/85 tests passed.
+- Universal Debug APK: run `42177872597`, success.
+- ARM64 Debug APK: run `42177872567`, success.
+- Owner physical-device result: **PASS — owner-reported**. No device model, OS version, individual test log, screenshots, or exact test command are asserted because they were not supplied.
+- The integration-test source exists, but its execution is not independently evidenced; this does not override the owner's successful manual physical-device acceptance.
+- iOS native build/device verification remains **NOT VERIFIED — ENVIRONMENT UNAVAILABLE** and is not a blocker for this Android-focused Phase 02 acceptance.
+
+The earlier “OWNER DEVICE ACCEPTANCE PENDING” statements in the repair implementation history are historical snapshots and are superseded by this final owner acceptance. Exactly three protected workflows remain; no workflow changes are authorized or included in this closure.
+
+**PHASE 03 — NOT STARTED / NOT AUTHORIZED.** A separate explicit owner authorization is still required before any Phase 03 work.

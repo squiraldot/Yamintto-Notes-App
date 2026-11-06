@@ -136,4 +136,13 @@ Both protected APK workflows succeeded on repair source SHA `fa8f4ad469786a6a719
 Sizes are GitHub artifact ZIP archive sizes, not extracted APK sizes. Both artifacts were uploaded successfully and were unexpired when inspected; their recorded expiry is 2026-11-20.
 
 
-Owner device acceptance for tags/colors remains pending. Phase 02 is not marked ACCEPTED; Phase 03 remains unauthorized.
+Owner physical-device acceptance for tags/colors: **OWNER-REPORTED PASS**. Phase 02 is **ACCEPTED**; Phase 03 remains not started and unauthorized.
+
+
+## Final Phase 02 owner acceptance — 2026-11-06
+
+The owner explicitly confirmed successful physical-device testing of the repaired application and reported that everything works as expected. Therefore the remaining device-acceptance gate for the Note Tags + Folder Colors repair is closed.
+
+**Phase 02 — ACCEPTED.** Evidence remains scoped as follows: repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; Flutter CI run `42177776797` passed with 85/85 tests; universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` both succeeded; owner physical-device testing is **owner-reported PASS**. No device model, OS version, screenshots, test logs, or exact test command are asserted. The integration-test source's execution is not independently evidenced and is not claimed.
+
+This final owner confirmation supersedes the earlier “Owner device acceptance ... remains pending” statement above. **Phase 03 remains NOT STARTED and NOT AUTHORIZED**; separate explicit owner authorization is required.

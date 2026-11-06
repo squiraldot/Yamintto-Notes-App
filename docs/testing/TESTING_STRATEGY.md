@@ -102,4 +102,13 @@ Exact-SHA Debug APK evidence (source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`)
 Archive sizes are ZIP sizes, not extracted APK sizes. Both artifact records showed expiry 2026-11-20.
 
 
-The physical-device integration source `integration_test/phase_02_data_smoke_test.dart` covers tag assignment and folder-color persistence across close/reopen. **It has not been executed by CI or this agent.** Owner must run it and repaired UI smoke flows on a real Android device. No emulator/simulator/KVM/virtual device was used or added.
+The physical-device integration source `integration_test/phase_02_data_smoke_test.dart` covers tag assignment and folder-color persistence across close/reopen. **Its execution is not independently evidenced and is not claimed.** The owner separately confirmed successful physical-device testing of the repaired application; see the final owner acceptance record below. No emulator/simulator/KVM/virtual device was used or added.
+
+
+## Phase 02 final physical-device acceptance — 2026-11-06
+
+The owner explicitly confirmed successful physical-device testing of the repaired application and reported that everything works as expected. Record this as **OWNER-REPORTED PHYSICAL-DEVICE PASS** for the Phase 02 Note Tags + Folder Colors repair. This closes the owner-device acceptance gate alongside the exact-repair-SHA automated evidence (Flutter CI run `42177776797`, 85/85 tests; universal APK run `42177872597`; ARM64 APK run `42177872567`).
+
+No device model, OS version, screenshots, logs, or exact test command were supplied, so none are asserted. The source file `integration_test/phase_02_data_smoke_test.dart` remains distinct from the owner's manual device confirmation; its execution is not independently evidenced and is not claimed. iOS verification remains unavailable and separate from this Android-focused acceptance.
+
+**Phase 02 — ACCEPTED. Phase 03 — NOT STARTED / NOT AUTHORIZED.**
