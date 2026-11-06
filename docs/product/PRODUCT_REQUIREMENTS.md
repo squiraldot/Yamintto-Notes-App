@@ -61,3 +61,19 @@ Target behavior, not proof of implementation. Status snapshot: [docs/STATUS.md](
 
 ## Decisions deferred to their owning phases
 Markdown dialect and autosave lifecycle (03); folder restore conflict UX, search matching/ranking and pin order (04); revision retention, attachment limits/types and statistics/timezone (05); cryptographic protocol and recovery details (06/07); backup replace/merge and legacy ZIP compatibility (08); theme/font bounds and performance budgets (09). These are not Phase 02 implementation blockers. Security choices are tracked in [Security Overview](../security/SECURITY_OVERVIEW.md).
+
+
+## Owner-directed requirements reconciliation — 2026-11-06
+
+The owner selected repair for missing Phase 02 note tags and folder colors. Phase 02 is reopened; historical implementation/CI/device evidence does not cover these requirements.
+
+| ID | Requirement | Priority | Primary phase | Acceptance | Status |
+|---|---|---:|---:|---|---|
+| FR-27 | Create/manage reusable tags and assign/remove multiple tags on notes | P1 | 02 | Persistent local tag definitions/assignments; deterministic normalization, duplicate, ordering and deletion behavior; no note-body mutation; migration preserves existing data | Missing — Phase 02 repair required |
+| FR-28 | Set and display folder colors | P2 | 02 | Optional validated persisted color per folder; nested folder display; theme fallback/contrast; no effect on identity, hierarchy or ordering | Missing — Phase 02 repair required |
+
+Tag semantics and color representation must be frozen from the original Phase 02 prompt and an explicit implementation design before coding. Preserve schema v1 and migrate forward without data loss.
+
+## Phase 03 owner decision — hybrid Markdown
+
+FR-03/FR-04 must use a documented hybrid dialect: modern Markdown baseline plus verified legacy YRNotes constructs. Raw HTML is disabled by default except a safe allowlist; unsafe URLs/content are rejected or rendered inert. FR-05 autosave must serialize or revision-guard writes, never let stale saves overwrite newer edits, flush at explicit/lifecycle opportunities, and retain editable dirty text with retry on failure. Phase 03 remains blocked until Phase 02 repair acceptance and separate Phase 03 authorization.
