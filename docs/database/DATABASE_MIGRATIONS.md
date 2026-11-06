@@ -53,7 +53,7 @@ Field-level encryption does not encrypt metadata, SQLite pages, indexes, WAL/jou
 
 ## Phase boundaries
 
-Phase 02 implements schema version 1 and its supported migration/fresh-install path only. Phase 04 adds search/pin/trash; Phase 05 revisions/attachments; Phase 06 encryption metadata and plaintext migration; Phase 08 backup/import. No later-phase migration is implemented in this task.
+Phase 02 is currently schema version 2: immutable v1 baseline plus additive v1→v2 repair migration for tags and folder colors. Phase 03 editor/autosave ordinarily stores source in the existing `notes.body` column; any `content_format_version` semantic change must be explicitly versioned, reviewed and tested. Phase 04 adds search/pin/trash; Phase 05 revisions/attachments; Phase 06 encryption metadata and plaintext migration; Phase 08 backup/import. No later-phase migration is implemented.
 
 
 ## Schema v1 → v2 repair migration — implemented
