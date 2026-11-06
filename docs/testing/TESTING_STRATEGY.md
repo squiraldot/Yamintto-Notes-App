@@ -116,7 +116,7 @@ No device model, OS version, screenshots, logs, or exact test command were suppl
 
 ## Phase 03 implementation verification — PR #2
 
-Exact PR source SHA: `1cb2558e408a4253ca36abc8a77aeccd9c183e25`.
+Exact PR source SHA: `cc8295293e85380cd964e26bfc890b0da063643c`.
 
 Flutter CI run [#42200798879](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200798879) succeeded on Flutter 3.47.9:
 - Locked dependency resolution: passed.
@@ -130,5 +130,6 @@ Phase 03 coverage includes:
 - Autosave coordinator tests for 700 ms debounce, serialized latest-revision persistence, stale completion protection, failure/retry, atomic title/body snapshots and independent editor sessions.
 - Editor/viewer widget tests for inert links/images, text scaling and selection, editor/preview source preservation, autosave timing, toolbar/system-back navigation flush, lifecycle background flush, unknown-format read-only behavior, failure/retry and v1 literal preview.
 - Phase 02 screen tests were updated to assert that pending edits are flushed before navigation; the old discard-confirmation behavior is superseded by autosave-before-navigation.
+- Owner-run integration source `integration_test/phase_03_editor_autosave_test.dart` exercises the real app with a file-backed database, system-back flush, preview, lifecycle background/resume and a fresh Drift reopen. It is source only; physical-device execution is pending.
 
 This is host unit/widget evidence only. Phase 03 physical-device integration testing remains owner-run and pending. No process-kill durability guarantee is made for a debounce that has not completed a flush. The PR is not merged or owner-accepted.
