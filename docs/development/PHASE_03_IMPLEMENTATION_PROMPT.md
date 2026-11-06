@@ -5,7 +5,7 @@
 >
 > Phase 02 Note Tags + Folder Colors repair is accepted. The implementation source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` (85/85 tests); universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` succeeded for that exact SHA. The owner confirmed successful Android physical-device smoke testing. Integration-test source exists, but its execution is not independently evidenced and must not be claimed.
 >
-> **This prompt is prepared for execution, not executed by the audit/documentation task.** When the owner submits this complete prompt to an execution-capable agent as a new implementation request, that submission is the separate explicit authorization required by `AGENTS.md` and the phase execution rules. Until then, make no Phase 03 source changes.
+> **Execution authorization was granted:** the owner submitted this complete prompt as an implementation request on 2026-11-06. Implementation was carried out on branch `phase-03/markdown-autosave`, PR #2. Exact PR source SHA `fc8912781b4ee38efd22be1dcea24f324674cd40` passed Flutter CI run `42200165499` (formatting, analyzer, 113/113 tests). The PR is not merged; owner physical-device acceptance remains pending.
 
 ## 1. Role and repository
 
@@ -126,3 +126,13 @@ No search/pinning/Trash, history/attachments/statistics, encryption, biometrics,
 Report authorization/gate evidence; scope/files/architecture; dialect and inspected legacy fixtures; security policy and malicious-input results; autosave race/lifecycle/durability behavior; migration decision; exact commands/test counts; three exact-SHA workflow IDs/artifacts; owner physical-device evidence separately from CI; iOS verification status; commit SHA; docs links; unresolved risks.
 
 **STOP CONDITION:** If Phase 02 acceptance evidence no longer matches current source, or this prompt has not been submitted by the owner as an explicit Phase 03 implementation request, make no source changes and do not start Phase 03.
+
+
+## Execution record — 2026-11-06
+
+- Authorization: owner submitted this prompt and explicitly authorized Phase 03 implementation.
+- Branch/PR: `phase-03/markdown-autosave`, [PR #2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
+- Verified source SHA: `fc8912781b4ee38efd22be1dcea24f324674cd40`.
+- Flutter CI run: [#42200165499](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200165499), success; formatting and analyzer passed; 113/113 unit/widget tests passed.
+- No schema migration or workflow change remains in the final PR tree. Exactly the three protected workflows remain.
+- Owner physical-device test, PR review/merge and final Phase 03 acceptance remain pending. iOS native build/device verification is not claimed.
