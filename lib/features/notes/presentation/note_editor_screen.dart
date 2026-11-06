@@ -90,9 +90,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     _body.text = note.body as String;
     _initialBody = _body.text;
     _contentFormatVersion = note.contentFormatVersion as int;
-    _unsupportedFormat = !NoteContentFormat.isSupported(
-      _contentFormatVersion,
-    );
+    _unsupportedFormat = !NoteContentFormat.isSupported(_contentFormatVersion);
     _initialized = true;
     _attachListeners();
   }
@@ -102,9 +100,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     if (widget.noteId != null) {
       final existing = ref.watch(noteDetailProvider(widget.noteId!));
       return existing.when(
-        loading: () => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
+        loading: () =>
+            const Scaffold(body: Center(child: CircularProgressIndicator())),
         error: (error, _) => Scaffold(
           appBar: AppBar(title: const Text('Note unavailable')),
           body: Center(child: Text(_message(error))),
@@ -190,18 +187,24 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
             Row(
               children: [
                 TextButton(
-                  onPressed: _showPreview ? () => setState(() => _showPreview = false) : null,
+                  onPressed: _showPreview
+                      ? () => setState(() => _showPreview = false)
+                      : null,
                   child: const Text('Editor'),
                 ),
                 TextButton(
-                  onPressed: _unsupportedFormat || _showPreview ? null : _openPreview,
+                  onPressed: _unsupportedFormat || _showPreview
+                      ? null
+                      : _openPreview,
                   child: const Text('Preview'),
                 ),
                 const Spacer(),
                 if (_saveError)
                   Text(
                     'Save error',
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
               ],
             ),
@@ -234,13 +237,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     }
 
     if (_contentFormatVersion == NoteContentFormat.plainText && !_bodyEdited) {
-      return SingleChildScrollView(
-        child: SelectableText(_body.text),
-      );
+      return SingleChildScrollView(child: SelectableText(_body.text));
     }
-    return SingleChildScrollView(
-      child: SafeMarkdownViewer(source: _body.text),
-    );
+    return SingleChildScrollView(child: SafeMarkdownViewer(source: _body.text));
   }
 
   Future<void> _openPreview() async {
