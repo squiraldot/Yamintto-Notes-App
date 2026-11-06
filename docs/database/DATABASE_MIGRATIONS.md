@@ -1,7 +1,7 @@
 # Database migration policy — CURRENT SCHEMA V2 IMPLEMENTED
 
 **Architecture status:** Owner approved on 2026-11-05.  
-**Implementation status:** Schema version 1 and the Drift `GeneratedDatabase` wrapper are implemented in `lib/core/database/`; the immutable SQL definition is `schema_v1.dart`. Phase 02 repositories and UI are implemented. Source revision `745b8f589afceb783a9b39bafcd03c123e50c395` passed locked dependency, format, analyzer and 69/69 test validation. The owner reports successful Android physical-device smoke testing. The integration-test source is separate; its execution is not claimed. No destructive fallback or database reset path exists.
+**Implementation status:** Current Drift schema version is **2**. Schema v1 (`folders`, `notes`) is immutable; schema v2 adds `tags`, `note_tags` and nullable `folders.color_argb` through a forward-only transactional migration. Repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` (85/85 tests), and both exact-SHA Debug APK workflows succeeded (`42177872597`, `42177872567`). The owner reports successful Android physical-device testing of tags and folder colors. The integration-test source exists; its execution is not claimed. No destructive fallback or database reset path exists.
 
 ## Version baseline
 
