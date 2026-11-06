@@ -5,6 +5,7 @@ import 'package:yamintto/core/errors/domain_failure.dart';
 import 'package:yamintto/core/ids/uuid_v4.dart';
 import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 import 'package:yamintto/features/notes/domain/note.dart';
+import 'package:yamintto/features/notes/domain/note_content_format.dart';
 
 class NoteRepository {
   NoteRepository(
@@ -24,8 +25,10 @@ class NoteRepository {
     String? folderId,
     String title = '',
     String body = '',
+    int contentFormatVersion = NoteContentFormat.plainText,
   }) async {
     _validateTitle(title);
+    _validateContentFormat(contentFormatVersion);
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
         if (folderId != null) {
@@ -43,8 +46,17 @@ class NoteRepository {
         await _database.customStatement(
           'INSERT INTO notes '
           '(id, folder_id, title, body, content_format_version, sort_order, '
-          'created_at, updated_at) VALUES (?, ?, ?, ?, 1, ?, ?, ?)',
-          <Object?>[id, folderId, title, body, order, now, now],
+          'created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          <Object?>[
+            id,
+            folderId,
+            title,
+            body,
+            contentFormatVersion,
+            order,
+            now,
+            now,
+          ],
         );
         return _requireActiveNote(id);
       }),
@@ -85,11 +97,17 @@ class NoteRepository {
     _validateTitle(title);
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
-        await _requireActiveNote(id);
+        final existing = await _requireActiveNote(id);
+        _validateContentFormat(existing.contentFormatVersion);
+        final nextFormatVersion =
+            existing.contentFormatVersion == NoteContentFormat.plainText &&
+                body != existing.body
+            ? NoteContentFormat.hybridMarkdown
+            : existing.contentFormatVersion;
         await _database.customStatement(
-          'UPDATE notes SET title = ?, body = ?, updated_at = ? '
-          'WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[title, body, _now(), id],
+          'UPDATE notes SET title = ?, body = ?, content_format_version = ?, '
+          'updated_at = ? WHERE id = ? AND deleted_at IS NULL',
+          <Object?>[title, body, nextFormatVersion, _now(), id],
         );
         return _requireActiveNote(id);
       }),
@@ -130,11 +148,20 @@ class NoteRepository {
   }
 
   void _validateTitle(String title) {
-    if (title.contains('\u0000') ||
+    if (title.contains('\\u0000') ||
         UnicodeCanonicalizer.codePointLength(title) > 255) {
       throw const DomainFailure(
         DomainFailureCode.invalidTitle,
         'Note titles may contain at most 255 Unicode code points.',
+      );
+    }
+  }
+
+  void _validateContentFormat(int version) {
+    if (!NoteContentFormat.isSupported(version)) {
+      throw const DomainFailure(
+        DomainFailureCode.unsupportedContentFormat,
+        'This note uses an unsupported content format and cannot be changed.',
       );
     }
   }
