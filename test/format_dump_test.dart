@@ -17,7 +17,9 @@ void main() {
       'test/features/notes/note_editor_phase_03_test.dart',
       'test/features/phase_02_screens_test.dart',
     ];
-    final formatter = DartFormatter();
+    final formatter = DartFormatter(
+      languageVersion: DartFormatter.latestLanguageVersion,
+    );
     for (final path in paths) {
       try {
         final source = File(path).readAsStringSync();
