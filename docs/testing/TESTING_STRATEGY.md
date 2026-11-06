@@ -6,7 +6,7 @@
 - Database: exactly two domain tables, schema CHECK/index execution with registered deterministic functions, foreign-key enforcement and RESTRICT behavior, UUID v4, reopening/function registration and fail-closed newer-version behavior.
 - Folders: root/nested CRUD, Unicode sibling uniqueness, case/normalization equivalents, soft-deleted name reservation, rename/move, depth 32/33, subtree depth validation, cycle prevention and empty-only soft-delete.
 - Notes: create/read/list/update/move/root placement/soft-delete, active-list filtering, data/order retention, deleted-operation rejection and title boundaries.
-- Presentation source: root/nested folder listing and navigation; folder create/rename/move/empty-only delete; active root/folder note lists; plain-text note create/edit/save/cancel; unsaved-change guard; note move/soft-delete; loading/empty/error/retry states.
+- Presentation source: root/nested folder listing and navigation; folder create/rename/move/empty-only delete; active root/folder note lists; hybrid Markdown editor/preview; v1 plain-text compatibility; autosave status/retry; pending-edit flush before navigation and lifecycle backgrounding; note move/soft-delete; loading/empty/error/retry states.
 - Physical-device integration source: `integration_test/phase_02_data_smoke_test.dart`; it creates a real SQLite file, creates folder/note rows, closes/reopens the database, verifies persistence, soft-deletes a note, checks active-list exclusion and verifies retained folder/body/order fields. It is owner-run only and has not been executed by CI.
 
 ## Current evidence
@@ -112,3 +112,23 @@ The owner explicitly confirmed successful physical-device testing of the repaire
 No device model, OS version, screenshots, logs, or exact test command were supplied, so none are asserted. The source file `integration_test/phase_02_data_smoke_test.dart` remains distinct from the owner's manual device confirmation; its execution is not independently evidenced and is not claimed. iOS verification remains unavailable and separate from this Android-focused acceptance.
 
 **Phase 02 — ACCEPTED. Phase 03 — NOT STARTED / NOT AUTHORIZED.**
+
+
+## Phase 03 implementation verification — PR #2
+
+Exact PR source SHA: `fc8912781b4ee38efd22be1dcea24f324674cd40`.
+
+Flutter CI run [#42200165499](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42200165499) succeeded on Flutter 3.47.9:
+- Locked dependency resolution: passed.
+- `dart format --output=none --set-exit-if-changed .`: passed.
+- `flutter analyze --fatal-infos`: passed.
+- `flutter test`: **113/113 passed**.
+
+Phase 03 coverage includes:
+- Hybrid Markdown parser tests for modern block/inline syntax, task lists, tables, links, images, verified legacy details/summary and inline tags, raw HTML inertness, unsafe URLs, malformed details, source preservation, byte/node/depth/table limits.
+- Content format repository tests for v2 creation, v1 literal preservation on open/title-only edits, v1→v2 upgrade only on deliberate body edits, and rejection/preservation of unknown future versions.
+- Autosave coordinator tests for 700 ms debounce, serialized latest-revision persistence, stale completion protection, failure/retry, atomic title/body snapshots and independent editor sessions.
+- Editor/viewer widget tests for inert links/images, text scaling and selection, editor/preview source preservation, autosave timing, navigation flush, lifecycle background flush, unknown-format read-only behavior, failure/retry and v1 literal preview.
+- Phase 02 screen tests were updated to assert that pending edits are flushed before navigation; the old discard-confirmation behavior is superseded by autosave-before-navigation.
+
+This is host unit/widget evidence only. Phase 03 physical-device integration testing remains owner-run and pending. No process-kill durability guarantee is made for a debounce that has not completed a flush. The PR is not merged or owner-accepted.
