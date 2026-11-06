@@ -33,13 +33,17 @@ class SafeMarkdownViewer extends StatelessWidget {
         ],
       );
     } catch (_) {
-      return const Text('Preview unavailable. The original source is preserved.');
+      return const Text(
+        'Preview unavailable. The original source is preserved.',
+      );
     }
 
     return SelectionArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: parsed.nodes.map((node) => _block(context, node, 0)).toList(),
+        children: parsed.nodes
+            .map((node) => _block(context, node, 0))
+            .toList(),
       ),
     );
   }
@@ -48,21 +52,26 @@ class SafeMarkdownViewer extends StatelessWidget {
     if (depth > HybridMarkdownParser.maxNestingDepth) {
       return SelectableText(node.textContent);
     }
-    if (node is md.Text) {
-      return SelectableText(node.text);
-    }
+    if (node is md.Text) return SelectableText(node.text);
     if (node is! md.Element) return const SizedBox.shrink();
+
     final children = node.children ?? const <md.Node>[];
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textStyle = theme.textTheme.bodyMedium?.copyWith(fontSize: fontSize);
+    final textStyle = theme.textTheme.bodyMedium?.copyWith(
+      fontSize: fontSize,
+    );
 
     switch (node.tag) {
       case 'p':
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Text.rich(
-            TextSpan(children: children.map((child) => _inline(context, child, textStyle)).toList()),
+            TextSpan(
+              children: children
+                  .map((child) => _inline(context, child, textStyle))
+                  .toList(),
+            ),
             style: textStyle,
           ),
         );
@@ -84,8 +93,14 @@ class SafeMarkdownViewer extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.only(top: 12, bottom: 8),
           child: Text.rich(
-            TextSpan(children: children.map((child) => _inline(context, child, textStyle)).toList()),
-            style: styles[level - 1]?.copyWith(fontSize: fontSize + (7 - level) * 1.5),
+            TextSpan(
+              children: children
+                  .map((child) => _inline(context, child, textStyle))
+                  .toList(),
+            ),
+            style: styles[level - 1]?.copyWith(
+              fontSize: fontSize + (7 - level) * 1.5,
+            ),
           ),
         );
       case 'pre':
@@ -111,11 +126,16 @@ class SafeMarkdownViewer extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 8),
           padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
           decoration: BoxDecoration(
-            border: Border(left: BorderSide(color: colorScheme.primary, width: 3)),
+            border: BorderSide(
+              color: colorScheme.primary,
+              width: 3,
+            ).toBorder(),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children.map((child) => _block(context, child, depth + 1)).toList(),
+            children: children
+                .map((child) => _block(context, child, depth + 1))
+                .toList(),
           ),
         );
       case 'ul':
@@ -124,12 +144,14 @@ class SafeMarkdownViewer extends StatelessWidget {
       case 'li':
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: children.map((child) => _block(context, child, depth + 1)).toList(),
+          children: children
+              .map((child) => _block(context, child, depth + 1))
+              .toList(),
         );
       case 'hr':
         return const Divider(height: 20);
       case 'table':
-        return _table(context, node, depth);
+        return _table(context, node);
       case 'details':
         final summary = _firstElement(children, 'summary');
         final body = _firstElement(children, 'div');
@@ -140,17 +162,21 @@ class SafeMarkdownViewer extends StatelessWidget {
             children: body == null
                 ? const []
                 : (body.children ?? const <md.Node>[])
-                    .map((child) => Padding(
+                      .map(
+                        (child) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: _block(context, child, depth + 1),
-                        ))
-                    .toList(),
+                        ),
+                      )
+                      .toList(),
           ),
         );
       case 'div':
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: children.map((child) => _block(context, child, depth + 1)).toList(),
+          children: children
+              .map((child) => _block(context, child, depth + 1))
+              .toList(),
         );
       default:
         // Unknown elements never become widgets with user-controlled behavior.
@@ -160,25 +186,44 @@ class SafeMarkdownViewer extends StatelessWidget {
 
   Widget _list(BuildContext context, md.Element list, int depth) {
     final ordered = list.tag == 'ol';
-    final items = (list.children ?? const <md.Node>[]).whereType<md.Element>().where((e) => e.tag == 'li').toList();
+    final items = (list.children ?? const <md.Node>[])
+        .whereType<md.Element>()
+        .where((element) => element.tag == 'li')
+        .toList();
     final start = int.tryParse(list.attributes['start'] ?? '1') ?? 1;
+
     return Padding(
       padding: const EdgeInsets.only(left: 8, bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var index = 0; index < items.length; index++)
-            _listItem(context, items[index], ordered ? '${start + index}.' : '•', depth),
+            _listItem(
+              context,
+              items[index],
+              ordered ? '${start + index}.' : '•',
+              depth,
+            ),
         ],
       ),
     );
   }
 
-  Widget _listItem(BuildContext context, md.Element item, String marker, int depth) {
+  Widget _listItem(
+    BuildContext context,
+    md.Element item,
+    String marker,
+    int depth,
+  ) {
     final children = item.children ?? const <md.Node>[];
     final checkbox = _firstElement(children, 'input');
-    final content = children.where((child) => !(child is md.Element && child.tag == 'input')).toList();
+    final content = children
+        .where(
+          (child) => !(child is md.Element && child.tag == 'input'),
+        )
+        .toList();
     final checked = checkbox?.attributes.containsKey('checked') ?? false;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -191,7 +236,9 @@ class SafeMarkdownViewer extends StatelessWidget {
                 value: checked,
                 onChanged: null,
                 visualDensity: VisualDensity.compact,
-                semanticLabel: checked ? 'Completed task' : 'Incomplete task',
+                semanticLabel: checked
+                    ? 'Completed task'
+                    : 'Incomplete task',
               ),
             )
           else
@@ -202,7 +249,9 @@ class SafeMarkdownViewer extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: content.map((child) => _block(context, child, depth + 1)).toList(),
+              children: content
+                  .map((child) => _block(context, child, depth + 1))
+                  .toList(),
             ),
           ),
         ],
@@ -210,7 +259,7 @@ class SafeMarkdownViewer extends StatelessWidget {
     );
   }
 
-  Widget _table(BuildContext context, md.Element table, int depth) {
+  Widget _table(BuildContext context, md.Element table) {
     final rows = <md.Element>[];
     void collect(md.Element element) {
       for (final child in element.children ?? const <md.Node>[]) {
@@ -221,16 +270,22 @@ class SafeMarkdownViewer extends StatelessWidget {
         }
       }
     }
+
     collect(table);
     if (rows.length > HybridMarkdownParser.maxTableRows) {
       return SelectableText(table.textContent);
     }
+
     final firstCells = rows.isEmpty
         ? const <md.Element>[]
-        : (rows.first.children ?? const <md.Node>[]).whereType<md.Element>().where((e) => e.tag == 'th' || e.tag == 'td').toList();
+        : (rows.first.children ?? const <md.Node>[])
+              .whereType<md.Element>()
+              .where((element) => element.tag == 'th' || element.tag == 'td')
+              .toList();
     if (firstCells.length > HybridMarkdownParser.maxTableColumns) {
       return SelectableText(table.textContent);
     }
+
     final theme = Theme.of(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -238,15 +293,30 @@ class SafeMarkdownViewer extends StatelessWidget {
         defaultColumnWidth: const IntrinsicColumnWidth(),
         border: TableBorder.all(color: theme.dividerColor),
         children: rows.map((row) {
-          final cells = (row.children ?? const <md.Node>[]).whereType<md.Element>().where((e) => e.tag == 'th' || e.tag == 'td').toList();
+          final cells = (row.children ?? const <md.Node>[])
+              .whereType<md.Element>()
+              .where((element) => element.tag == 'th' || element.tag == 'td')
+              .toList();
           return TableRow(
             children: [
               for (final cell in cells)
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text.rich(
-                    TextSpan(children: (cell.children ?? const <md.Node>[]).map((child) => _inline(context, child, theme.textTheme.bodySmall)).toList()),
-                    style: cell.tag == 'th' ? theme.textTheme.labelLarge : theme.textTheme.bodySmall,
+                    TextSpan(
+                      children: (cell.children ?? const <md.Node>[])
+                          .map(
+                            (child) => _inline(
+                              context,
+                              child,
+                              theme.textTheme.bodySmall,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    style: cell.tag == 'th'
+                        ? theme.textTheme.labelLarge
+                        : theme.textTheme.bodySmall,
                   ),
                 ),
             ],
@@ -256,27 +326,49 @@ class SafeMarkdownViewer extends StatelessWidget {
     );
   }
 
-  InlineSpan _inline(BuildContext context, md.Node node, TextStyle? inherited) {
-    if (node is md.Text) return TextSpan(text: node.text, style: inherited);
+  InlineSpan _inline(
+    BuildContext context,
+    md.Node node,
+    TextStyle? inherited,
+  ) {
+    if (node is md.Text) {
+      return TextSpan(text: node.text, style: inherited);
+    }
     if (node is! md.Element) return const TextSpan();
+
     final children = (node.children ?? const <md.Node>[])
         .map((child) => _inline(context, child, inherited))
         .toList();
     final theme = Theme.of(context);
     final base = inherited ?? theme.textTheme.bodyMedium;
+
     switch (node.tag) {
       case 'strong':
       case 'b':
-        return TextSpan(children: children, style: base?.copyWith(fontWeight: FontWeight.bold));
+        return TextSpan(
+          children: children,
+          style: base?.copyWith(fontWeight: FontWeight.bold),
+        );
       case 'em':
       case 'i':
-        return TextSpan(children: children, style: base?.copyWith(fontStyle: FontStyle.italic));
+        return TextSpan(
+          children: children,
+          style: base?.copyWith(fontStyle: FontStyle.italic),
+        );
       case 'del':
       case 's':
       case 'strike':
-        return TextSpan(children: children, style: base?.copyWith(decoration: TextDecoration.lineThrough));
+        return TextSpan(
+          children: children,
+          style: base?.copyWith(
+            decoration: TextDecoration.lineThrough,
+          ),
+        );
       case 'ins':
-        return TextSpan(children: children, style: base?.copyWith(decoration: TextDecoration.underline));
+        return TextSpan(
+          children: children,
+          style: base?.copyWith(decoration: TextDecoration.underline),
+        );
       case 'code':
         return TextSpan(
           children: children,
@@ -288,13 +380,19 @@ class SafeMarkdownViewer extends StatelessWidget {
       case 'kbd':
         return TextSpan(
           text: '[${node.textContent}]',
-          style: base?.copyWith(fontFamily: 'monospace', fontWeight: FontWeight.w600),
+          style: base?.copyWith(
+            fontFamily: 'monospace',
+            fontWeight: FontWeight.w600,
+          ),
         );
       case 'br':
         return const TextSpan(text: '\n');
       case 'span':
         if (node.attributes['data-semantic-color'] == 'danger') {
-          return TextSpan(children: children, style: base?.copyWith(color: theme.colorScheme.error));
+          return TextSpan(
+            children: children,
+            style: base?.copyWith(color: theme.colorScheme.error),
+          );
         }
         return TextSpan(children: children);
       case 'a':
@@ -319,7 +417,6 @@ class SafeMarkdownViewer extends StatelessWidget {
     }
   }
 }
-
 
 md.Element? _firstElement(Iterable<md.Node> nodes, String tag) {
   for (final node in nodes) {

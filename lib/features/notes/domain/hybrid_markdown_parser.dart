@@ -41,6 +41,7 @@ class HybridMarkdownParser {
     if (source.contains(RegExp(r'[\u0000-\u0020\u007f]'))) return false;
     final uri = Uri.tryParse(source);
     if (uri == null || !uri.hasScheme || uri.userInfo.isNotEmpty) return false;
+
     switch (uri.scheme.toLowerCase()) {
       case 'http':
       case 'https':
@@ -54,10 +55,14 @@ class HybridMarkdownParser {
 
   void _validateSource(String source) {
     if (utf8.encode(source).length > maxSourceBytes) {
-      throw const MarkdownParseException('The document exceeds the preview size limit.');
+      throw const MarkdownParseException(
+        'The document exceeds the preview size limit.',
+      );
     }
     if (source.split('\n').length > maxAstNodes) {
-      throw const MarkdownParseException('The document contains too many lines to preview safely.');
+      throw const MarkdownParseException(
+        'The document contains too many lines to preview safely.',
+      );
     }
 
     var detailsDepth = 0;
@@ -65,20 +70,25 @@ class HybridMarkdownParser {
     for (final line in source.split('\n')) {
       final indent = line.length - line.trimLeft().length;
       if (indent > maxNestingDepth * 4) {
-        throw const MarkdownParseException('The document nesting is too deep to preview safely.');
+        throw const MarkdownParseException(
+          'The document nesting is too deep to preview safely.',
+        );
       }
+
       final trimmed = line.trim().toLowerCase();
       if (trimmed == '<details>') {
         detailsDepth++;
         if (detailsDepth > maximumDetailsDepth) {
           maximumDetailsDepth = detailsDepth;
         }
-      } else if (trimmed == '</details>') {
-        if (detailsDepth > 0) detailsDepth--;
+      } else if (trimmed == '</details>' && detailsDepth > 0) {
+        detailsDepth--;
       }
     }
     if (maximumDetailsDepth > maxDetailsDepth) {
-      throw const MarkdownParseException('The document has too many nested details blocks.');
+      throw const MarkdownParseException(
+        'The document has too many nested details blocks.',
+      );
     }
   }
 
@@ -87,20 +97,27 @@ class HybridMarkdownParser {
       for (final node in roots) (node: node, depth: 1),
     ];
     var count = 0;
+
     while (stack.isNotEmpty) {
       final entry = stack.removeLast();
       count++;
       if (count > maxAstNodes || entry.depth > maxNestingDepth) {
-        throw const MarkdownParseException('The parsed document exceeds safe structural limits.');
+        throw const MarkdownParseException(
+          'The parsed document exceeds safe structural limits.',
+        );
       }
+
       final node = entry.node;
       if (node is! md.Element) continue;
       if (node.tag == 'table') {
         final rows = <md.Element>[];
         _collectRows(node, rows);
         if (rows.length > maxTableRows) {
-          throw const MarkdownParseException('The table has too many rows to preview safely.');
+          throw const MarkdownParseException(
+            'The table has too many rows to preview safely.',
+          );
         }
+
         final columns = rows.isEmpty
             ? 0
             : (rows.first.children ?? const <md.Node>[])
@@ -108,9 +125,12 @@ class HybridMarkdownParser {
                   .where((cell) => cell.tag == 'th' || cell.tag == 'td')
                   .length;
         if (columns > maxTableColumns) {
-          throw const MarkdownParseException('The table has too many columns to preview safely.');
+          throw const MarkdownParseException(
+            'The table has too many columns to preview safely.',
+          );
         }
       }
+
       for (final child in node.children ?? const <md.Node>[]) {
         stack.add((node: child, depth: entry.depth + 1));
       }
@@ -161,6 +181,7 @@ class _LegacyInlineSyntax extends md.InlineSyntax {
       parser.addNode(md.Element.empty('br'));
       return true;
     }
+
     final close = lower.startsWith('<kbd>')
         ? '</kbd>'
         : lower.startsWith('<ins>')
@@ -173,6 +194,7 @@ class _LegacyInlineSyntax extends md.InlineSyntax {
     final end = lower.lastIndexOf(close);
     final inner = start >= 1 && end >= start ? value.substring(start, end) : '';
     final children = parser.document.parseInline(inner);
+
     if (tag == 'span') {
       parser.addNode(
         md.Element('span', children, const {'data-semantic-color': 'danger'}),
@@ -194,6 +216,7 @@ class _LegacyDetailsSyntax extends md.BlockSyntax {
     parser.advance();
     var depth = 1;
     var closed = false;
+
     while (!parser.isDone) {
       final line = parser.current.content;
       final normalized = line.trim().toLowerCase();
@@ -210,8 +233,11 @@ class _LegacyDetailsSyntax extends md.BlockSyntax {
       rawLines.add(line);
       parser.advance();
     }
+
     if (!closed || rawLines.isEmpty) {
-      return md.Text('<details>\n${rawLines.join('\n')}${closed ? '\n</details>' : ''}');
+      return md.Text(
+        '<details>\n${rawLines.join('\n')}${closed ? '\n</details>' : ''}',
+      );
     }
 
     final summaryPattern = RegExp(
@@ -222,6 +248,7 @@ class _LegacyDetailsSyntax extends md.BlockSyntax {
     if (summaryMatch == null) {
       return md.Text('<details>\n${rawLines.join('\n')}\n</details>');
     }
+
     final summary = parser.document.parseInline(summaryMatch[1] ?? '');
     final body = parser.document.parseLines(rawLines.skip(1).toList());
     return md.Element('details', <md.Node>[
