@@ -30,18 +30,18 @@ class NoteSaveSnapshot {
 /// acknowledging a newer in-memory revision.
 class NoteAutosaveCoordinator {
   NoteAutosaveCoordinator({
-    required NoteSaveCallback save,
+    required this.save,
     this.debounce = const Duration(milliseconds: 700),
     NoteTimerFactory? timerFactory,
-    void Function()? onStateChanged,
+    this.onStateChanged,
   }) : _save = save,
        _timerFactory = timerFactory ?? Timer.new,
        _onStateChanged = onStateChanged;
 
-  final NoteSaveCallback _save;
+  final NoteSaveCallback save;
   final Duration debounce;
   final NoteTimerFactory _timerFactory;
-  final void Function()? _onStateChanged;
+  final void Function()? onStateChanged;
 
   Timer? _timer;
   Future<void>? _flushFuture;
@@ -109,7 +109,7 @@ class NoteAutosaveCoordinator {
       _hasError = false;
       _notify();
       try {
-        await _save(snapshot);
+        await save(snapshot);
       } catch (_) {
         _saving = false;
         _hasError = true;
@@ -125,7 +125,7 @@ class NoteAutosaveCoordinator {
   }
 
   void _notify() {
-    if (!_disposed) _onStateChanged?.call();
+    if (!_disposed) onStateChanged?.call();
   }
 
   void dispose() {

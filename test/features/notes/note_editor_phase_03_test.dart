@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:yamintto/core/database/yamintto_database.dart';
 import 'package:yamintto/features/notes/data/note_providers.dart';
 import 'package:yamintto/features/notes/data/note_repository.dart';
-import 'package:yamintto/features/notes/data/note_repository.dart';
 import 'package:yamintto/features/notes/domain/note.dart';
 import 'package:yamintto/features/notes/domain/note_content_format.dart';
 import 'package:yamintto/features/notes/presentation/note_editor_screen.dart';
@@ -228,6 +227,7 @@ void main() {
 
 
 class _FailingNoteRepository extends NoteRepository {
+  // ignore: use_super_parameters
   _FailingNoteRepository(YaminttoDatabase database) : super(database);
 
   bool failWrites = true;
@@ -235,7 +235,7 @@ class _FailingNoteRepository extends NoteRepository {
   @override
   Future<Note> createNote({
     String? folderId,
-    required String title,
+    String title = '',
     String body = '',
     int contentFormatVersion = NoteContentFormat.plainText,
   }) {

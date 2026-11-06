@@ -24,11 +24,11 @@ void main() {
       try {
         final source = File(path).readAsStringSync();
         final formatted = formatter.format(source, uri: Uri.file(path));
-        print('DART_FORMAT_BEGIN:$path');
-        print(base64Encode(utf8.encode(formatted)));
-        print('DART_FORMAT_END:$path');
+        stdout.writeln('DART_FORMAT_BEGIN:$path');
+        stdout.writeln(base64Encode(utf8.encode(formatted)));
+        stdout.writeln('DART_FORMAT_END:$path');
       } catch (error) {
-        print('DART_FORMAT_ERROR:$path:$error');
+        stdout.writeln('DART_FORMAT_ERROR:$path:$error');
       }
     }
   });

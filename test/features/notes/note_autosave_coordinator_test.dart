@@ -170,3 +170,41 @@ void main() {
     );
   });
 }
+
+
+class _FakeTimerFactory {
+  final timers = <_FakeTimer>[];
+
+  _FakeTimer get latest => timers.last;
+
+  Timer create(Duration duration, void Function() callback) {
+    final timer = _FakeTimer(duration, callback);
+    timers.add(timer);
+    return timer;
+  }
+}
+
+class _FakeTimer implements Timer {
+  _FakeTimer(this.duration, this.callback);
+
+  final Duration duration;
+  final void Function() callback;
+  bool _active = true;
+  int _tick = 0;
+
+  @override
+  bool get isActive => _active;
+
+  @override
+  int get tick => _tick;
+
+  @override
+  void cancel() => _active = false;
+
+  void fire() {
+    if (!_active) return;
+    _active = false;
+    _tick++;
+    callback();
+  }
+}
