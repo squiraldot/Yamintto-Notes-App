@@ -98,4 +98,4 @@ The editor remains inside the existing notes feature boundaries. `NoteEditorScre
 - Failures preserve editor source and expose an error/retry state. Saved is shown only when the latest revision has been persisted.
 
 ### Current verification
-PR #2 source SHA `1cb2558e408a4253ca36abc8a77aeccd9c183e25` passed Flutter CI run `42200798879`: formatting, analyzer and 114/114 unit/widget tests. Phase 03 owner physical-device acceptance remains pending.
+PR #2 source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run `42200798879`: formatting, analyzer and 114/114 unit/widget tests. Phase 03 owner physical-device acceptance remains pending. Owner-run integration source is `integration_test/phase_03_editor_autosave_test.dart`; it has not yet been executed.
