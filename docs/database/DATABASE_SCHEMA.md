@@ -145,3 +145,17 @@ Use one app-private SQLite database for Android/iOS, opened lazily on first repo
 ## Explicitly out of scope
 
 Phase 02 implementation source is present for the two-table database, folder/note repositories, Unicode 17.0 canonicalizer, folder browser, note list and plain-text title/body editor. No Markdown preview/rendering/autosave, Trash UI, search, pinning, revisions, attachments, encryption, biometrics, backup, restore or legacy import is included. Host automated validation passed on Flutter 3.47.9 with 69/69 tests. Owner-reported Android physical-device smoke testing passed; Phase 02 is accepted. The integration-test source is present, but execution is not claimed.
+
+
+## Owner-directed Phase 02 repair — note tags and folder colors (2026-11-06)
+
+The schema v1 definition in this document is the immutable baseline already implemented. It contains exactly `folders` and `notes`, and it does **not** contain note tags or persisted folder colors. The owner selected repair; Phase 02 is reopened until both capabilities are delivered.
+
+Repair requirements:
+- Support multiple reusable tags per note, with persistent local tag definitions and note-tag assignments. Define normalization, duplicate handling, ordering, deletion semantics and behavior for soft-deleted notes by inspecting the original Phase 02 prompt; record any unresolved product choice before implementation.
+- Persist a nullable, validated color value for each folder. Define palette/serialization, theme fallback and accessible contrast before implementation. Color must not affect folder identity, hierarchy, name uniqueness or ordering.
+- Preserve all existing v1 folder/note IDs, content, relationships, sort_order, timestamps and deleted_at values.
+- Treat schema v1 as immutable. Any new structure/column must use a forward-only, data-preserving migration from the actual current schema version; test populated-v1 upgrade and fail-closed/rollback behavior.
+- Do not add revisions, attachments, search, pinning, Trash UI, encryption metadata, biometrics, backup or settings as part of this repair.
+
+The exact v2 physical schema is intentionally not frozen by this addendum. Inspect the original Phase 02 authorization and current Drift source/migration history, propose the smallest safe additive design, document it, and verify the migration before implementation.
