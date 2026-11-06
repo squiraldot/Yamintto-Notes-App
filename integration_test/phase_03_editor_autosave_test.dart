@@ -16,7 +16,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets(
-    'Phase 03 editor flushes navigation/background edits and survives DB reopen',
+    'Phase 03 editor autosaves on navigation and backgrounding',
     (tester) async {
       final temporaryDirectory = await getTemporaryDirectory();
       final databaseDirectory = Directory(
