@@ -80,6 +80,15 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
       expect(containsTag(result.nodes, 'span'), isTrue);
     });
 
+    test('parses Markdown links and images into safe AST nodes', () {
+      const source =
+          '[link](https://example.com) ![alt](https://example.com/image.png)';
+      final result = parser.parse(source);
+
+      expect(containsTag(result.nodes, 'a'), isTrue);
+      expect(containsTag(result.nodes, 'img'), isTrue);
+    });
+
     test('keeps unsupported HTML inert and source unchanged', () {
       const source = '<script>alert(1)</script> <img src=x onerror=alert(1)>';
       final result = parser.parse(source);
