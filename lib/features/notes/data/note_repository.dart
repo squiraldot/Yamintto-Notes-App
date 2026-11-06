@@ -6,7 +6,6 @@ import 'package:yamintto/core/ids/uuid_v4.dart';
 import 'package:yamintto/core/unicode/unicode_canonicalizer.dart';
 import 'package:yamintto/features/notes/domain/note.dart';
 import 'package:yamintto/features/notes/domain/note_content_format.dart';
-import 'package:yamintto/features/notes/domain/note_content_format.dart';
 
 class NoteRepository {
   NoteRepository(
@@ -96,6 +95,13 @@ class NoteRepository {
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
         final current = await _requireActiveNote(id);
+        if (expectedUpdatedAt != null &&
+            current.updatedAt != expectedUpdatedAt) {
+          throw const DomainFailure(
+            DomainFailureCode.staleNoteEdit,
+            'This note changed elsewhere. Reload it before saving more edits.',
+          );
+        }
         if (!NoteContentFormat.isSupported(current.contentFormatVersion)) {
           throw const DomainFailure(
             DomainFailureCode.unsupportedContentFormat,
@@ -105,10 +111,13 @@ class NoteRepository {
         final nextFormatVersion = body == current.body
             ? current.contentFormatVersion
             : NoteContentFormat.hybridMarkdown;
+        final now = _now();
+        final updatedAt =
+            now > current.updatedAt ? now : current.updatedAt + 1;
         await _database.customStatement(
           'UPDATE notes SET title = ?, body = ?, content_format_version = ?, updated_at = ? '
           'WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[title, body, nextFormatVersion, _now(), id],
+          <Object?>[title, body, nextFormatVersion, updatedAt, id],
         );
         return _requireActiveNote(id);
       }),

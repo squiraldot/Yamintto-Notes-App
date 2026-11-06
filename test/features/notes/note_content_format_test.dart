@@ -50,6 +50,35 @@ void main() {
     expect(updated.body, '# Markdown source');
   });
 
+  test('rejects a stale editor revision without overwriting newer source', () async {
+    final note = await notes.createNote(title: 'Shared', body: 'original');
+    final first = await notes.updateNote(
+      id: note.id,
+      title: 'First writer',
+      body: 'newer source',
+      expectedUpdatedAt: note.updatedAt,
+    );
+
+    await expectLater(
+      notes.updateNote(
+        id: note.id,
+        title: 'Stale writer',
+        body: 'stale source',
+        expectedUpdatedAt: note.updatedAt,
+      ),
+      throwsA(
+        isA<DomainFailure>().having(
+          (failure) => failure.code,
+          'code',
+          DomainFailureCode.staleNoteEdit,
+        ),
+      ),
+    );
+    final stored = await notes.getNote(note.id);
+    expect(stored.title, first.title);
+    expect(stored.body, 'newer source');
+  });
+
   test('unknown future format versions cannot be overwritten', () async {
     final note = await notes.createNote(title: 'Future', body: 'preserve me');
     await database.customStatement(
