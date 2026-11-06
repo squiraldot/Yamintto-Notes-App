@@ -44,12 +44,14 @@ class NoteAutosaveCoordinator {
   int _savedRevision = 0;
   bool _saving = false;
   bool _hasError = false;
+  Object? _lastError;
   bool _disposed = false;
 
   int get editRevision => _editRevision;
   int get savedRevision => _savedRevision;
   bool get isSaving => _saving;
   bool get hasError => _hasError;
+  Object? get lastError => _lastError;
   bool get isDirty => _editRevision > _savedRevision;
   bool get isSaved => _editRevision > 0 && !isDirty && !_hasError;
 
@@ -66,6 +68,7 @@ class NoteAutosaveCoordinator {
     _latest = NoteSaveSnapshot(title: title, body: body);
     _editRevision++;
     _hasError = false;
+    _lastError = null;
     _timer?.cancel();
     _timer = _timerFactory(debounce, () {
       _timer = null;
@@ -91,6 +94,7 @@ class NoteAutosaveCoordinator {
 
   Future<void> retry() {
     _hasError = false;
+    _lastError = null;
     _notify();
     return flush();
   }
@@ -104,9 +108,10 @@ class NoteAutosaveCoordinator {
       _notify();
       try {
         await save(snapshot);
-      } catch (_) {
+      } catch (error) {
         _saving = false;
         _hasError = true;
+        _lastError = error;
         _notify();
         rethrow;
       }

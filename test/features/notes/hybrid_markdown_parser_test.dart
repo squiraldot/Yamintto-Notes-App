@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:markdown/markdown.dart' show Element, Node, Text;
 import 'package:yamintto/features/notes/domain/hybrid_markdown_parser.dart';
@@ -80,6 +82,50 @@ Press <kbd>Ctrl</kbd>, <ins>added</ins>, <del>removed</del><br>
       expect(containsTag(result.nodes, 'del'), isTrue);
       expect(containsTag(result.nodes, 'br'), isTrue);
       expect(containsTag(result.nodes, 'span'), isTrue);
+    });
+
+    test('parses the source-derived YRNotes compatibility fixture', () {
+      final source = File(
+        'test/fixtures/markdown/yrnotes_source_compatibility.md',
+      ).readAsStringSync();
+      final result = parser.parse(source);
+
+      expect(result.source, source);
+      for (final tag in [
+        'h1',
+        'blockquote',
+        'table',
+        'pre',
+        'a',
+        'img',
+        'kbd',
+        'ins',
+        'del',
+        'br',
+        'span',
+        'details',
+        'summary',
+      ]) {
+        expect(containsTag(result.nodes, tag), isTrue, reason: tag);
+      }
+    });
+
+    test('HTML entities stay inert and are not reparsed as markup', () {
+      const source = '&lt;script&gt;alert(1)&lt;/script&gt;';
+      final result = parser.parse(source);
+
+      expect(result.source, source);
+      expect(containsTag(result.nodes, 'script'), isFalse);
+      expect(textContent(result.nodes), contains('<script>'));
+    });
+
+    test('supports all six ATX heading levels', () {
+      const source = '# one\n## two\n### three\n#### four\n##### five\n###### six';
+      final result = parser.parse(source);
+
+      for (var level = 1; level <= 6; level++) {
+        expect(containsTag(result.nodes, 'h$level'), isTrue);
+      }
     });
 
     test('keeps unsupported HTML inert and source unchanged', () {

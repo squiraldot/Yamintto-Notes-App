@@ -10,6 +10,7 @@ import 'package:yamintto/features/notes/data/note_repository.dart';
 import 'package:yamintto/features/notes/domain/note.dart';
 import 'package:yamintto/features/notes/domain/note_content_format.dart';
 import 'package:yamintto/features/notes/presentation/note_editor_screen.dart';
+import 'package:yamintto/features/notes/presentation/safe_markdown_viewer.dart';
 
 void main() {
   late YaminttoDatabase database;

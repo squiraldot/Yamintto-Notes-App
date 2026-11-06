@@ -91,7 +91,6 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     );
     _contentFormatVersion = updated.contentFormatVersion;
     _expectedUpdatedAt = updated.updatedAt;
-    ref.invalidate(noteDetailProvider(_activeNoteId!));
     ref.invalidate(noteListProvider(_activeFolderId));
   }
 
@@ -118,6 +117,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     WidgetsBinding.instance.removeObserver(this);
     _title.removeListener(_markDirty);
     _body.removeListener(_markDirty);
+    if (_activeNoteId != null) {
+      ref.invalidate(noteDetailProvider(_activeNoteId!));
+    }
     _autosave?.dispose();
     _title.dispose();
     _body.dispose();
@@ -283,7 +285,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                         children: [
                           Expanded(
                             child: Text(
-                              'Could not save. Your edits are still here.',
+                              _saveErrorMessage,
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.error,
                               ),
@@ -323,6 +325,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     if (_readOnly) return 'View note';
     if (_activeNoteId == null) return 'New note';
     return 'Edit note';
+  }
+
+  String get _saveErrorMessage {
+    final error = _autosave?.lastError;
+    if (error is DomainFailure) return error.message;
+    return 'Could not save. Your edits are still here.';
   }
 
   String get _statusLabel {

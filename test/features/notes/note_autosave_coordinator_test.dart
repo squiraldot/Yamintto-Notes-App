@@ -73,11 +73,13 @@ void main() {
       expect(coordinator.hasError, isTrue);
       expect(coordinator.isDirty, isTrue);
       expect(coordinator.isSaved, isFalse);
+      expect(coordinator.lastError, isA<StateError>());
 
       shouldFail = false;
       await coordinator.retry();
       expect(coordinator.isSaved, isTrue);
       expect(coordinator.hasError, isFalse);
+      expect(coordinator.lastError, isNull);
     });
 
     test('keeps title and body in the same atomic revision snapshot', () async {

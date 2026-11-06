@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path/path.dart' as path;
@@ -12,7 +13,7 @@ import 'package:yamintto/features/notes/presentation/note_autosave_coordinator.d
 
 /// Owner-run on real Android/iOS hardware only. Never run in CI or a simulator.
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   test('Phase 03 rapid edits flush and survive database reopen', () async {
     final support = await getApplicationSupportDirectory();
@@ -40,13 +41,19 @@ void main() {
       },
     );
 
+    final lifecycleObserver = _LifecycleAutosaveObserver(autosave);
+    WidgetsBinding.instance.addObserver(lifecycleObserver);
     autosave.update(title: 'First', body: '# first revision');
     autosave.update(
       title: 'Final title',
       body: '# final revision\n\n- [ ] source preserved',
     );
-    await autosave.flush();
+    binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    final lifecycleFlush = lifecycleObserver.lastFlush;
+    if (lifecycleFlush != null) await lifecycleFlush;
     expect(autosave.isSaved, isTrue);
+    binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    WidgetsBinding.instance.removeObserver(lifecycleObserver);
     autosave.dispose();
     await database.close();
 
@@ -63,4 +70,20 @@ void main() {
     expect(afterPreview.body, beforePreview);
     await reopened.close();
   });
+}
+
+
+class _LifecycleAutosaveObserver with WidgetsBindingObserver {
+  _LifecycleAutosaveObserver(this.coordinator);
+
+  final NoteAutosaveCoordinator coordinator;
+  Future<void>? lastFlush;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      lastFlush = coordinator.flush();
+    }
+  }
 }
