@@ -18,7 +18,12 @@ jobs:
     name: Format, analyze, and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out the exact source commit under test
+        uses: actions/checkout@v5
+        with:
+          # pull_request defaults to a synthetic merge commit. Test the PR
+          # head itself so workflow_run.head_sha is the exact tested source.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
