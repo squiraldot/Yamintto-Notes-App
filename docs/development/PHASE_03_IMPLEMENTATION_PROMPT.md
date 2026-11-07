@@ -5,7 +5,7 @@
 >
 > Phase 02 Note Tags + Folder Colors repair is accepted. The implementation source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` (85/85 tests); universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` succeeded for that exact SHA. The owner confirmed successful Android physical-device smoke testing. Integration-test source exists, but its execution is not independently evidenced and must not be claimed.
 >
-> **Execution authorization was granted:** the owner submitted this complete prompt as an implementation request on 2026-11-06. Implementation was carried out on branch `phase-03/markdown-autosave`, PR #2. Implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head `8748150721f2a262716cc3786c76932e6b1f53e3` passed exact-head Flutter CI run `42333273779` (formatting, analyzer, 120/120 tests). The PR is not merged; owner physical-device acceptance remains pending.
+> **Execution authorization was granted:** the owner submitted this complete prompt as an implementation request on 2026-11-06. Implementation was carried out on branch `phase-03/markdown-autosave`, PR #2. Implementation source SHA `e06ee5c60bacb5b8f8403a39d84457216c19e8ff`; latest PR head `84cfda21288ef4a2ae4137511796ac7b64ef7e5c` passed exact-head Flutter CI run `42333598484` (formatting, analyzer, 120/120 tests). The PR is not merged; owner physical-device acceptance remains pending.
 
 ## 1. Role and repository
 
@@ -132,9 +132,9 @@ Report authorization/gate evidence; scope/files/architecture; dialect and inspec
 
 - Authorization: owner submitted this prompt and explicitly authorized Phase 03 implementation.
 - Branch/PR: `phase-03/markdown-autosave`, [PR #2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
-- Implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`.
-- Latest PR head: `8748150721f2a262716cc3786c76932e6b1f53e3`.
-- Flutter CI run: [#42333273779](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42333273779), success; formatting and analyzer passed; 120/120 unit/widget tests passed.
+- Implementation source SHA: `e06ee5c60bacb5b8f8403a39d84457216c19e8ff`.
+- Latest PR head: `84cfda21288ef4a2ae4137511796ac7b64ef7e5c`.
+- Flutter CI run: [#42333598484](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42333598484), success; formatting and analyzer passed; 120/120 unit/widget tests passed.
 - Added owner-run physical-device integration source at `integration_test/phase_03_editor_autosave_test.dart` for system-back flush, preview, lifecycle background/resume and database reopen; it has not been executed yet.
-- No schema migration was needed. Exactly three workflow files remain, but separate commits `a778670ee9104490bd8f6cc7271720c98c3c3888`, `12ae889fc51ee1120ea2956cde24a0c39c00fc22` and `8748150721f2a262716cc3786c76932e6b1f53e3` modify the protected Flutter CI, universal APK and ARM64 APK workflows. These workflow changes are separate from the Phase 03 source implementation; they were not part of my source/doc changes and require owner review against the original no-workflow-change constraint. No Phase 03 APK workflow runs/artifacts have been verified. The PR branch workflow filters include Phase 03, but `main` still has the old `main`/`dev` filters; GitHub runs `workflow_run` from the default-branch workflow definition, so artifacts cannot be triggered before a permitted `main` update or merge.
+- No schema migration was needed. Exactly three workflow files remain, but separate commits `a778670ee9104490bd8f6cc7271720c98c3c3888`, `12ae889fc51ee1120ea2956cde24a0c39c00fc22` and `84cfda21288ef4a2ae4137511796ac7b64ef7e5c` modify the protected Flutter CI, universal APK and ARM64 APK workflows. These workflow changes are separate from the Phase 03 source implementation; they were not part of my source/doc changes and require owner review against the original no-workflow-change constraint. No Phase 03 APK workflow runs/artifacts have been verified. The PR branch workflow filters include Phase 03, but `main` still has the old `main`/`dev` filters; GitHub runs `workflow_run` from the default-branch workflow definition, so artifacts cannot be triggered before a permitted `main` update or merge.
 - Owner physical-device test, PR review/merge and final Phase 03 acceptance remain pending. iOS native build/device verification is not claimed.
