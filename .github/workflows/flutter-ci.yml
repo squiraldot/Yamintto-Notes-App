@@ -35,11 +35,6 @@ jobs:
         run: dart format --output=none --set-exit-if-changed .
       - name: Run Flutter analyzer
         run: flutter analyze --fatal-infos
-      - name: Report pull request source branch for artifact gate
-        run: |
-          echo "event_name=${{ github.event_name }}"
-          echo "head_ref=${{ github.head_ref }}"
-          echo "event_head_ref=${{ github.event.pull_request.head.ref }}"
       - name: Run unit and widget tests
         run: flutter test
 

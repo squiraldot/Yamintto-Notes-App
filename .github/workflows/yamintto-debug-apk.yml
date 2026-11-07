@@ -27,13 +27,13 @@ concurrency:
 jobs:
   build-debug-apk:
     name: Build Android debug APK
-    if: ${{ (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') || (github.event_name == 'workflow_call' && inputs.source_sha != '') }}
+    if: ${{ inputs.source_sha != '' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out the exact CI-tested source commit
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event_name == 'workflow_call' && inputs.source_sha || github.event.workflow_run.head_sha }}
+          ref: ${{ inputs.source_sha || github.event.workflow_run.head_sha }}
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -46,7 +46,7 @@ jobs:
       - name: Upload debug APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: yamintto-debug-${{ github.event_name == 'workflow_call' && inputs.source_sha || github.event.workflow_run.head_sha }}
+          name: yamintto-debug-${{ inputs.source_sha || github.event.workflow_run.head_sha }}
           path: build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: error
           retention-days: 14
