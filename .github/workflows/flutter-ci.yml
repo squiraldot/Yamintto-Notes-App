@@ -35,12 +35,17 @@ jobs:
         run: dart format --output=none --set-exit-if-changed .
       - name: Run Flutter analyzer
         run: flutter analyze --fatal-infos
+      - name: Report pull request source branch for artifact gate
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "head_ref=${{ github.head_ref }}"
+          echo "event_head_ref=${{ github.event.pull_request.head.ref }}"
       - name: Run unit and widget tests
         run: flutter test
 
   build-phase-03-universal-debug-apk:
     name: Phase 03 universal Debug APK
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'phase-03/markdown-autosave' }}
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'phase-03/markdown-autosave' }}
     needs: validate
     uses: ./.github/workflows/yamintto-debug-apk.yml
     with:
@@ -48,7 +53,7 @@ jobs:
 
   build-phase-03-arm64-debug-apk:
     name: Phase 03 ARM64 Debug APK
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'phase-03/markdown-autosave' }}
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'phase-03/markdown-autosave' }}
     needs: validate
     uses: ./.github/workflows/yamintto-arm64-debug-apk.yml
     with:
