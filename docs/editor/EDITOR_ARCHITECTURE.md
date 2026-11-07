@@ -46,9 +46,9 @@ The lifecycle flush is best-effort. A process kill or OS termination before a de
 
 PR #2 branch: `phase-03/markdown-autosave`.
 
-Implementation source SHA: `e06ee5c60bacb5b8f8403a39d84457216c19e8ff`; latest PR head: `84cfda21288ef4a2ae4137511796ac7b64ef7e5c`.
+Implementation source SHA: `3ab1a24bdb9ee389a1fa0214f1b03d16da823202`; latest PR head: `3ab1a24bdb9ee389a1fa0214f1b03d16da823202`.
 
-Exact-PR-head Flutter CI run [#42333598484](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42333598484) passed:
+Exact-PR-head Flutter CI run [#42334404037](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42334404037) passed:
 - Dart formatting.
 - `flutter analyze --fatal-infos`.
 - **120/120 unit and widget tests**.
