@@ -76,7 +76,10 @@ void main() {
     expect(stored.data['body'], 'preserve me');
     expect(stored.data['content_format_version'], 99);
   });
-  test('rejects a stale editor revision without overwriting newer content', () async {
+
+  test(
+    'rejects a stale editor revision without overwriting newer content',
+    () async {
     final note = await notes.createNote(title: 'Shared', body: 'original');
     final firstWriter = await notes.updateNote(
       id: note.id,
@@ -105,5 +108,4 @@ void main() {
     expect(stored.title, 'First writer');
     expect(stored.body, 'newer source');
   });
-
 }

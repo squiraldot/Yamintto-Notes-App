@@ -62,7 +62,10 @@ class NoteAutosaveCoordinator {
 
   void update({required String title, required String body}) {
     if (_disposed) return;
-    _latest = NoteSaveSnapshot(title: title, body: body);
+    _latest = NoteSaveSnapshot(
+      title: title,
+      body: body,
+    );
     _editRevision++;
     _hasError = false;
     _timer?.cancel();
