@@ -19,9 +19,9 @@ Native Flutter notes application for Android and iOS; offline-first by design. Y
 
 Phase 01 foundation and Phase 02 core management are implemented. Phase 02 includes nested folders, notes CRUD and soft-delete, reusable note tags with multiple persistent assignments, and optional persisted colors for root and nested folders. The database uses Drift/SQLite schema v2; schema v1 remains the immutable migration baseline.
 
-**Phase 03 — IMPLEMENTED ON PR BRANCH; FOLLOW-UP CI, REVIEW AND OWNER DEVICE ACCEPTANCE PENDING**
+**Phase 03 — IMPLEMENTED ON PR BRANCH; EXACT-PR-HEAD CI PASSED; REVIEW AND OWNER DEVICE ACCEPTANCE PENDING**
 
-Phase 03 Markdown source editor, safe hybrid Markdown viewer, version-aware content handling and serialized 700 ms autosave are implemented on branch `phase-03/markdown-autosave`, PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2). A follow-up integrity repair adds repository `updated_at` revision checks, stale-editor conflict handling and domain-level NUL title validation. Exact source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run [#42202330375](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42202330375): formatting, analyzer and **114/114 tests**. This is PR-branch evidence only; the PR is not merged and Phase 03 is not yet owner-accepted. Owner physical-device testing of Phase 03 remains pending. A physical-device integration test source is present at `integration_test/phase_03_editor_autosave_test.dart`; it has not yet been run by the owner. No APK build or iOS native verification is claimed for this phase.
+Phase 03 Markdown source editor, safe hybrid Markdown viewer, version-aware content handling and serialized 700 ms autosave are implemented on branch `phase-03/markdown-autosave`, PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2). A follow-up integrity repair adds repository `updated_at` revision checks, stale-editor conflict handling and domain-level NUL title validation. Implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head `4c196458042d96b452901717a5db937fdf51b22b` passed exact-head Flutter CI run [#42331866581](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42331866581): formatting, analyzer and **117/117 tests**. This is PR-branch evidence only; the PR is not merged and Phase 03 is not yet owner-accepted. Owner physical-device testing of Phase 03 remains pending. A physical-device integration test source is present at `integration_test/phase_03_editor_autosave_test.dart`; it has not yet been run by the owner. No Phase 03 APK artifact run or iOS native verification is claimed. The PR branch currently contains separate workflow-file commits; those are not part of the Phase 03 source implementation.
 
 **Phase 02 acceptance evidence (2026-11-06):**
 - Repair source: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`.
@@ -33,7 +33,7 @@ Phase 03 Markdown source editor, safe hybrid Markdown viewer, version-aware cont
 
 Phase 03 execution was explicitly authorized by the owner through submission of the final implementation prompt on 2026-11-06. The implementation remains on PR branch #2 pending review and owner physical-device acceptance. Phase 04–09 remain planned and require their own phase gates; see the [phase roadmap](docs/development/PHASE_ROADMAP.md) and [status record](docs/STATUS.md).
 
-## Implemented Phase 02 capabilities
+## Implemented application capabilities
 
 - Offline local folders and notes with nested hierarchy, ordering and soft-delete.
 - Reusable global tags; create, rename and delete tags; assign/remove multiple tags per note.

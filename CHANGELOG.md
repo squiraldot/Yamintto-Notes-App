@@ -45,7 +45,7 @@
 - Exact repair source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` passed on Flutter 3.47.9: formatting, analyzer and **85/85 tests**.
 - Universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` both succeeded and uploaded artifacts for that same source SHA.
 - Owner confirmed successful physical-device testing of the repaired application. Recorded as **owner-reported PASS**; no device model, OS version, screenshots, logs or exact test command are asserted.
-- Documentation reconciled after owner acceptance. **Phase 02 — ACCEPTED. Phase 03 — NOT STARTED / NOT AUTHORIZED.**
+- Documentation reconciled after owner acceptance. **Phase 02 — ACCEPTED. Phase 03 was subsequently authorized and implemented on PR #2; owner device acceptance and merge remain pending.**
 
 
 ## Phase 03 — Hybrid Markdown editor and autosave — 2026-11-06
@@ -56,7 +56,7 @@
 - Added repository and widget coverage for source preservation, parser limits, malicious input, version behavior, autosave races/failures, preview, navigation and lifecycle flush; added owner-run physical-device integration source for system-back flush, lifecycle backgrounding and database reopen.
 - Fixed the initial CI formatting and analyzer blockers, the markdown AST element-constructor API mismatch, missing repository format-version handling, and rich-text test assumptions.
 - Updated the previous Phase 02 discard-confirmation tests to assert Phase 03 autosave-before-navigation behavior.
-- Exact PR source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run `42202330375`: Dart formatting, `flutter analyze --fatal-infos`, and **114/114 unit/widget tests**.
+- Implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head `4c196458042d96b452901717a5db937fdf51b22b` passed exact-head Flutter CI run `42331866581`: Dart formatting, `flutter analyze --fatal-infos`, and **117/117 unit/widget tests**.
 - Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), not merged. Phase 03 owner physical-device acceptance remains pending; no APK artifact or iOS native build/device pass is claimed.
 
 
@@ -65,4 +65,5 @@
 - Made successful note updates advance `updated_at` monotonically, including multiple writes within one clock millisecond.
 - Added a confirmed Reload latest flow for stale-editor conflicts; the local draft remains intact until the owner explicitly chooses to reload.
 - Fixed NUL-title validation to reject the actual NUL character at the domain boundary instead of relying on SQLite to reject it.
-- Added regression coverage for stale-writer rejection, source preservation, editor conflict/reload behavior and domain-level NUL validation. Follow-up exact-SHA CI is pending.
+- Added regression coverage for stale-writer rejection, source preservation, editor conflict/reload behavior and domain-level NUL validation.
+- Exact PR-head Flutter CI run `42331866581` passed on PR head `4c196458042d96b452901717a5db937fdf51b22b`: formatting, analyzer and 117/117 tests.

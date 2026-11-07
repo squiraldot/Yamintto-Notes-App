@@ -76,7 +76,7 @@ Tag semantics and color representation must be frozen from the original Phase 02
 
 ## Phase 03 owner decision — hybrid Markdown
 
-FR-03/FR-04 use the documented hybrid dialect: modern Markdown baseline plus verified legacy YRNotes constructs. Raw HTML is disabled by default except the narrow safe allowlist; unsafe URLs/content are rejected or rendered inert. FR-05 uses per-editor serialized revisions plus a repository `updated_at` compare token to reject stale concurrent editors; lifecycle flush remains best-effort, and failures retain editable text with retry or explicit reload for a stale-version conflict. Phase 03 implementation is present on PR #2; owner physical-device acceptance, review and merge remain pending.
+FR-03/FR-04 use the documented hybrid dialect: modern Markdown baseline plus verified legacy YRNotes constructs. Raw HTML is disabled by default except the narrow safe allowlist; unsafe URLs/content are rejected or rendered inert. FR-05 uses per-editor serialized revisions plus a repository `updated_at` compare token to reject stale concurrent editors; lifecycle flush remains best-effort, and failures retain editable text with retry or explicit reload for a stale-version conflict. Phase 03 implementation is present on PR #2; exact-PR-head Flutter CI passed 117/117 tests on PR head `4c196458042d96b452901717a5db937fdf51b22b`; owner physical-device acceptance, review and merge remain pending.
 
 
 ## Phase 02 repair requirements — implemented
@@ -95,4 +95,4 @@ The application shall allow a user to select, change and reset a folder color du
 
 ## Final Phase 02 acceptance — 2026-11-06
 
-FR-27 (reusable note tags) and FR-28 (persistent folder colors) are **Implemented and Accepted**. The owner confirmed successful physical-device testing of the repaired application. Automated evidence: repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`, Flutter CI `42177776797` (85/85 tests), universal APK `42177872597`, ARM64 APK `42177872567`. The automated integration-test source's execution is not independently evidenced and is not claimed. Phase 03 remains gated by separate explicit owner authorization.
+FR-27 (reusable note tags) and FR-28 (persistent folder colors) are **Implemented and Accepted**. The owner confirmed successful physical-device testing of the repaired application. Automated evidence: repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`, Flutter CI `42177776797` (85/85 tests), universal APK `42177872597`, ARM64 APK `42177872567`. The automated integration-test source's execution is not independently evidenced and is not claimed. Phase 03 was explicitly authorized on 2026-11-06 and is implemented on PR #2; owner physical-device acceptance and merge remain pending.
