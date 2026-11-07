@@ -1,6 +1,6 @@
 # Nine-phase development roadmap
 
-This is an ordered plan, not blanket authorization. Phase 02 was explicitly authorized and accepted. Phase 03 implementation was explicitly authorized by the owner on 2026-11-06 and is implemented on PR branch `phase-03/markdown-autosave`; owner device acceptance and merge remain pending. Phase 04–09 require separate authorization. Each feature has one primary phase; cross-phase work is separated.
+This is an ordered plan, not blanket authorization. Phase 02 was explicitly authorized and accepted. Phase 03 implementation was explicitly authorized by the owner on 2026-11-06 and is implemented on PR branch `phase-03/markdown-autosave`; a 2026-11-07 follow-up adds stale-write protection and conflict reload; exact-SHA CI, owner device acceptance and merge remain pending. Phase 04–09 require separate authorization. Each feature has one primary phase; cross-phase work is separated.
 
 ## Phase 01 — Foundation
 - Scope: Flutter project setup verification; app identity; base design system/tokens and initial system light/dark/AMOLED themes; navigation and splash.
