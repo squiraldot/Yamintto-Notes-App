@@ -1,4 +1,3 @@
-// dart format off
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -427,4 +426,3 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
 String _message(Object error) => error is DomainFailure
     ? error.message
     : 'The note could not be saved. Your text is still available; please try again.';
-// dart format on
