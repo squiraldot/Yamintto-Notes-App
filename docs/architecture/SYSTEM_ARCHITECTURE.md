@@ -29,7 +29,7 @@ Drift/SQLite implementation is present under `lib/core/database/`: schema v1, da
 - Enable and test foreign keys on every connection.
 - Accepted schema v1 contains only `folders` and `notes`; see [schema](../database/DATABASE_SCHEMA.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
 
-Phase 02 architecture decisions are owner-approved and Phase 02 is accepted. Phase 03 implementation was explicitly authorized on 2026-11-06 and is present on PR branch `phase-03/markdown-autosave`; exact PR-head Flutter CI run `42333598484` passed on SHA `84cfda21288ef4a2ae4137511796ac7b64ef7e5c` with 120/120 tests. Phase 03 APK artifacts are pending because the default-branch `workflow_run` filters still exclude this branch; owner physical-device acceptance, review and merge remain pending. Phase 04–09 require separate authorization.
+Phase 02 architecture decisions are owner-approved and Phase 02 is accepted. Phase 03 implementation was explicitly authorized on 2026-11-06 and is present on PR branch `phase-03/markdown-autosave`; exact source SHA `3ab1a24bdb9ee389a1fa0214f1b03d16da823202` passed Flutter CI run `42334404037` with 120/120 tests. Universal and ARM64 reusable APK workflows succeeded in the same parent run and uploaded artifacts `13559062230` and `13558519592`. Owner physical-device acceptance, review and merge remain pending. Phase 04–09 require separate authorization.
 
 ## Data lifecycle and integrity
 
@@ -98,4 +98,4 @@ The editor remains inside the existing notes feature boundaries. `NoteEditorScre
 - Failures preserve editor source and expose an error/retry state. Saved is shown only when the latest revision has been persisted.
 
 ### Current verification
-PR #2 exact-head SHA `84cfda21288ef4a2ae4137511796ac7b64ef7e5c` passed Flutter CI run `42333598484`: locked dependency resolution, formatting (68 files, 0 changed), analyzer (no issues) and 120/120 unit/widget tests. The integration source `integration_test/phase_03_editor_autosave_test.dart` remains owner-run and has not been executed. Phase 03 APK artifacts and owner physical-device acceptance remain pending; iOS native build/device verification is Not Verified — Environment Unavailable.
+PR #2 exact source SHA `3ab1a24bdb9ee389a1fa0214f1b03d16da823202` passed Flutter CI run `42334404037`: locked dependency resolution, formatting (68 files, 0 changed), analyzer (no issues) and 120/120 unit/widget tests. Both APK jobs checked out the same exact SHA and uploaded artifacts `13559062230` and `13558519592`. The integration source `integration_test/phase_03_editor_autosave_test.dart` remains owner-run and has not been executed. Owner physical-device acceptance remains pending; iOS native build/device verification is Not Verified — Environment Unavailable.

@@ -111,18 +111,18 @@ The owner explicitly confirmed successful physical-device testing of the repaire
 
 No device model, OS version, screenshots, logs, or exact test command were supplied, so none are asserted. The source file `integration_test/phase_02_data_smoke_test.dart` remains distinct from the owner's manual device confirmation; its execution is not independently evidenced and is not claimed. iOS verification remains unavailable and separate from this Android-focused acceptance.
 
-**Phase 02 — ACCEPTED. Phase 03 — AUTHORIZED and implemented on PR #2; owner device acceptance, APK artifacts, review and merge remain pending.**
+**Phase 02 — ACCEPTED. Phase 03 — AUTHORIZED and implemented on PR #2; APK artifacts are verified, while owner device acceptance, review and merge remain pending.**
 
 
 ## Phase 03 implementation verification — PR #2
 
-Exact PR-head SHA: `84cfda21288ef4a2ae4137511796ac7b64ef7e5c`.
+Exact source SHA: `3ab1a24bdb9ee389a1fa0214f1b03d16da823202`.
 
-Flutter CI run [#42202330375](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42202330375) succeeded on Flutter 3.47.9:
+Flutter CI run [#42334404037](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42334404037) succeeded on Flutter 3.47.9 and checked out the exact source SHA:
 - Locked dependency resolution: passed.
 - `dart format --output=none --set-exit-if-changed .`: passed.
 - `flutter analyze --fatal-infos`: passed.
-- `flutter test`: **120/120 passed** (run `42333598484`, Flutter 3.47.9).
+- `flutter test`: **120/120 passed**.
 
 Phase 03 coverage includes:
 - Hybrid Markdown parser tests for modern block/inline syntax, task lists, tables, links, images, verified legacy details/summary and inline tags, raw HTML inertness, unsafe URLs, malformed details, source preservation, byte/node/depth/table limits.
@@ -132,4 +132,4 @@ Phase 03 coverage includes:
 - Phase 02 screen tests were updated to assert that pending edits are flushed before navigation; the old discard-confirmation behavior is superseded by autosave-before-navigation.
 - Owner-run integration source `integration_test/phase_03_editor_autosave_test.dart` exercises the real app with a file-backed database, system-back flush, preview, lifecycle background/resume and a fresh Drift reopen. It is source only; physical-device execution is pending.
 
-This is host unit/widget evidence only. The CI checkout explicitly used the PR head SHA, not GitHub's synthetic merge SHA. A disposal-time best-effort flush is covered by a regression test; the integration test source remains owner-run. The APK workflow files on the PR branch include Phase 03 in their filters, but GitHub's `workflow_run` event uses the default-branch workflow definition; `main` still filters only `main` and `dev`. Therefore no Phase 03 APK run or artifact is claimed without a prohibited `main` change or merge. Physical-device integration testing remains owner-run and pending. No process-kill durability guarantee is made for a debounce that has not completed a flush. The PR is not merged or owner-accepted.
+This is host unit/widget evidence only. The Phase 03 PR path calls the two existing APK workflows through local `workflow_call` reusable workflows after successful validation. Both called workflows checked out the exact same `source_sha` and uploaded artifacts: universal ID `13559062230` and ARM64 ID `13558519592` (parent run `42334404037`). This preserves the existing `workflow_run` path for `main`/`dev` and does not modify `main`. A disposal-time best-effort flush is covered by a regression test; the integration test source remains owner-run. Physical-device integration testing remains owner-run and pending. No process-kill durability guarantee is made for a debounce that has not completed a flush. The PR is not merged or owner-accepted.
