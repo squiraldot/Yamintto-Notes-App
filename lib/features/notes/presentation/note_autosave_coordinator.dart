@@ -133,9 +133,14 @@ class NoteAutosaveCoordinator {
     if (!_disposed) onStateChanged?.call();
   }
 
+  /// Best-effort fallback for route replacement or unexpected disposal.
+  /// Normal back-navigation and lifecycle paths still await their own flush.
   void dispose() {
     _disposed = true;
     _timer?.cancel();
     _timer = null;
+    if (isDirty) {
+      unawaited(flush().catchError((Object _) {}));
+    }
   }
 }
