@@ -27,14 +27,14 @@ Before: confirm explicit authorization, prerequisites, feature IDs, source state
 - Record owner-reported physical-device results separately from automated CI; do not invent missing evidence. The current Android Phase 01 test is owner-reported successful, with detailed evidence not attached.
 - iOS implementation/configuration continues in every applicable phase. When macOS/Xcode verification is unavailable, label iOS native build/device verification `Not Verified — Environment Unavailable`; this is not a blocker for Android-focused phase progression.
 - If a required physical-device test has not been run, report that specific test as pending. Ask before any exception.
-- Phase 03 Android physical-device verification is currently pending; do not infer it from the 113 passing host tests.
+- Phase 03 Android physical-device verification is currently pending; do not infer it from the 117 passing host tests.
 
 
 ## Current Phase 02 repair gate — 2026-11-06
 
-Phase 02 implementation is complete on source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` succeeded with 85/85 tests. The two Debug APK workflows were triggered for the exact same SHA; their conclusions/artifacts must be read from Actions before claims. Owner confirmed successful physical-device testing of tags and folder colors. Phase 02 is **ACCEPTED**. The separate automated integration-test source's execution is not independently evidenced and is not claimed. Phase 03 requires separate explicit authorization and must not start.
+Phase 02 implementation is complete on source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` succeeded with 85/85 tests. The two Debug APK workflows were triggered for the exact same SHA; their conclusions/artifacts must be read from Actions before claims. Owner confirmed successful physical-device testing of tags and folder colors. Phase 02 is **ACCEPTED**. The separate automated integration-test source's execution is not independently evidenced and is not claimed. Historical gate statement superseded: Phase 03 was explicitly authorized by the owner on 2026-11-06 and is implemented on PR #2.
 
 
 ## Phase 03 current gate — 2026-11-06
 
-Owner authorization was granted by submission of `docs/development/PHASE_03_IMPLEMENTATION_PROMPT.md`. Implementation is on PR #2, branch `phase-03/markdown-autosave`, source SHA `cc8295293e85380cd964e26bfc890b0da063643c`. Exact-SHA Flutter CI run `42202330375` passed formatting, analyzer and 114/114 tests. The PR is not merged; owner physical-device acceptance is pending. Keep the exact three protected workflows unchanged. Do not start Phase 04.
+Owner authorization was granted by submission of `docs/development/PHASE_03_IMPLEMENTATION_PROMPT.md`. Implementation is on PR #2, branch `phase-03/markdown-autosave`, latest implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`. Exact-SHA Flutter CI run `42331653894` passed formatting, analyzer and 117/117 tests. The PR is not merged; owner physical-device acceptance is pending. Keep the exact three protected workflows unchanged. Do not start Phase 04.
