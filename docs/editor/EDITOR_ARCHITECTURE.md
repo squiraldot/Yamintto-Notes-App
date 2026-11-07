@@ -6,7 +6,7 @@ Status: Implemented on PR #2; exact-SHA host CI passed. Owner physical-device ac
 
 - `NoteEditorScreen` owns editor/preview presentation state and text controllers. It does not issue SQL or persist widget state.
 - `NoteAutosaveCoordinator` owns the 700 ms debounce, per-editor edit/saved revisions, serialized flush future and save/error status.
-- `NoteRepository` owns atomic title/body writes and content-format version transitions through the existing Drift transaction boundary.
+- `NoteRepository` owns atomic title/body writes and content-format version transitions through the existing Drift transaction boundary. Existing-note autosaves include the last observed `updated_at` token; a mismatch returns `staleNoteEdit` without mutating the newer row. Successful writes advance `updated_at` monotonically even if the clock has not advanced.
 - `HybridMarkdownParser` validates input limits and produces a Markdown AST. It never emits HTML.
 - `SafeMarkdownViewer` maps only known AST elements to native Flutter widgets. Unknown nodes degrade to selectable text; raw HTML is not interpreted.
 
@@ -25,9 +25,9 @@ A deliberate body edit to a v1 note upgrades only that note to v2 in the same re
 1. A title/body edit creates a complete immutable snapshot and increments the edit revision.
 2. The 700 ms debounce restarts on every edit.
 3. A flush snapshots the latest revision and writes title/body together through one repository operation.
-4. Writes within an editor are serialized. If a newer revision arrives while a write is in flight, the coordinator persists the newer snapshot before it can report Saved.
+4. Writes within one editor are serialized. If a newer revision arrives while a write is in flight, the coordinator persists the newer snapshot before it can report Saved. Across separately opened editors, the repository `updated_at` compare token rejects stale snapshots rather than overwriting newer content.
 5. Saved is true only when the persisted revision equals the current edit revision and no save error remains.
-6. A failed write keeps the source editable, leaves the coordinator dirty, exposes an error and permits retry.
+6. A failed write keeps the source editable, leaves the coordinator dirty, exposes an error and permits retry. A stale-revision conflict offers an explicit confirmed reload of the latest persisted version; it never silently rebases and overwrites the other editor's changes.
 7. Preview transition, explicit save, toolbar/system/gesture back navigation and lifecycle inactive/paused/detached events attempt a flush. PopScope prevents a system pop until the pending flush succeeds.
 
 The lifecycle flush is best-effort. A process kill or OS termination before a debounce/flush completes can lose pending edits. The app makes no stronger durability guarantee than the last successfully completed repository write.
