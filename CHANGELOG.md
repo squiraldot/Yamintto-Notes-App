@@ -56,7 +56,7 @@
 - Added repository and widget coverage for source preservation, parser limits, malicious input, version behavior, autosave races/failures, preview, navigation and lifecycle flush; added owner-run physical-device integration source for system-back flush, lifecycle backgrounding and database reopen.
 - Fixed the initial CI formatting and analyzer blockers, the markdown AST element-constructor API mismatch, missing repository format-version handling, and rich-text test assumptions.
 - Updated the previous Phase 02 discard-confirmation tests to assert Phase 03 autosave-before-navigation behavior.
-- Implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; exact PR-head SHA `8748150721f2a262716cc3786c76932e6b1f53e3` passed Flutter CI run `42333273779`: Dart formatting, `flutter analyze --fatal-infos`, and **120/120 unit/widget tests**.
+- Implementation source SHA `e06ee5c60bacb5b8f8403a39d84457216c19e8ff`; exact PR-head SHA `84cfda21288ef4a2ae4137511796ac7b64ef7e5c` passed Flutter CI run `42333598484`: Dart formatting, `flutter analyze --fatal-infos`, and **120/120 unit/widget tests**.
 - Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), not merged. Phase 03 owner physical-device acceptance remains pending; no APK artifact or iOS native build/device pass is claimed.
 
 
@@ -66,4 +66,4 @@
 - Added a confirmed Reload latest flow for stale-editor conflicts; the local draft remains intact until the owner explicitly chooses to reload.
 - Fixed NUL-title validation to reject the actual NUL character at the domain boundary instead of relying on SQLite to reject it.
 - Added regression coverage for stale-writer rejection, source preservation, editor conflict/reload behavior and domain-level NUL validation.
-- Exact PR-head Flutter CI run `42333273779` passed on PR head `8748150721f2a262716cc3786c76932e6b1f53e3`: formatting, analyzer and 120/120 tests. Both APK workflow files include the Phase 03 branch filter on this PR branch; their default-branch definitions still exclude Phase 03, so artifacts remain blocked without a permitted default-branch update or merge.
+- Exact PR-head Flutter CI run `42333598484` passed on PR head `84cfda21288ef4a2ae4137511796ac7b64ef7e5c`: formatting, analyzer and 120/120 tests. Both APK workflow files include the Phase 03 branch filter on this PR branch; their default-branch definitions still exclude Phase 03, so artifacts remain blocked without a permitted default-branch update or merge.
