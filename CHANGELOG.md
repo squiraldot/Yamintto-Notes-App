@@ -56,8 +56,8 @@
 - Added repository and widget coverage for source preservation, parser limits, malicious input, version behavior, autosave races/failures, preview, navigation and lifecycle flush; added owner-run physical-device integration source for system-back flush, lifecycle backgrounding and database reopen.
 - Fixed the initial CI formatting and analyzer blockers, the markdown AST element-constructor API mismatch, missing repository format-version handling, and rich-text test assumptions.
 - Updated the previous Phase 02 discard-confirmation tests to assert Phase 03 autosave-before-navigation behavior.
-- Implementation source SHA `e06ee5c60bacb5b8f8403a39d84457216c19e8ff`; exact PR-head SHA `84cfda21288ef4a2ae4137511796ac7b64ef7e5c` passed Flutter CI run `42333598484`: Dart formatting, `flutter analyze --fatal-infos`, and **120/120 unit/widget tests**.
-- Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), not merged. Phase 03 owner physical-device acceptance remains pending; no APK artifact or iOS native build/device pass is claimed.
+- Exact Phase 03 source SHA `3ab1a24bdb9ee389a1fa0214f1b03d16da823202` passed Flutter CI run `42334404037`: locked dependencies, Dart formatting, `flutter analyze --fatal-infos`, and **120/120 unit/widget tests**. Both APK reusable workflows ran after validation in the same parent run and built that exact SHA.
+- Universal Debug APK artifact ID `13559062230` ([artifact](https://api.github.com/repos/squiraldot/Yamintto-Notes-App/actions/artifacts/13559062230)); ARM64 Debug APK artifact ID `13558519592` ([artifact](https://api.github.com/repos/squiraldot/Yamintto-Notes-App/actions/artifacts/13558519592)). Both were uploaded by run `42334404037`. PR #2 remains open and unmerged; owner physical-device acceptance remains pending. iOS native build/device verification is not claimed.
 
 
 ## Phase 03 integrity follow-up — 2026-11-07
@@ -66,4 +66,4 @@
 - Added a confirmed Reload latest flow for stale-editor conflicts; the local draft remains intact until the owner explicitly chooses to reload.
 - Fixed NUL-title validation to reject the actual NUL character at the domain boundary instead of relying on SQLite to reject it.
 - Added regression coverage for stale-writer rejection, source preservation, editor conflict/reload behavior and domain-level NUL validation.
-- Exact PR-head Flutter CI run `42333598484` passed on PR head `84cfda21288ef4a2ae4137511796ac7b64ef7e5c`: formatting, analyzer and 120/120 tests. Both APK workflow files include the Phase 03 branch filter on this PR branch; their default-branch definitions still exclude Phase 03, so artifacts remain blocked without a permitted default-branch update or merge.
+- The Phase 03 PR path uses local `workflow_call` reusable workflows after the Flutter CI validation job, avoiding any `main` modification. Both APK jobs share parent run ID `42334404037` and checked out exact source SHA `3ab1a24bdb9ee389a1fa0214f1b03d16da823202`.
