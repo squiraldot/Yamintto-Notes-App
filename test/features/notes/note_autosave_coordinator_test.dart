@@ -23,9 +23,7 @@ void main() {
         coordinator.update(title: 'Pending title', body: 'Pending body');
         coordinator.dispose();
 
-        final snapshot = await saved.future.timeout(
-          const Duration(seconds: 1),
-        );
+        final snapshot = await saved.future.timeout(const Duration(seconds: 1));
         expect(snapshot.title, 'Pending title');
         expect(snapshot.body, 'Pending body');
       },
