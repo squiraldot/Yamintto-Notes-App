@@ -281,7 +281,7 @@ void main() {
       body: 'original source',
       contentFormatVersion: NoteContentFormat.hybridMarkdown,
     );
-    await mount(tester, path: '/notes/\${note.id}/edit');
+    await mount(tester, path: '/notes/${note.id}/edit');
 
     await notes.updateNote(
       id: note.id,
@@ -313,7 +313,6 @@ void main() {
     expect((await notes.getNote(note.id)).body, 'latest saved source');
     expect(find.text('Changed elsewhere'), findsNothing);
   });
-
 }
 
 class _FailingNoteRepository extends NoteRepository {
