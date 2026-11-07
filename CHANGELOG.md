@@ -58,3 +58,11 @@
 - Updated the previous Phase 02 discard-confirmation tests to assert Phase 03 autosave-before-navigation behavior.
 - Exact PR source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run `42202330375`: Dart formatting, `flutter analyze --fatal-infos`, and **114/114 unit/widget tests**.
 - Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), not merged. Phase 03 owner physical-device acceptance remains pending; no APK artifact or iOS native build/device pass is claimed.
+
+
+## Phase 03 integrity follow-up — 2026-11-07
+- Restored optimistic `updated_at` revision checks at the existing note-repository boundary so a stale editor cannot overwrite a newer persisted note.
+- Made successful note updates advance `updated_at` monotonically, including multiple writes within one clock millisecond.
+- Added a confirmed Reload latest flow for stale-editor conflicts; the local draft remains intact until the owner explicitly chooses to reload.
+- Fixed NUL-title validation to reject the actual NUL character at the domain boundary instead of relying on SQLite to reject it.
+- Added regression coverage for stale-writer rejection, source preservation, editor conflict/reload behavior and domain-level NUL validation. Follow-up exact-SHA CI is pending.

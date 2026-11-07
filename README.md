@@ -19,9 +19,9 @@ Native Flutter notes application for Android and iOS; offline-first by design. Y
 
 Phase 01 foundation and Phase 02 core management are implemented. Phase 02 includes nested folders, notes CRUD and soft-delete, reusable note tags with multiple persistent assignments, and optional persisted colors for root and nested folders. The database uses Drift/SQLite schema v2; schema v1 remains the immutable migration baseline.
 
-**Phase 03 — IMPLEMENTED ON PR BRANCH; REVIEW AND OWNER DEVICE ACCEPTANCE PENDING**
+**Phase 03 — IMPLEMENTED ON PR BRANCH; FOLLOW-UP CI, REVIEW AND OWNER DEVICE ACCEPTANCE PENDING**
 
-Phase 03 Markdown source editor, safe hybrid Markdown viewer, version-aware content handling and serialized 700 ms autosave are implemented on branch `phase-03/markdown-autosave`, PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2). Exact source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run [#42202330375](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42202330375): formatting, analyzer and **114/114 tests**. This is PR-branch evidence only; the PR is not merged and Phase 03 is not yet owner-accepted. Owner physical-device testing of Phase 03 remains pending. A physical-device integration test source is present at `integration_test/phase_03_editor_autosave_test.dart`; it has not yet been run by the owner. No APK build or iOS native verification is claimed for this phase.
+Phase 03 Markdown source editor, safe hybrid Markdown viewer, version-aware content handling and serialized 700 ms autosave are implemented on branch `phase-03/markdown-autosave`, PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2). A follow-up integrity repair adds repository `updated_at` revision checks, stale-editor conflict handling and domain-level NUL title validation. Exact source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run [#42202330375](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42202330375): formatting, analyzer and **114/114 tests**. This is PR-branch evidence only; the PR is not merged and Phase 03 is not yet owner-accepted. Owner physical-device testing of Phase 03 remains pending. A physical-device integration test source is present at `integration_test/phase_03_editor_autosave_test.dart`; it has not yet been run by the owner. No APK build or iOS native verification is claimed for this phase.
 
 **Phase 02 acceptance evidence (2026-11-06):**
 - Repair source: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`.
@@ -40,7 +40,7 @@ Phase 03 execution was explicitly authorized by the owner through submission of 
 - Persistent optional folder colors with a validated ten-color opaque ARGB palette, theme-aware default and nested-folder display.
 - Hybrid Markdown source editor and native Flutter AST viewer; modern Markdown plus explicitly allowlisted legacy YRNotes syntax.
 - Version 1 plain-text preservation, version 2 hybrid Markdown, unknown future versions read-only; no schema migration or mass rewrite.
-- Debounced autosave with per-editor serialized revisions, navigation/lifecycle flush, visible error state and retry.
+- Debounced autosave with per-editor serialized revisions, repository stale-write protection, explicit conflict reload, navigation/lifecycle flush, visible error state and retry.
 - Forward-only transactional schema v1 → v2 migration with rollback/fail-closed behavior.
 - Unit, repository, database/migration and widget regression coverage.
 

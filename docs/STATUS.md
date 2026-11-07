@@ -1,5 +1,8 @@
 # Documentation and implementation status
 
+> **Current Phase 03 snapshot (2026-11-07):** Phase 02 is ACCEPTED. Phase 03 was explicitly authorized by the owner and is implemented on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`. The 2026-11-07 follow-up adds repository revision-token protection and explicit stale-editor reload handling; exact-SHA CI is pending. Owner physical-device acceptance, PR review/merge and iOS native verification remain pending. This snapshot supersedes older historical statements in this file that Phase 03 was unauthorized or not started.
+
+
 Snapshot: 2026-11-06 (Phase 02 accepted; Phase 03 implementation in PR); branch: `phase-03/markdown-autosave`; PR head: see linked PR #2; Phase 03 implementation/test source SHA: `cc8295293e85380cd964e26bfc890b0da063643c`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
 
 ## Phase 01 — Foundation
@@ -129,7 +132,7 @@ This historical section records the first complete presentation implementation a
 - iOS: **NOT VERIFIED — ENVIRONMENT UNAVAILABLE**; non-blocking for Android-focused Phase 02 acceptance.
 - Previous documentation validation revision: `c32a954d49b60b64abbab3347fad5b998bf6dc90`. The final documentation revision and its exact-SHA workflow evidence are recorded in the subsequent closure commit/report.
 
-**PHASE 03 — NOT AUTHORIZED.** Separate explicit owner approval is required. No Phase 03 work may begin.
+Historical gate snapshot — superseded: Phase 03 was explicitly authorized and implemented on PR #2.
 
 ## Workflow policy
 
@@ -227,7 +230,7 @@ This section supersedes historical Phase 02 ACCEPTED / schema-v1-only / repair-r
 
 The earlier “OWNER DEVICE ACCEPTANCE PENDING” statements in the repair implementation history are historical snapshots and are superseded by this final owner acceptance. Exactly three protected workflows remain; no workflow changes are authorized or included in this closure.
 
-**PHASE 03 — NOT STARTED / NOT AUTHORIZED.** A separate explicit owner authorization is still required before any Phase 03 work.
+**Historical gate snapshot — superseded:** Phase 03 was subsequently authorized and implemented on PR #2. A separate explicit owner authorization is still required before any Phase 03 work.
 
 
 ## Current Phase 03 implementation status — 2026-11-06
@@ -247,3 +250,8 @@ The earlier “OWNER DEVICE ACCEPTANCE PENDING” statements in the repair imple
 - Phase 02 remains **ACCEPTED** with its separate owner-reported physical-device PASS. Phase 04–09 remain planned and are not authorized.
 
 This current section supersedes all earlier pre-authorization statements in this historical status record that Phase 03 had not started or was not authorized. It does not mark Phase 03 owner-accepted or merged.
+
+
+## Phase 03 integrity follow-up — 2026-11-07
+
+The review of the existing PR found that a previously attempted optimistic revision guard had been lost in a later repository-format change. The follow-up restores a persisted `updated_at` compare token for editor saves, advances that token monotonically, rejects stale editor writes, and offers a user-confirmed reload instead of silently overwriting another editor's changes. It also fixes title NUL validation so the domain rejects NUL before SQLite. Tests cover stale-write rejection/source preservation, reload UX and domain-level NUL rejection. Follow-up exact-SHA CI is pending.
