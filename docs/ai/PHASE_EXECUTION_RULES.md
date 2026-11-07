@@ -1,7 +1,7 @@
 # Phase execution rules
 
 ## Authorization
-Roadmap is an ordered plan, not blanket permission. Phase 01 is present and Phase 02 is accepted. The owner explicitly authorized Phase 03 by submitting the complete final implementation prompt on 2026-11-06. Phase 03 is implemented on branch `phase-03/markdown-autosave`, PR #2, implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; exact-PR-head CI run `42332402241` passed formatting, analyzer and 119/119 tests on PR head `43b82e132ed661157c753d0184cfc4a40b785203`. PR review/merge and owner physical-device acceptance remain pending. Phase 04–09 require separate authorization.
+Roadmap is an ordered plan, not blanket permission. Phase 01 is present and Phase 02 is accepted. The owner explicitly authorized Phase 03 by submitting the complete final implementation prompt on 2026-11-06. Phase 03 is implemented on branch `phase-03/markdown-autosave`, PR #2, implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; exact-PR-head CI run `42333273779` passed formatting, analyzer and 120/120 tests on PR head `8748150721f2a262716cc3786c76932e6b1f53e3`. PR review/merge and owner physical-device acceptance remain pending. Phase 04–09 require separate authorization.
 
 ## Rules
 1. One phase at a time; maximum 2–3 major features.
@@ -27,7 +27,7 @@ Before: confirm explicit authorization, prerequisites, feature IDs, source state
 - Record owner-reported physical-device results separately from automated CI; do not invent missing evidence. The current Android Phase 01 test is owner-reported successful, with detailed evidence not attached.
 - iOS implementation/configuration continues in every applicable phase. When macOS/Xcode verification is unavailable, label iOS native build/device verification `Not Verified — Environment Unavailable`; this is not a blocker for Android-focused phase progression.
 - If a required physical-device test has not been run, report that specific test as pending. Ask before any exception.
-- Phase 03 Android physical-device verification is currently pending; do not infer it from the 119 passing host tests.
+- Phase 03 Android physical-device verification is currently pending; do not infer it from the 120 passing host tests.
 
 
 ## Current Phase 02 repair gate — 2026-11-06
@@ -37,4 +37,4 @@ Phase 02 implementation is complete on source SHA `fa8f4ad469786a6a7199360a3d681
 
 ## Phase 03 current gate — 2026-11-06
 
-Owner authorization was granted by submission of `docs/development/PHASE_03_IMPLEMENTATION_PROMPT.md`. Implementation is on PR #2, branch `phase-03/markdown-autosave`, implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head `43b82e132ed661157c753d0184cfc4a40b785203`. Exact-PR-head Flutter CI run `42332402241` passed formatting, analyzer and 119/119 tests. The PR is not merged; owner physical-device acceptance is pending. The original Phase 03 prompt prohibited workflow edits. During this execution, separate commits appeared on the PR branch modifying the three protected workflow files (`a778670ee9104490bd8f6cc7271720c98c3c3888`, `12ae889fc51ee1120ea2956cde24a0c39c00fc22`, `43b82e132ed661157c753d0184cfc4a40b785203`). I did not author, alter or revert those workflow commits; they require owner review before merge. No APK workflow runs/artifacts have been verified. Do not start Phase 04.
+Owner authorization was granted by submission of `docs/development/PHASE_03_IMPLEMENTATION_PROMPT.md`. Implementation is on PR #2, branch `phase-03/markdown-autosave`, implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head `8748150721f2a262716cc3786c76932e6b1f53e3`. Exact-PR-head Flutter CI run `42333273779` passed formatting, analyzer and 120/120 tests. The PR is not merged; owner physical-device acceptance is pending. The original Phase 03 prompt prohibited workflow edits. During this execution, separate commits appeared on the PR branch modifying the three protected workflow files (`a778670ee9104490bd8f6cc7271720c98c3c3888`, `12ae889fc51ee1120ea2956cde24a0c39c00fc22`, `8748150721f2a262716cc3786c76932e6b1f53e3`). I did not author, alter or revert those workflow commits; they require owner review before merge. No APK workflow runs/artifacts have been verified. Do not start Phase 04.
