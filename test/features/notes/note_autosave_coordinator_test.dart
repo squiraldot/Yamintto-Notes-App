@@ -9,7 +9,9 @@ void main() {
 
     setUp(() => timers = _FakeTimerFactory());
 
-    test('flushes the latest pending snapshot as a disposal fallback', () async {
+    test(
+      'flushes the latest pending snapshot as a disposal fallback',
+      () async {
       final saved = Completer<NoteSaveSnapshot>();
       final coordinator = NoteAutosaveCoordinator(
         save: (snapshot) async {
@@ -24,7 +26,8 @@ void main() {
       final snapshot = await saved.future.timeout(const Duration(seconds: 1));
       expect(snapshot.title, 'Pending title');
       expect(snapshot.body, 'Pending body');
-    });
+      },
+    );
 
     test('debounces edits for the configured 700 ms interval', () async {
       final saved = <NoteSaveSnapshot>[];
