@@ -33,9 +33,6 @@ jobs:
         run: flutter pub get --enforce-lockfile
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed .
-      - name: Diagnose formatter output for disposal regression (temporary)
-        if: failure()
-        run: dart format --output=show test/features/notes/note_autosave_coordinator_test.dart
       - name: Run Flutter analyzer
         run: flutter analyze --fatal-infos
       - name: Run unit and widget tests
