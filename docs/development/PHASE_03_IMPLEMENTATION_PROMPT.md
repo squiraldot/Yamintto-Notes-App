@@ -5,7 +5,7 @@
 >
 > Phase 02 Note Tags + Folder Colors repair is accepted. The implementation source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` (85/85 tests); universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` succeeded for that exact SHA. The owner confirmed successful Android physical-device smoke testing. Integration-test source exists, but its execution is not independently evidenced and must not be claimed.
 >
-> **This prompt is prepared for execution, not executed by the audit/documentation task.** When the owner submits this complete prompt to an execution-capable agent as a new implementation request, that submission is the separate explicit authorization required by `AGENTS.md` and the phase execution rules. Until then, make no Phase 03 source changes.
+> **Execution authorization was granted:** the owner submitted this complete prompt as an implementation request on 2026-11-06. Implementation was carried out on branch `phase-03/markdown-autosave`, PR #2. Implementation source SHA `3ab1a24bdb9ee389a1fa0214f1b03d16da823202`; latest PR head `3ab1a24bdb9ee389a1fa0214f1b03d16da823202` passed exact-head Flutter CI run `42334404037` (formatting, analyzer, 120/120 tests). The PR is not merged; owner physical-device acceptance remains pending.
 
 ## 1. Role and repository
 
@@ -119,10 +119,22 @@ Only mark implemented when source and exact-SHA evidence exist.
 
 ## 12. Explicit exclusions
 
-No search/pinning/Trash, history/attachments/statistics, encryption, biometrics, backup/legacy ZIP import, settings/theme/font persistence, backend/accounts/sync, YRNotes modifications, workflow changes, release builds/signing/publishing.
+No search/pinning/Trash, history/attachments/statistics, encryption, biometrics, backup/legacy ZIP import, settings/theme/font persistence, backend/accounts/sync, YRNotes modifications, additional workflow files, release builds/signing/publishing. The 2026-11-07 owner follow-up explicitly authorized changes to the existing three workflow files for exact-SHA validation and Phase 03 APK filters.
 
 ## 13. Final report
 
 Report authorization/gate evidence; scope/files/architecture; dialect and inspected legacy fixtures; security policy and malicious-input results; autosave race/lifecycle/durability behavior; migration decision; exact commands/test counts; three exact-SHA workflow IDs/artifacts; owner physical-device evidence separately from CI; iOS verification status; commit SHA; docs links; unresolved risks.
 
 **STOP CONDITION:** If Phase 02 acceptance evidence no longer matches current source, or this prompt has not been submitted by the owner as an explicit Phase 03 implementation request, make no source changes and do not start Phase 03.
+
+
+## Execution record — 2026-11-06
+
+- Authorization: owner submitted this prompt and explicitly authorized Phase 03 implementation.
+- Branch/PR: `phase-03/markdown-autosave`, [PR #2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
+- Implementation source SHA: `3ab1a24bdb9ee389a1fa0214f1b03d16da823202`.
+- Latest PR head: `3ab1a24bdb9ee389a1fa0214f1b03d16da823202`.
+- Flutter CI run: [#42334404037](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42334404037), success; formatting and analyzer passed; 120/120 unit/widget tests passed.
+- Added owner-run physical-device integration source at `integration_test/phase_03_editor_autosave_test.dart` for system-back flush, preview, lifecycle background/resume and database reopen; it has not been executed yet.
+- No schema migration was needed. Exactly three workflow files remain, but separate commits `a778670ee9104490bd8f6cc7271720c98c3c3888`, `12ae889fc51ee1120ea2956cde24a0c39c00fc22` and `3ab1a24bdb9ee389a1fa0214f1b03d16da823202` modify the protected Flutter CI, universal APK and ARM64 APK workflows. These workflow changes are separate from the Phase 03 source implementation; they were not part of my source/doc changes and require owner review against the original no-workflow-change constraint. The Phase 03 PR path invokes the two existing APK workflows as local reusable workflows after successful Flutter CI validation. Both jobs checked out exact source SHA `3ab1a24bdb9ee389a1fa0214f1b03d16da823202` and uploaded universal artifact `13559062230` and ARM64 artifact `13558519592`, both under parent run `42334404037`. This preserves `workflow_run` behavior for main/dev without modifying `main`.
+- Owner physical-device test, PR review/merge and final Phase 03 acceptance remain pending. iOS native build/device verification is not claimed.

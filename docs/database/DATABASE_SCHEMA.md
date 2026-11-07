@@ -64,7 +64,7 @@ SQLite built-in `NOCASE` is ASCII-only and MUST NOT be treated as sufficient Uni
 | `folder_id` | TEXT | Yes | NULL | FK to folders.id; NULL=root |
 | `title` | TEXT | No | '' | Maximum 255 Unicode code points; empty title permitted |
 | `body` | TEXT | No | '' | Editor-independent source text; plaintext before Phase 06 migration |
-| `content_format_version` | INTEGER | No | 1 | CHECK >= 1; dialect/format semantics Phase 03 |
+| `content_format_version` | INTEGER | No | 1 | CHECK >= 1; 1 = historical plain text, 2 = Yamintto hybrid Markdown, >2 = unknown future format preserved read-only |
 | `sort_order` | INTEGER | No | 0 | Order within folder/root collection |
 | `created_at` | INTEGER | No | none | UTC Unix epoch milliseconds |
 | `updated_at` | INTEGER | No | none | UTC Unix epoch milliseconds |
@@ -81,7 +81,11 @@ Constraints and indexes:
 - Listing index: `(folder_id, deleted_at, sort_order, created_at, id)`.
 - No pin fields in Phase 02; Phase 04 adds them by migration. No revision/attachment FKs until Phase 05.
 
-Body stores raw source text, not widget state or rendered output. Phase 03 may edit/save this field using an approved Markdown dialect without binding persistence to a specific editor package.
+Body stores raw source text, not widget state or rendered output. The format marker is a content-dialect contract, independent of SQLite schema version: version 1 is historical literal plain text; version 2 is the Yamintto hybrid Markdown dialect documented in [MARKDOWN_DIALECT.md](../editor/MARKDOWN_DIALECT.md); values greater than 2 are unknown future dialects and must remain readable as raw source but read-only to older clients. New Markdown-editor notes are created as version 2. Opening or previewing a version-1 note never rewrites it; title-only edits retain version 1; an explicit body edit upgrades only that note to version 2 in the same atomic repository update. No schema migration or mass row update is required. Unknown future versions must never be overwritten.
+
+## Note content-format version contract
+
+`content_format_version` versions the meaning of `notes.body`; it is not the SQLite schema version. Version 1 is legacy plain text and is always displayed literally. Version 2 is the documented Yamintto hybrid Markdown dialect. Unknown values greater than 2 are preserved and displayed as raw source in a recoverable read-only state. New editor-created notes use version 2. Merely opening or previewing v1 never writes to the row; title-only updates preserve v1; a deliberate body change upgrades that single row to v2 in the same repository transaction. The original `notes.body` source is never normalized, serialized from AST, or replaced by rendered HTML/widget state. No schema migration or mass rewrite is needed.
 
 ## Folder hierarchy and depth invariant
 

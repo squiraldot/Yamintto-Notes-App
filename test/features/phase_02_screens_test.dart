@@ -168,17 +168,20 @@ void main() {
     expect((await notes.listNotes()).single.body, 'Raw source text');
   });
 
-  testWidgets('prompts before abandoning unsaved note changes', (tester) async {
+  testWidgets('flushes pending note edits before leaving the editor', (
+    tester,
+  ) async {
     await mount(tester);
     await tester.tap(find.text('New note'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Draft');
     await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();
-    expect(find.text('Discard unsaved changes?'), findsOneWidget);
-    await tester.tap(find.text('Keep editing'));
-    await tester.pumpAndSettle();
-    expect(find.text('New note'), findsOneWidget);
+
+    expect(find.byKey(const ValueKey('note-body-editor')), findsNothing);
+    final saved = (await notes.listNotes()).single;
+    expect(saved.title, 'Draft');
+    expect(saved.body, isEmpty);
   });
 
   testWidgets('excludes descendants from folder move destinations', (
@@ -216,7 +219,7 @@ void main() {
     expect(saved.body, 'Updated raw body');
   });
 
-  testWidgets('cancelling existing note edits preserves stored content', (
+  testWidgets('flushes existing note edits before leaving the editor', (
     tester,
   ) async {
     final note = await notes.createNote(
@@ -226,15 +229,13 @@ void main() {
     await mount(tester);
     await tester.tap(find.text('Original'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).first, 'Unsaved title');
+    await tester.enterText(find.byType(TextField).first, 'Updated title');
     await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Discard'));
-    await tester.pumpAndSettle();
-    final unchanged = await notes.getNote(note.id);
-    expect(unchanged.title, 'Original');
-    expect(unchanged.body, 'Original body');
-    expect(find.text('Original'), findsOneWidget);
+
+    final updated = await notes.getNote(note.id);
+    expect(updated.title, 'Updated title');
+    expect(updated.body, 'Original body');
   });
 
   testWidgets('moves a root note into a selected folder', (tester) async {

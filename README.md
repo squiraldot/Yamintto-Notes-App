@@ -19,6 +19,10 @@ Native Flutter notes application for Android and iOS; offline-first by design. Y
 
 Phase 01 foundation and Phase 02 core management are implemented. Phase 02 includes nested folders, notes CRUD and soft-delete, reusable note tags with multiple persistent assignments, and optional persisted colors for root and nested folders. The database uses Drift/SQLite schema v2; schema v1 remains the immutable migration baseline.
 
+**Phase 03 — IMPLEMENTED ON PR BRANCH; EXACT-PR-HEAD CI PASSED; REVIEW AND OWNER DEVICE ACCEPTANCE PENDING**
+
+Phase 03 Markdown source editor, safe hybrid Markdown viewer, version-aware content handling and serialized 700 ms autosave are implemented on branch `phase-03/markdown-autosave`, PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2). Exact verified source SHA `18b99502994af95785feda1ef3da6f3bac1ac2e6` passed Flutter CI run [#42335797686](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42335797686): locked dependencies, formatting (68 files, 0 changed), analyzer (no issues) and **120/120 tests**. Both reusable APK workflow jobs ran after CI validation in the same parent run and checked out this exact SHA. Universal Debug APK artifact [13559875008](https://api.github.com/repos/squiraldot/Yamintto-Notes-App/actions/artifacts/13559875008) and ARM64-only artifact [13559702162](https://api.github.com/repos/squiraldot/Yamintto-Notes-App/actions/artifacts/13559702162) uploaded successfully. The PR is not merged and Phase 03 owner physical-device acceptance remains pending. Integration source at `integration_test/phase_03_editor_autosave_test.dart` has not been run by the owner. iOS native verification remains Not Verified — Environment Unavailable.
+
 **Phase 02 acceptance evidence (2026-11-06):**
 - Repair source: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`.
 - Flutter CI run [#42177776797](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42177776797): passed on Flutter 3.47.9; format, analyzer and **85/85 tests** passed.
@@ -27,13 +31,16 @@ Phase 01 foundation and Phase 02 core management are implemented. Phase 02 inclu
 - Owner confirmed successful physical-device testing of the repaired features. This is recorded as owner-reported acceptance; no device model, OS version, screenshots or test logs are asserted.
 - The separate automated integration-test source exists; its execution is not independently evidenced and is not claimed.
 
-**Phase 03 has not started and is not authorized.** It requires separate explicit owner authorization. Features assigned to later phases remain planned or not implemented; see the [phase roadmap](docs/development/PHASE_ROADMAP.md) and [status record](docs/STATUS.md).
+Phase 03 execution was explicitly authorized by the owner through submission of the final implementation prompt on 2026-11-06. The implementation remains on PR branch #2 pending review and owner physical-device acceptance. Phase 04–09 remain planned and require their own phase gates; see the [phase roadmap](docs/development/PHASE_ROADMAP.md) and [status record](docs/STATUS.md).
 
-## Implemented Phase 02 capabilities
+## Implemented application capabilities
 
 - Offline local folders and notes with nested hierarchy, ordering and soft-delete.
 - Reusable global tags; create, rename and delete tags; assign/remove multiple tags per note.
 - Persistent optional folder colors with a validated ten-color opaque ARGB palette, theme-aware default and nested-folder display.
+- Hybrid Markdown source editor and native Flutter AST viewer; modern Markdown plus explicitly allowlisted legacy YRNotes syntax.
+- Version 1 plain-text preservation, version 2 hybrid Markdown, unknown future versions read-only; no schema migration or mass rewrite.
+- Debounced autosave with per-editor serialized revisions, repository stale-write protection, explicit conflict reload, navigation/lifecycle flush, visible error state and retry.
 - Forward-only transactional schema v1 → v2 migration with rollback/fail-closed behavior.
 - Unit, repository, database/migration and widget regression coverage.
 
@@ -74,6 +81,8 @@ The codebase uses Flutter, Riverpod, GoRouter and Drift/SQLite with feature-firs
 
 - [Documentation index](docs/README.md)
 - [Project status and acceptance evidence](docs/STATUS.md)
+- [Editor architecture](docs/editor/EDITOR_ARCHITECTURE.md)
+- [Hybrid Markdown dialect and safety policy](docs/editor/MARKDOWN_DIALECT.md)
 - [Changelog](CHANGELOG.md)
 - [Nine-phase roadmap](docs/development/PHASE_ROADMAP.md)
 - [AI agent instructions](AGENTS.md)

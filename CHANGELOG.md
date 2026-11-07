@@ -45,4 +45,25 @@
 - Exact repair source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` passed on Flutter 3.47.9: formatting, analyzer and **85/85 tests**.
 - Universal Debug APK run `42177872597` and ARM64 Debug APK run `42177872567` both succeeded and uploaded artifacts for that same source SHA.
 - Owner confirmed successful physical-device testing of the repaired application. Recorded as **owner-reported PASS**; no device model, OS version, screenshots, logs or exact test command are asserted.
-- Documentation reconciled after owner acceptance. **Phase 02 — ACCEPTED. Phase 03 — NOT STARTED / NOT AUTHORIZED.**
+- Documentation reconciled after owner acceptance. **Phase 02 — ACCEPTED. Phase 03 was subsequently authorized and implemented on PR #2; owner device acceptance and merge remain pending.**
+
+
+## Phase 03 — Hybrid Markdown editor and autosave — 2026-11-06
+- Added a documented hybrid Markdown dialect using the Dart team's `markdown` AST parser; modern Markdown and source-verified legacy YRNotes syntax are supported through an explicit safe allowlist.
+- Added a native Flutter AST viewer. Raw HTML is not rendered; links are styled but inert, images remain alt-text placeholders, and arbitrary HTML/CSS/scripts/handlers are not executed.
+- Added note content-format semantics: v1 remains literal plain text; new editor notes use v2 hybrid Markdown; editing a v1 body upgrades only that note; unknown future formats remain read-only and cannot be overwritten.
+- Added serialized per-editor autosave with a 700 ms debounce, revision-aware writes, latest-snapshot persistence, explicit/navigation/lifecycle flush, dirty/error state and retry.
+- Added repository and widget coverage for source preservation, parser limits, malicious input, version behavior, autosave races/failures, preview, navigation and lifecycle flush; added owner-run physical-device integration source for system-back flush, lifecycle backgrounding and database reopen.
+- Fixed the initial CI formatting and analyzer blockers, the markdown AST element-constructor API mismatch, missing repository format-version handling, and rich-text test assumptions.
+- Updated the previous Phase 02 discard-confirmation tests to assert Phase 03 autosave-before-navigation behavior.
+- Exact verified source SHA `18b99502994af95785feda1ef3da6f3bac1ac2e6` passed Flutter CI run `42335797686`: locked dependencies, Dart formatting, `flutter analyze --fatal-infos`, and **120/120 unit/widget tests**. Both APK reusable workflows ran after validation in the same parent run and built that exact SHA.
+- Universal Debug APK artifact ID `13559875008` ([artifact](https://api.github.com/repos/squiraldot/Yamintto-Notes-App/actions/artifacts/13559875008)); ARM64 Debug APK artifact ID `13559702162` ([artifact](https://api.github.com/repos/squiraldot/Yamintto-Notes-App/actions/artifacts/13559702162)). Both were uploaded by run `42335797686`. PR #2 remains open and unmerged; owner physical-device acceptance remains pending. iOS native build/device verification is not claimed.
+
+
+## Phase 03 integrity follow-up — 2026-11-07
+- Restored optimistic `updated_at` revision checks at the existing note-repository boundary so a stale editor cannot overwrite a newer persisted note.
+- Made successful note updates advance `updated_at` monotonically, including multiple writes within one clock millisecond.
+- Added a confirmed Reload latest flow for stale-editor conflicts; the local draft remains intact until the owner explicitly chooses to reload.
+- Fixed NUL-title validation to reject the actual NUL character at the domain boundary instead of relying on SQLite to reject it.
+- Added regression coverage for stale-writer rejection, source preservation, editor conflict/reload behavior and domain-level NUL validation.
+- The Phase 03 PR path uses local `workflow_call` reusable workflows after the Flutter CI validation job, avoiding any `main` modification. Both APK jobs share parent run ID `42335797686` and checked out exact source SHA `18b99502994af95785feda1ef3da6f3bac1ac2e6`.

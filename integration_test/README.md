@@ -2,7 +2,7 @@
 
 ## What is retained
 
-Phase 01 includes `app_smoke_test.dart`, which exercises the real Yamintto app widget tree through startup, splash transition and theme preview. Phase 02 includes `phase_02_data_smoke_test.dart`, which creates a real SQLite file, creates a folder and note, closes/reopens the database, verifies persisted rows, soft-deletes the note, verifies active-list exclusion and confirms the retained folder/body/order fields. Both tests are source only until the owner executes them on physical hardware.
+Phase 01 includes `app_smoke_test.dart`, which exercises the real Yamintto app widget tree through startup, splash transition and theme preview. Phase 02 includes `phase_02_data_smoke_test.dart`, which creates a real SQLite file, creates a folder and note, closes/reopens the database, verifies persisted rows, soft-deletes the note, verifies active-list exclusion and confirms the retained folder/body/order fields. Phase 03 includes `phase_03_editor_autosave_test.dart`, which uses a file-backed database and the real app to exercise system-back flush, editor/preview round-trip, lifecycle background flush, and persisted content after closing/reopening Drift. All three tests are source only until the owner executes them on physical hardware.
 
 ## Execution policy
 

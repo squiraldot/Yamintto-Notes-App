@@ -9,24 +9,31 @@ on:
     branches:
       - main
       - dev
+      - phase-03/markdown-autosave
+  workflow_call:
+    inputs:
+      source_sha:
+        description: Exact source SHA validated by the calling Flutter CI job.
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: yamintto-arm64-debug-apk-${{ github.event.workflow_run.head_branch }}
-  cancel-in-progress: true
+  group: yamintto-arm64-debug-apk-${{ github.event_name }}-${{ github.run_id }}
+  cancel-in-progress: false
 
 jobs:
   build-arm64-debug-apk:
     name: Build ARM64-only Android debug APK
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ inputs.source_sha != '' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the exact CI-tested commit
+      - name: Check out the exact CI-tested source commit
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ inputs.source_sha || github.event.workflow_run.head_sha }}
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -39,7 +46,7 @@ jobs:
       - name: Upload ARM64-only debug APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: yamintto-arm64-debug-${{ github.event.workflow_run.head_sha }}
+          name: yamintto-arm64-debug-${{ inputs.source_sha || github.event.workflow_run.head_sha }}
           path: build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: error
           retention-days: 14

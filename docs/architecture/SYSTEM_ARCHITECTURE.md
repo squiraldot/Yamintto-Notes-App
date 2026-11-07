@@ -1,8 +1,8 @@
 # System architecture
 
-## Current implementation — Phase 02
+## Current implementation — Phase 03 PR branch
 
-`lib/main.dart` calls bootstrap; bootstrap initializes Flutter and runs `ProviderScope(child: YaminttoApp())`. `YaminttoApp` owns one GoRouter instance and an in-memory theme notifier. MaterialApp.router receives Material 3 light, dark and AMOLED themes. GoRouter starts at splash, then opens the root folder browser. `/folders/:folderId` opens nested folders; `/notes/new` and `/notes/:noteId/edit` provide explicit-save plain-text note creation/editing; `/appearance` retains the Phase 01 theme preview. The Phase 02 source includes the folder browser, active root/folder note lists, folder operations, note operations, loading/empty/error/retry states and unsaved-change protection.
+`lib/main.dart` calls bootstrap; bootstrap initializes Flutter and runs `ProviderScope(child: YaminttoApp())`. `YaminttoApp` owns one GoRouter instance and an in-memory theme notifier. MaterialApp.router receives Material 3 light, dark and AMOLED themes. GoRouter starts at splash, then opens the root folder browser. `/folders/:folderId` opens nested folders; `/notes/new` and `/notes/:noteId/edit` provide the hybrid Markdown source editor, native Flutter preview and autosave; `/appearance` retains the Phase 01 theme preview. The Phase 02 source includes the folder browser, active root/folder note lists, folder operations, note operations, loading/empty/error/retry states and unsaved-change protection.
 
 The app-scoped Riverpod `databaseProvider` lazily opens and memoizes one Drift/SQLite database. Feature repository providers share that instance. Schema v1 is the immutable migration baseline (`folders`, `notes`); current schema v2 adds `tags`, `note_tags` and nullable `folders.color_argb`. Folder/tag canonicalization uses bundled Unicode 17.0 data and deterministic SQLite functions. Repair source revision `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` with 85/85 tests; both exact-SHA Debug APK workflows succeeded. Owner-reported physical-device testing passed and Phase 02 is ACCEPTED. The separate integration-test source exists; its execution is not claimed.
 
@@ -29,7 +29,7 @@ Drift/SQLite implementation is present under `lib/core/database/`: schema v1, da
 - Enable and test foreign keys on every connection.
 - Accepted schema v1 contains only `folders` and `notes`; see [schema](../database/DATABASE_SCHEMA.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
 
-Phase 02 architecture decisions are owner-approved and Phase 02 implementation was explicitly authorized on 2026-11-05. The source implementation is present and host-validated; owner-reported Android physical-device smoke testing passed; Phase 02 final acceptance is recorded. Phase 03 and later phases require separate authorization.
+Phase 02 architecture decisions are owner-approved and Phase 02 is accepted. Phase 03 implementation was explicitly authorized on 2026-11-06 and is present on PR branch `phase-03/markdown-autosave`; exact source SHA `3ab1a24bdb9ee389a1fa0214f1b03d16da823202` passed Flutter CI run `42334404037` with 120/120 tests. Universal and ARM64 reusable APK workflows succeeded in the same parent run and uploaded artifacts `13559062230` and `13558519592`. Owner physical-device acceptance, review and merge remain pending. Phase 04–09 require separate authorization.
 
 ## Data lifecycle and integrity
 
@@ -51,7 +51,7 @@ Field-level encryption does not automatically protect titles, folder names, meta
 
 ## Future-phase responsibilities
 
-- 03: Markdown source editor/viewer and safe autosave; no editor-widget coupling in persisted content.
+- 03: Markdown source editor/viewer and safe autosave; implementation is on PR #2 and no editor-widget coupling is persisted.
 - 04: search, pinning, Trash/Restore and explicit permanent deletion.
 - 05: revisions, local attachment metadata/files, statistics and explicit file cleanup.
 - 06: reviewed encryption/recovery and plaintext migration.
@@ -59,7 +59,7 @@ Field-level encryption does not automatically protect titles, folder names, meta
 - 08: versioned encrypted backup/restore and verified legacy ZIP import.
 - 09: settings and persisted preferences.
 
-No future-phase table, UI, service or behavior is implemented by this document.
+Phase 03 implementation is described in [editor architecture](../editor/EDITOR_ARCHITECTURE.md) and [hybrid Markdown dialect](../editor/MARKDOWN_DIALECT.md). No Phase 04–09 table, UI, service or behavior is implemented by this document.
 
 
 ## Owner decision reconciliation — 2026-11-06
@@ -77,4 +77,25 @@ The app-scoped Riverpod database provider continues to own the single Drift/SQLi
 
 Schema v2 adds `tags`, `note_tags` and nullable `folders.color_argb`. Tag assignment replacement, tag deletion and folder color updates execute through repository/database boundaries. Note/tag foreign keys are RESTRICT; explicit tag deletion removes junction rows in the same transaction. Existing notes/folders are retained through an additive v1→v2 migration.
 
-Repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` on Flutter 3.47.9 with 85/85 tests. Both exact-SHA Debug APK workflows succeeded and uploaded artifacts (see [status](../STATUS.md)). Owner confirmed successful physical-device verification of repaired features; Phase 02 is ACCEPTED. Earlier schema-v1-only statements above remain historical and are superseded for current architecture. No Phase 03 functionality has started.
+Repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed Flutter CI run `42177776797` on Flutter 3.47.9 with 85/85 tests. Both exact-SHA Debug APK workflows succeeded and uploaded artifacts (see [status](../STATUS.md)). Owner confirmed successful physical-device verification of repaired features; Phase 02 is ACCEPTED. Earlier schema-v1-only statements above remain historical and are superseded for current architecture. Phase 03 functionality is implemented on PR branch #2; owner device acceptance and merge remain pending.
+
+
+## Phase 03 editor architecture — current implementation
+
+The editor remains inside the existing notes feature boundaries. `NoteEditorScreen` owns only presentation state and TextEditingControllers. `NoteAutosaveCoordinator` owns the per-editor debounce/revision state machine and calls a repository callback with an immutable title/body snapshot. `NoteRepository` owns transactional persistence and content-format version transitions. `HybridMarkdownParser` produces a bounded Markdown AST; `SafeMarkdownViewer` maps only reviewed AST elements to Flutter widgets. No WebView, HTML renderer or SQL access is used by presentation.
+
+### Content format contract
+- Version 1 is literal plain text and is rendered as selectable text without interpreting Markdown.
+- Version 2 is the documented hybrid Markdown dialect.
+- New editor-created notes use v2. A v1 note remains v1 on open, preview and title-only edits; a deliberate body edit upgrades only that note to v2 in the same repository transaction.
+- Unknown versions are read-only and repository writes reject them. There is no schema migration or bulk content rewrite.
+
+### Autosave behavior
+- Debounce: 700 ms.
+- Each editor has a monotonically increasing edit revision and one serialized flush future.
+- A save persists one atomic title/body snapshot. If a newer revision arrives during a write, the coordinator persists the newer snapshot before reporting Saved.
+- Explicit save, preview transition, back navigation and app lifecycle backgrounding attempt to flush. Lifecycle flush is best-effort; process termination before a completed flush may lose the pending debounce window.
+- Failures preserve editor source and expose an error/retry state. Saved is shown only when the latest revision has been persisted.
+
+### Current verification
+PR #2 exact source SHA `3ab1a24bdb9ee389a1fa0214f1b03d16da823202` passed Flutter CI run `42334404037`: locked dependency resolution, formatting (68 files, 0 changed), analyzer (no issues) and 120/120 unit/widget tests. Both APK jobs checked out the same exact SHA and uploaded artifacts `13559062230` and `13558519592`. The integration source `integration_test/phase_03_editor_autosave_test.dart` remains owner-run and has not been executed. Owner physical-device acceptance remains pending; iOS native build/device verification is Not Verified — Environment Unavailable.
