@@ -76,7 +76,7 @@ Tag semantics and color representation must be frozen from the original Phase 02
 
 ## Phase 03 owner decision — hybrid Markdown
 
-FR-03/FR-04 use the documented hybrid dialect: modern Markdown baseline plus verified legacy YRNotes constructs. Raw HTML is disabled by default except the narrow safe allowlist; unsafe URLs/content are rejected or rendered inert. FR-05 uses per-editor serialized revisions plus a repository `updated_at` compare token to reject stale concurrent editors; lifecycle flush remains best-effort, and failures retain editable text with retry or explicit reload for a stale-version conflict. Phase 03 implementation is present on PR #2; exact-PR-head Flutter CI passed 119/119 tests on PR head `43b82e132ed661157c753d0184cfc4a40b785203`; owner physical-device acceptance, review and merge remain pending. Phase 03 APK artifacts are blocked by the unchanged default-branch filters on `main`.
+FR-03/FR-04 use the documented hybrid dialect: modern Markdown baseline plus verified legacy YRNotes constructs. Raw HTML is disabled by default except the narrow safe allowlist; unsafe URLs/content are rejected or rendered inert. FR-05 uses per-editor serialized revisions plus a repository `updated_at` compare token to reject stale concurrent editors; lifecycle flush remains best-effort, and failures retain editable text with retry or explicit reload for a stale-version conflict. Phase 03 implementation is present on PR #2; exact-PR-head Flutter CI passed 120/120 tests on PR head `8748150721f2a262716cc3786c76932e6b1f53e3`; owner physical-device acceptance, review and merge remain pending. Phase 03 APK artifacts are blocked by the unchanged default-branch filters on `main`.
 
 
 ## Phase 02 repair requirements — implemented
