@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           # pull_request defaults to a synthetic merge commit. Test the PR
-          # head itself so workflow_run.head_sha is the exact tested source.
+          # head itself so downstream artifact builds use the exact tested SHA.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -37,3 +37,19 @@ jobs:
         run: flutter analyze --fatal-infos
       - name: Run unit and widget tests
         run: flutter test
+
+  build-phase-03-universal-debug-apk:
+    name: Phase 03 universal Debug APK
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'phase-03/markdown-autosave' }}
+    needs: validate
+    uses: ./.github/workflows/yamintto-debug-apk.yml
+    with:
+      source_sha: ${{ github.event.pull_request.head.sha }}
+
+  build-phase-03-arm64-debug-apk:
+    name: Phase 03 ARM64 Debug APK
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'phase-03/markdown-autosave' }}
+    needs: validate
+    uses: ./.github/workflows/yamintto-arm64-debug-apk.yml
+    with:
+      source_sha: ${{ github.event.pull_request.head.sha }}
