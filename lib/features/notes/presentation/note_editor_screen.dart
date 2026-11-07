@@ -147,11 +147,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                   ),
                 ),
               )
-            else if (_saveError)
+            else if (_saveError && _staleConflict)
               TextButton(
-                onPressed: _staleConflict ? _reloadLatest : _retrySave,
-                child: Text(_staleConflict ? 'Reload latest' : 'Retry'),
+                onPressed: _reloadLatest,
+                child: const Text('Reload latest'),
               )
+            else if (_saveError)
+              TextButton(onPressed: _retrySave, child: const Text('Retry'))
             else if (_autosave.isSaved)
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
@@ -213,13 +215,20 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                     child: const Text('Preview'),
                   ),
                   const Spacer(),
-                  if (_saveError)
+                  if (_saveError && _staleConflict)
                     Text(
-                      _staleConflict ? 'Changed elsewhere' : 'Save error',
+                      'Changed elsewhere',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.error,
                       ),
-                    ),
+                    )
+                  else if (_saveError)
+                    Text(
+                      'Save error',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    )
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
