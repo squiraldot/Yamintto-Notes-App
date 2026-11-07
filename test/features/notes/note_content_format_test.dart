@@ -109,7 +109,9 @@ void main() {
       expect(stored.body, 'newer source');
     },
   );
-  test('rejects NUL characters in note titles at the domain boundary', () async {
+  test(
+    'rejects NUL characters in note titles at the domain boundary',
+    () async {
     await expectLater(
       notes.createNote(title: 'a\u0000b'),
       throwsA(
