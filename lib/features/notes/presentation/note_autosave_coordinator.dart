@@ -97,7 +97,10 @@ class NoteAutosaveCoordinator {
     if (_disposed || _flushFuture != null) return;
     _timer?.cancel();
     _timer = null;
-    _latest = NoteSaveSnapshot(title: title, body: body);
+    _latest = NoteSaveSnapshot(
+      title: title,
+      body: body,
+    );
     _editRevision++;
     _savedRevision = _editRevision;
     _saving = false;
