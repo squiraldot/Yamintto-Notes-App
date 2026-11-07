@@ -377,7 +377,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
       _staleConflict = false;
       _saveError = false;
       _isDirty = false;
-      _autosave.resetToSavedSnapshot(title: latest.title, body: latest.body);
+      _autosave.resetToSavedSnapshot(latest.title, latest.body);
       if (mounted) {
         ref.invalidate(noteListProvider(_activeFolderId));
         ref.invalidate(noteDetailProvider(noteId));
