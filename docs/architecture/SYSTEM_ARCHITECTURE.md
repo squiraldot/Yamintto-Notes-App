@@ -29,7 +29,7 @@ Drift/SQLite implementation is present under `lib/core/database/`: schema v1, da
 - Enable and test foreign keys on every connection.
 - Accepted schema v1 contains only `folders` and `notes`; see [schema](../database/DATABASE_SCHEMA.md) and [decision register](../database/PHASE_02_DECISION_REGISTER.md).
 
-Phase 02 architecture decisions are owner-approved and Phase 02 is accepted. Phase 03 implementation was explicitly authorized on 2026-11-06 and is present on PR branch `phase-03/markdown-autosave`; its exact-SHA Flutter CI passed 114/114 tests. Phase 03 owner physical-device acceptance and merge remain pending. Phase 04–09 require separate authorization.
+Phase 02 architecture decisions are owner-approved and Phase 02 is accepted. Phase 03 implementation was explicitly authorized on 2026-11-06 and is present on PR branch `phase-03/markdown-autosave`; exact PR-head Flutter CI run `42332402241` passed on SHA `43b82e132ed661157c753d0184cfc4a40b785203` with 119/119 tests. Phase 03 APK artifacts are pending because the default-branch `workflow_run` filters still exclude this branch; owner physical-device acceptance, review and merge remain pending. Phase 04–09 require separate authorization.
 
 ## Data lifecycle and integrity
 
@@ -98,4 +98,4 @@ The editor remains inside the existing notes feature boundaries. `NoteEditorScre
 - Failures preserve editor source and expose an error/retry state. Saved is shown only when the latest revision has been persisted.
 
 ### Current verification
-PR #2 source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run `42202330375`: formatting, analyzer and 114/114 unit/widget tests. Phase 03 owner physical-device acceptance remains pending. Owner-run integration source is `integration_test/phase_03_editor_autosave_test.dart`; it has not yet been executed.
+PR #2 exact-head SHA `43b82e132ed661157c753d0184cfc4a40b785203` passed Flutter CI run `42332402241`: locked dependency resolution, formatting (68 files, 0 changed), analyzer (no issues) and 119/119 unit/widget tests. The integration source `integration_test/phase_03_editor_autosave_test.dart` remains owner-run and has not been executed. Phase 03 APK artifacts and owner physical-device acceptance remain pending; iOS native build/device verification is Not Verified — Environment Unavailable.

@@ -111,18 +111,18 @@ The owner explicitly confirmed successful physical-device testing of the repaire
 
 No device model, OS version, screenshots, logs, or exact test command were supplied, so none are asserted. The source file `integration_test/phase_02_data_smoke_test.dart` remains distinct from the owner's manual device confirmation; its execution is not independently evidenced and is not claimed. iOS verification remains unavailable and separate from this Android-focused acceptance.
 
-**Phase 02 — ACCEPTED. Phase 03 — NOT STARTED / NOT AUTHORIZED.**
+**Phase 02 — ACCEPTED. Phase 03 — AUTHORIZED and implemented on PR #2; owner device acceptance, APK artifacts, review and merge remain pending.**
 
 
 ## Phase 03 implementation verification — PR #2
 
-Exact PR source SHA: `cc8295293e85380cd964e26bfc890b0da063643c`.
+Exact PR-head SHA: `43b82e132ed661157c753d0184cfc4a40b785203`.
 
 Flutter CI run [#42202330375](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42202330375) succeeded on Flutter 3.47.9:
 - Locked dependency resolution: passed.
 - `dart format --output=none --set-exit-if-changed .`: passed.
 - `flutter analyze --fatal-infos`: passed.
-- `flutter test`: **114/114 passed**.
+- `flutter test`: **119/119 passed** (run `42332402241`, Flutter 3.47.9).
 
 Phase 03 coverage includes:
 - Hybrid Markdown parser tests for modern block/inline syntax, task lists, tables, links, images, verified legacy details/summary and inline tags, raw HTML inertness, unsafe URLs, malformed details, source preservation, byte/node/depth/table limits.
@@ -132,4 +132,4 @@ Phase 03 coverage includes:
 - Phase 02 screen tests were updated to assert that pending edits are flushed before navigation; the old discard-confirmation behavior is superseded by autosave-before-navigation.
 - Owner-run integration source `integration_test/phase_03_editor_autosave_test.dart` exercises the real app with a file-backed database, system-back flush, preview, lifecycle background/resume and a fresh Drift reopen. It is source only; physical-device execution is pending.
 
-This is host unit/widget evidence only. Phase 03 physical-device integration testing remains owner-run and pending. No process-kill durability guarantee is made for a debounce that has not completed a flush. The PR is not merged or owner-accepted.
+This is host unit/widget evidence only. The CI checkout explicitly used the PR head SHA, not GitHub's synthetic merge SHA. The APK workflow files on the PR branch include Phase 03 in their filters, but GitHub's `workflow_run` event uses the default-branch workflow definition; `main` still filters only `main` and `dev`. Therefore no Phase 03 APK run or artifact is claimed without a prohibited `main` change or merge. Physical-device integration testing remains owner-run and pending. No process-kill durability guarantee is made for a debounce that has not completed a flush. The PR is not merged or owner-accepted.

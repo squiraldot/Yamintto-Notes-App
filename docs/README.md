@@ -39,9 +39,9 @@ This is the project knowledge base. Source/config/tests determine current implem
 ## Current owner decisions and execution status (2026-11-06)
 
 - [Phase 02 Note Tags + Folder Colors repair is ACCEPTED, including owner-reported physical-device PASS](STATUS.md).
-- The owner explicitly authorized Phase 03 by submitting [the final implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md). Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2); exact PR source SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed Flutter CI run `42202330375` with 114/114 tests.
+- The owner explicitly authorized Phase 03 by submitting [the final implementation prompt](development/PHASE_03_IMPLEMENTATION_PROMPT.md). Implementation is on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`; exact PR-head Flutter CI run [#42332402241](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42332402241) passed on `43b82e132ed661157c753d0184cfc4a40b785203` with 119/119 tests.
 - Phase 03 remains pending PR review and owner physical-device acceptance; it is not yet merged or phase-accepted.
-- Existing three protected GitHub Actions workflows remain in force; no workflow changes are part of the implementation.
+- Exactly the three existing workflows remain. The PR branch now checks out the exact PR-head SHA in Flutter CI and includes the Phase 03 branch in both APK workflow filters. The default-branch APK workflow definitions on `main` still filter only `main` and `dev`, so the PR branch cannot trigger those `workflow_run` workflows before the default-branch definitions change. `main` was not modified and PR #2 was not merged; Phase 03 APK artifacts remain blocked.
 
 
 ## Phase 02 repair status — 2026-11-06
@@ -49,6 +49,6 @@ This is the project knowledge base. Source/config/tests determine current implem
 Phase 02 Note Tags and Folder Colors are implemented on schema v2 and **Phase 02 is ACCEPTED**. Flutter CI passed on repair source SHA `fa8f4ad469786a6a7199360a3d6813d22fac75e6` (run `42177776797`, 85/85 tests); universal and ARM64 Debug APK workflows succeeded for that exact SHA (runs `42177872597` and `42177872567`). The owner confirmed successful physical-device testing; this is owner-reported evidence, not an independently attached device log. The separate automated integration-test source's execution is not claimed. Phase 03 is authorized and implemented on PR branch #2; owner device acceptance and merge remain pending.
 
 
-## Phase 03 implementation status — 2026-11-06
+## Phase 03 implementation status — 2026-11-07
 
-The Markdown editor, safe hybrid renderer, content-format handling and serialized autosave are implemented on `phase-03/markdown-autosave`. Exact PR SHA `cc8295293e85380cd964e26bfc890b0da063643c` passed formatting, analyzer and 114/114 unit/widget tests in Flutter CI run `42202330375`. No physical-device pass, APK build or iOS native build is claimed yet.
+The Markdown editor, safe hybrid renderer, content-format handling and serialized autosave are implemented on `phase-03/markdown-autosave`, PR #2. Exact PR-head CI run `42332402241` checked out `43b82e132ed661157c753d0184cfc4a40b785203` directly and passed locked dependency resolution, formatting, analyzer and 119/119 unit/widget tests. Repository stale-write protection, monotonic revision tokens and explicit conflict reload are included. Parser-limit regression tests and rapid-edit-before-navigation integration-test source were added. APK artifacts remain blocked by the default-branch workflow filter; no Phase 03 physical-device pass or iOS native build is claimed.
