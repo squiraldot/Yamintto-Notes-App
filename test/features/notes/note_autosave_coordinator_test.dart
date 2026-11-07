@@ -12,20 +12,22 @@ void main() {
     test(
       'flushes the latest pending snapshot as a disposal fallback',
       () async {
-      final saved = Completer<NoteSaveSnapshot>();
-      final coordinator = NoteAutosaveCoordinator(
-        save: (snapshot) async {
-          if (!saved.isCompleted) saved.complete(snapshot);
-        },
-        timerFactory: timers.create,
-      );
+        final saved = Completer<NoteSaveSnapshot>();
+        final coordinator = NoteAutosaveCoordinator(
+          save: (snapshot) async {
+            if (!saved.isCompleted) saved.complete(snapshot);
+          },
+          timerFactory: timers.create,
+        );
 
-      coordinator.update(title: 'Pending title', body: 'Pending body');
-      coordinator.dispose();
+        coordinator.update(title: 'Pending title', body: 'Pending body');
+        coordinator.dispose();
 
-      final snapshot = await saved.future.timeout(const Duration(seconds: 1));
-      expect(snapshot.title, 'Pending title');
-      expect(snapshot.body, 'Pending body');
+        final snapshot = await saved.future.timeout(
+          const Duration(seconds: 1),
+        );
+        expect(snapshot.title, 'Pending title');
+        expect(snapshot.body, 'Pending body');
       },
     );
 
