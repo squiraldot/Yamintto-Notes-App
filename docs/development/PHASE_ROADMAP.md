@@ -26,18 +26,18 @@ This is an ordered plan, not blanket authorization. Phase 02 was explicitly auth
 - Acceptance after authorization: fresh schema v1; CRUD; depth 32 accepted/33 rejected; no cycles/orphans; sibling name uniqueness including root and soft-deleted rows; FK checks; transaction rollback; restart persistence; soft-delete filters; typed errors.
 - Tests: schema/DAO/repository/hierarchy/depth/name canonicalization/order/FK/transaction unit; folder/note widgets; fresh install, CRUD/restart, soft-delete, rollback and migration integration on supported platforms.
 - Checklist: [x] schema v1 baseline [x] forward-only schema v2 migration [x] Unicode 17.0 canonicalization [x] folder/note CRUD and hierarchy [x] reusable tags and persistent assignments [x] persistent root/nested folder colors [x] 85 unit/database/repository/widget tests [x] populated-v1 migration and rollback coverage [x] exact-repair-SHA Flutter CI [x] exact-repair-SHA universal and ARM64 Debug APK builds [x] owner-reported physical-device testing [x] final owner acceptance. The automated integration-test source is retained; execution is not claimed.
-- Status: **ACCEPTED — IMPLEMENTATION, AUTOMATED VALIDATION AND OWNER-REPORTED ANDROID DEVICE TESTING COMPLETE.** Repaired source revision `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed locked dependency resolution, formatting, analyzer and all 85 tests. Universal and ARM64 Debug APK workflows succeeded for that exact source SHA. The owner confirmed successful physical-device testing of the repaired tags/colors features. The integration-test source is present; execution is not claimed. No emulator or simulator is used in CI. Phase 03 has not started and is not authorized.
+- Status: **ACCEPTED — IMPLEMENTATION, AUTOMATED VALIDATION AND OWNER-REPORTED ANDROID DEVICE TESTING COMPLETE.** Repaired source revision `fa8f4ad469786a6a7199360a3d6813d22fac75e6` passed locked dependency resolution, formatting, analyzer and all 85 tests. Universal and ARM64 Debug APK workflows succeeded for that exact source SHA. The owner confirmed successful physical-device testing of the repaired tags/colors features. The integration-test source is present; execution is not claimed. No emulator or simulator is used in CI. Phase 03 was subsequently authorized and implemented on PR #2; its owner device acceptance and merge remain pending.
 
 ## Phase 03 — Editor — IMPLEMENTED ON PR BRANCH; ACCEPTANCE PENDING
 - Scope: Markdown source editor; safe native viewer/preview; version-aware note content; reliable autosave.
 - Dependencies: Phase 02 persistence — satisfied; owner-selected HYBRID compatibility — satisfied.
 - Authorization: owner submitted the final implementation prompt and explicitly authorized execution on 2026-11-06.
 - Implementation branch/PR: `phase-03/markdown-autosave`, [PR #2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
-- Exact source SHA: `cc8295293e85380cd964e26bfc890b0da063643c`.
-- Acceptance evidence: Flutter CI run [#42202330375](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42202330375) passed formatting, analyzer and **114/114 unit/widget tests**.
-- Implemented: documented dialect and legacy source inspection; AST parser with limits; explicit allowlisted safe rendering; inert URL handling and image placeholders; v1 plain-text/v2 Markdown semantics; unknown future formats read-only; serialized 700 ms autosave with revision guard, navigation/lifecycle flush and retry.
+- Implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head including separate workflow-file commits: `4c196458042d96b452901717a5db937fdf51b22b`.
+- Acceptance evidence: exact-PR-head Flutter CI run [#42331866581](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42331866581) passed formatting, analyzer and **117/117 unit/widget tests** on PR head `4c196458042d96b452901717a5db937fdf51b22b`.
+- Implemented: documented dialect and legacy source inspection; AST parser with limits; explicit allowlisted safe rendering; inert URL handling and image placeholders; v1 plain-text/v2 Markdown semantics; unknown future formats read-only; serialized 700 ms autosave with per-editor revision ordering, repository `updated_at` compare-token protection across open editors, explicit stale-conflict reload, navigation/lifecycle flush and retry. Note move/delete metadata advances the revision token monotonically; NUL titles are rejected at the domain boundary.
 - Data migration: none. Existing schema v2 remains unchanged; no mass rewrite.
-- Unit/widget: passed on the exact PR SHA. The integration/device tests remain owner-run on real physical devices; Phase 03 physical-device acceptance is pending.
+- Unit/widget: 117/117 passed on the exact PR head. The integration/device tests remain owner-run on real physical devices; Phase 03 physical-device acceptance is pending.
 - Docs: README, CHANGELOG, status, roadmap, architecture, testing strategy, dialect and editor architecture.
 - Checklist: [x] dialect [x] editor [x] viewer [x] autosave [x] unit/widget [x] docs [x] exact-SHA Flutter CI [ ] owner physical-device test [ ] PR review/merge [ ] final owner acceptance.
 - Status: Implemented on PR branch; not merged or owner-accepted.
@@ -124,7 +124,7 @@ Outstanding repair checklist:
 - [ ] Owner repeats Android physical-device smoke test after repair.
 - [ ] Reconcile documentation and receive explicit Phase 02 acceptance.
 
-The earlier 69/69 CI run, universal/ARM64 APK runs and owner-reported device test remain historical evidence for the old baseline only. **Phase 03 is blocked until this repair is accepted.**
+The earlier 69/69 CI run, universal/ARM64 APK runs and owner-reported device test remain historical evidence for the old baseline only. **Historical gate statement superseded:** Phase 02 was accepted on 2026-11-06 and Phase 03 was separately authorized and implemented on PR #2.
 
 ### Phase 03 — Editor — IMPLEMENTED ON PR BRANCH
 
@@ -133,7 +133,7 @@ Owner-selected Markdown direction: **HYBRID** — modern Markdown baseline plus 
 
 ## Phase 02 reopened repair — current gate status (2026-11-06)
 
-**PHASE 02 — ACCEPTED (2026-11-06). Phase 03 remains not started and unauthorized.**
+**PHASE 02 — ACCEPTED (2026-11-06). Phase 03 was separately authorized and is implemented on PR #2; owner device acceptance and merge remain pending.**
 
 The repair adds reusable note tags and persisted folder colors via schema v2 while preserving schema v1. Implementation source SHA: `fa8f4ad469786a6a7199360a3d6813d22fac75e6`. Flutter CI run `42177776797` succeeded on Flutter 3.47.9 with format, analyzer and 85/85 tests passing.
 
@@ -146,14 +146,14 @@ Archive sizes are ZIP sizes, not extracted APK sizes. Both artifact records show
 
 The physical-device integration test source covers tags and folder colors across close/reopen; its execution is not independently evidenced and is not claimed. The owner separately confirmed successful physical-device testing of the repaired features.
 
-The prior Phase 02 REOPENED/PENDING statements above are historical snapshots and are superseded by the final owner acceptance and documentation reconciliation. Phase 03 remains blocked until separate explicit owner authorization.
+The prior Phase 02 REOPENED/PENDING statements above are historical snapshots and are superseded by the final owner acceptance and documentation reconciliation. Phase 03 authorization was granted on 2026-11-06 and implementation is present on PR #2.
 
 
 ## Phase 02 final acceptance — 2026-11-06
 
-**ACCEPTED.** Owner-reported physical-device testing of the Note Tags + Folder Colors repair passed. Repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; Flutter CI `42177776797` passed 85/85 tests; universal and ARM64 Debug APK runs `42177872597` and `42177872567` succeeded. The automated integration-test source's execution is not independently evidenced and is not claimed. **Phase 03 is NOT STARTED / NOT AUTHORIZED.**
+**ACCEPTED.** Owner-reported physical-device testing of the Note Tags + Folder Colors repair passed. Repair source `fa8f4ad469786a6a7199360a3d6813d22fac75e6`; Flutter CI `42177776797` passed 85/85 tests; universal and ARM64 Debug APK runs `42177872597` and `42177872567` succeeded. The automated integration-test source's execution is not independently evidenced and is not claimed. **Historical statement superseded:** Phase 03 was authorized on 2026-11-06 and is implemented on PR #2.
 
 
-## Phase 03 latest execution reconciliation — 2026-11-06
+## Phase 03 latest execution reconciliation — 2026-11-07
 
-The owner authorized Phase 03 through submission of the final implementation prompt. Implementation is present on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`, source SHA `cc8295293e85380cd964e26bfc890b0da063643c`. Flutter CI run `42202330375` passed formatting, analyzer and 114/114 tests. Owner physical-device testing, PR review/merge and final owner acceptance remain pending. Phase 04–09 remain unauthorized.
+The owner authorized Phase 03 through submission of the final implementation prompt. Implementation is present on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`, implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head `4c196458042d96b452901717a5db937fdf51b22b`. Exact-PR-head Flutter CI run `42331866581` passed formatting, analyzer and 117/117 tests. Owner physical-device testing, PR review/merge and final owner acceptance remain pending. Phase 04–09 remain unauthorized.

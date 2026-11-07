@@ -1,9 +1,9 @@
 # Documentation and implementation status
 
-> **Current Phase 03 snapshot (2026-11-07):** Phase 02 is ACCEPTED. Phase 03 was explicitly authorized by the owner and is implemented on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`. The 2026-11-07 follow-up adds repository revision-token protection and explicit stale-editor reload handling; exact-SHA CI is pending. Owner physical-device acceptance, PR review/merge and iOS native verification remain pending. This snapshot supersedes older historical statements in this file that Phase 03 was unauthorized or not started.
+> **Current Phase 03 snapshot (2026-11-07):** Phase 02 is ACCEPTED. Phase 03 was explicitly authorized by the owner and is implemented on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`. The 2026-11-07 follow-up adds repository revision-token protection, monotonic metadata revisions, explicit stale-editor reload handling and domain-level NUL-title validation. Exact-PR-head Flutter CI run [#42331866581](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42331866581) passed formatting, analyzer and 117/117 tests on PR head `4c196458042d96b452901717a5db937fdf51b22b`. Owner physical-device acceptance, PR review/merge and iOS native verification remain pending. This snapshot supersedes older historical statements in this file that Phase 03 was unauthorized or not started.
 
 
-Snapshot: 2026-11-06 (Phase 02 accepted; Phase 03 implementation in PR); branch: `phase-03/markdown-autosave`; PR head: see linked PR #2; Phase 03 implementation/test source SHA: `cc8295293e85380cd964e26bfc890b0da063643c`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
+Snapshot: 2026-11-06 (Phase 02 accepted; Phase 03 implementation in PR); branch: `phase-03/markdown-autosave`; PR head: see linked PR #2; Phase 03 implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head: `4c196458042d96b452901717a5db937fdf51b22b`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
 
 ## Phase 01 — Foundation
 
@@ -230,7 +230,7 @@ This section supersedes historical Phase 02 ACCEPTED / schema-v1-only / repair-r
 
 The earlier “OWNER DEVICE ACCEPTANCE PENDING” statements in the repair implementation history are historical snapshots and are superseded by this final owner acceptance. Exactly three protected workflows remain; no workflow changes are authorized or included in this closure.
 
-**Historical gate snapshot — superseded:** Phase 03 was subsequently authorized and implemented on PR #2. A separate explicit owner authorization is still required before any Phase 03 work.
+**Historical gate snapshot — superseded:** Phase 03 was subsequently authorized and implemented on PR #2. Phase 03 was explicitly authorized on 2026-11-06; owner physical-device acceptance, review and merge remain pending.
 
 
 ## Current Phase 03 implementation status — 2026-11-06
@@ -239,11 +239,11 @@ The earlier “OWNER DEVICE ACCEPTANCE PENDING” statements in the repair imple
 
 - Owner authorization: the owner submitted the complete Phase 03 implementation prompt and explicitly authorized execution on 2026-11-06.
 - Repository: `squiraldot/Yamintto-Notes-App`; branch: `phase-03/markdown-autosave`; pull request: [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
-- Current PR head: see linked PR #2. Phase 03 implementation/test source SHA: `cc8295293e85380cd964e26bfc890b0da063643c`.
-- Implemented: documented hybrid Markdown dialect; Dart AST parser; safe native Flutter renderer; editor/preview UI; version-aware plain-text/Markdown behavior; future-format read-only preservation; 700 ms debounced autosave; serialized revision-aware writes; explicit/navigation/lifecycle flush; save error and retry states.
+- Current PR head: see linked PR #2. Phase 03 implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head: `4c196458042d96b452901717a5db937fdf51b22b`.
+- Implemented: documented hybrid Markdown dialect; Dart AST parser; safe native Flutter renderer; editor/preview UI; version-aware plain-text/Markdown behavior; future-format read-only preservation; 700 ms debounced autosave; serialized revision-aware writes with repository compare-token protection against stale concurrent editors; explicit confirmed reload on conflict; monotonic metadata revision tokens; explicit/navigation/lifecycle flush; save error and retry states; domain-level NUL title validation.
 - Data: no SQLite schema migration. Existing v1 plain-text rows remain literal on open/preview/title-only edits. New editor notes use content format v2. A deliberate body edit upgrades only that v1 note to v2. Unknown versions cannot be overwritten.
 - Safety: raw HTML is not rendered; only exact legacy inline constructs are allowlisted; link schemes are validated and links are inert; images are alt-text placeholders and are never fetched; source remains the persisted data.
-- Exact-SHA Flutter CI run [#42202330375](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42202330375): **success** on source SHA `cc8295293e85380cd964e26bfc890b0da063643c`; locked dependencies, Dart formatting, analyzer and **114/114 unit/widget tests** passed.
+- Exact-PR-head Flutter CI run [#42331866581](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42331866581): **success** on PR head `4c196458042d96b452901717a5db937fdf51b22b`; locked dependencies, Dart formatting, analyzer and **117/117 unit/widget tests** passed.
 - The earlier formatting, analyzer and widget-test failures occurred on intermediate commits and were corrected. They are historical iteration evidence, not the current PR-head result.
 - PR #2 is not merged. No APK build or artifact workflow is claimed for this PR SHA. Owner physical-device testing for Phase 03 is pending. Source test `integration_test/phase_03_editor_autosave_test.dart` covers system-back flush, preview, lifecycle backgrounding and database reopen; it is not claimed as executed. iOS native build/device verification remains unavailable and is not inferred from host CI.
 - The temporary formatter helper workflow used during correction was removed. The final branch retains exactly the three protected workflows: Flutter CI, universal Debug APK and ARM64 Debug APK.
@@ -254,4 +254,4 @@ This current section supersedes all earlier pre-authorization statements in this
 
 ## Phase 03 integrity follow-up — 2026-11-07
 
-The review of the existing PR found that a previously attempted optimistic revision guard had been lost in a later repository-format change. The follow-up restores a persisted `updated_at` compare token for editor saves, advances that token monotonically, rejects stale editor writes, and offers a user-confirmed reload instead of silently overwriting another editor's changes. It also fixes title NUL validation so the domain rejects NUL before SQLite. Tests cover stale-write rejection/source preservation, reload UX and domain-level NUL rejection. Follow-up exact-SHA CI is pending.
+The review of the existing PR found that a previously attempted optimistic revision guard had been lost in a later repository-format change. The follow-up restores a persisted `updated_at` compare token for editor saves, advances that token monotonically, rejects stale editor writes, and offers a user-confirmed reload instead of silently overwriting another editor's changes. It also fixes title NUL validation so the domain rejects NUL before SQLite. Tests cover stale-write rejection/source preservation, reload UX and domain-level NUL rejection. Exact-PR-head Flutter CI run `42331866581` passed 117/117 unit/widget tests on PR head `4c196458042d96b452901717a5db937fdf51b22b`.
