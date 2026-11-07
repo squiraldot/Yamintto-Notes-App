@@ -307,6 +307,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     if (mounted) context.pop();
   }
 
+  // dart format off
   Future<void> _persistSnapshot(NoteSaveSnapshot snapshot) async {
     final repository = await ref.read(noteRepositoryProvider.future);
     final Note saved;
@@ -401,6 +402,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     }
   }
 
+  // dart format on
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive ||
