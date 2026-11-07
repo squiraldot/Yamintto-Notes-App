@@ -1,9 +1,9 @@
 # Documentation and implementation status
 
-> **Current Phase 03 snapshot (2026-11-07):** Phase 02 is ACCEPTED. Phase 03 was explicitly authorized by the owner and is implemented on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`. The 2026-11-07 follow-up adds repository revision-token protection, monotonic metadata revisions, explicit stale-editor reload handling and domain-level NUL-title validation. Exact-PR-head Flutter CI run [#42331866581](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42331866581) passed formatting, analyzer and 117/117 tests on PR head `4c196458042d96b452901717a5db937fdf51b22b`. Owner physical-device acceptance, PR review/merge and iOS native verification remain pending. This snapshot supersedes older historical statements in this file that Phase 03 was unauthorized or not started.
+> **Current Phase 03 snapshot (2026-11-07):** Phase 02 is ACCEPTED. Phase 03 was explicitly authorized by the owner and is implemented on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`. The 2026-11-07 follow-up adds repository revision-token protection, monotonic metadata revisions, explicit stale-editor reload handling and domain-level NUL-title validation. Exact-PR-head Flutter CI run [#42332261514](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42332261514) passed formatting, analyzer and 117/117 tests on PR head `654e366ee23bdb22f1b566dc492aef893f47dcd6`. Owner physical-device acceptance, PR review/merge and iOS native verification remain pending. This snapshot supersedes older historical statements in this file that Phase 03 was unauthorized or not started.
 
 
-Snapshot: 2026-11-06 (Phase 02 accepted; Phase 03 implementation in PR); branch: `phase-03/markdown-autosave`; PR head: see linked PR #2; Phase 03 implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head: `4c196458042d96b452901717a5db937fdf51b22b`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
+Snapshot: 2026-11-06 (Phase 02 accepted; Phase 03 implementation in PR); branch: `phase-03/markdown-autosave`; PR head: see linked PR #2; Phase 03 implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest CI-verified PR head before final status reconciliation: `654e366ee23bdb22f1b566dc492aef893f47dcd6`; Phase 01 evidence baseline: `76ba10c04f0ec421f54e5d6252dd6745058611f9`; Phase 02 owner baseline: `92dcadd7ed2bd2ee9b49ca8893843b13a689bb7e`; Phase 02 source implementation commit: `36a27212dadda99fbb7bb333a93a3568c967869d`; this status snapshot is a documentation-only reconciliation.
 
 ## Phase 01 — Foundation
 
@@ -210,7 +210,7 @@ Sizes are GitHub artifact ZIP archive sizes, not extracted APK sizes. Both artif
 
 - Physical-device integration source covers tag and folder-color persistence across a database close/reopen. It has **not** been executed by this agent or CI. Owner retest is pending.
 - The prior owner-reported device result applies to the earlier folders/notes baseline only; it does not accept the repaired features.
-- Phase 03 remains unauthorized and has not started.
+- Historical statement superseded: Phase 03 was explicitly authorized on 2026-11-06 and is implemented on PR #2.
 
 This section supersedes historical Phase 02 ACCEPTED / schema-v1-only / repair-required statements earlier in this file. Those statements remain historical records, not current status.
 
