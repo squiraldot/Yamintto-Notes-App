@@ -9,13 +9,14 @@ on:
     branches:
       - main
       - dev
+      - phase-03/markdown-autosave
 
 permissions:
   contents: read
 
 concurrency:
-  group: yamintto-arm64-debug-apk-${{ github.event.workflow_run.head_branch }}
-  cancel-in-progress: true
+  group: yamintto-arm64-debug-apk-${{ github.event.workflow_run.head_branch }}-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
 
 jobs:
   build-arm64-debug-apk:
@@ -23,7 +24,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the exact CI-tested commit
+      - name: Check out the exact CI-tested source commit
         uses: actions/checkout@v5
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
