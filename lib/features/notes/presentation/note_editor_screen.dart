@@ -228,7 +228,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.error,
                       ),
-                    )
+                    ),
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -307,7 +307,6 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     if (mounted) context.pop();
   }
 
-  // dart format off
   Future<void> _persistSnapshot(NoteSaveSnapshot snapshot) async {
     final repository = await ref.read(noteRepositoryProvider.future);
     final Note saved;
@@ -382,6 +381,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
       _activeFolderId = latest.folderId;
       _expectedUpdatedAt = latest.updatedAt;
       _contentFormatVersion = latest.contentFormatVersion;
+      _unsupportedFormat = !NoteContentFormat.isSupported(
+        latest.contentFormatVersion,
+      );
       _initialBody = latest.body;
       _bodyEdited = false;
       _staleConflict = false;
@@ -402,7 +404,6 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     }
   }
 
-  // dart format on
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive ||

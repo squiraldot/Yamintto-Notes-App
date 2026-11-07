@@ -99,7 +99,6 @@ class NoteRepository {
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
         final existing = await _requireActiveNote(id);
-        _validateContentFormat(existing.contentFormatVersion);
         if (expectedUpdatedAt != null &&
             existing.updatedAt != expectedUpdatedAt) {
           throw const DomainFailure(
@@ -107,6 +106,7 @@ class NoteRepository {
             'This note changed elsewhere. Reload the latest version before saving.',
           );
         }
+        _validateContentFormat(existing.contentFormatVersion);
         final nextFormatVersion =
             existing.contentFormatVersion == NoteContentFormat.plainText &&
                 body != existing.body
