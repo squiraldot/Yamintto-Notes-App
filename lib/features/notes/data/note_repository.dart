@@ -112,9 +112,7 @@ class NoteRepository {
                 body != existing.body
             ? NoteContentFormat.hybridMarkdown
             : existing.contentFormatVersion;
-        final now = _now();
-        final updatedAt =
-            now > existing.updatedAt ? now : existing.updatedAt + 1;
+        final updatedAt = _nextUpdatedAt(existing.updatedAt);
         await _database.customStatement(
           'UPDATE notes SET title = ?, body = ?, content_format_version = ?, '
           'updated_at = ? WHERE id = ? AND deleted_at IS NULL',
@@ -134,10 +132,11 @@ class NoteRepository {
         }
         if (note.folderId == destinationFolderId) return note;
         final order = await _nextOrder(destinationFolderId);
+        final updatedAt = _nextUpdatedAt(note.updatedAt);
         await _database.customStatement(
           'UPDATE notes SET folder_id = ?, sort_order = ?, updated_at = ? '
           'WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[destinationFolderId, order, _now(), id],
+          <Object?>[destinationFolderId, order, updatedAt, id],
         );
         return _requireActiveNote(id);
       }),
@@ -147,8 +146,8 @@ class NoteRepository {
   Future<void> softDeleteNote(String id) {
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
-        await _requireActiveNote(id);
-        final now = _now();
+        final note = await _requireActiveNote(id);
+        final now = _nextUpdatedAt(note.updatedAt);
         await _database.customStatement(
           'UPDATE notes SET deleted_at = ?, updated_at = ? '
           'WHERE id = ? AND deleted_at IS NULL',
@@ -212,6 +211,11 @@ class NoteRepository {
         'The destination folder does not exist or is deleted.',
       );
     }
+  }
+
+  int _nextUpdatedAt(int previous) {
+    final now = _now();
+    return now > previous ? now : previous + 1;
   }
 
   Future<int> _nextOrder(String? folderId) async {
