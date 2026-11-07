@@ -33,11 +33,11 @@ This is an ordered plan, not blanket authorization. Phase 02 was explicitly auth
 - Dependencies: Phase 02 persistence — satisfied; owner-selected HYBRID compatibility — satisfied.
 - Authorization: owner submitted the final implementation prompt and explicitly authorized execution on 2026-11-06.
 - Implementation branch/PR: `phase-03/markdown-autosave`, [PR #2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2).
-- Implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head including separate workflow-file commits: `43b82e132ed661157c753d0184cfc4a40b785203`.
-- Acceptance evidence: exact-PR-head Flutter CI run [#42332402241](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42332402241) passed formatting, analyzer and **119/119 unit/widget tests** on PR head `43b82e132ed661157c753d0184cfc4a40b785203`.
+- Implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head including separate workflow-file commits: `8748150721f2a262716cc3786c76932e6b1f53e3`.
+- Acceptance evidence: exact-PR-head Flutter CI run [#42333273779](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42333273779) passed formatting, analyzer and **120/120 unit/widget tests** on PR head `8748150721f2a262716cc3786c76932e6b1f53e3`.
 - Implemented: documented dialect and legacy source inspection; AST parser with limits; explicit allowlisted safe rendering; inert URL handling and image placeholders; v1 plain-text/v2 Markdown semantics; unknown future formats read-only; serialized 700 ms autosave with per-editor revision ordering, repository `updated_at` compare-token protection across open editors, explicit stale-conflict reload, navigation/lifecycle flush and retry. Note move/delete metadata advances the revision token monotonically; NUL titles are rejected at the domain boundary.
 - Data migration: none. Existing schema v2 remains unchanged; no mass rewrite.
-- Unit/widget: 119/119 passed on the exact PR head. The integration/device tests remain owner-run on real physical devices; Phase 03 physical-device acceptance is pending.
+- Unit/widget: 120/120 passed on the exact PR head. The integration/device tests remain owner-run on real physical devices; Phase 03 physical-device acceptance is pending.
 - Docs: README, CHANGELOG, status, roadmap, architecture, testing strategy, dialect and editor architecture.
 - Checklist: [x] dialect [x] editor [x] viewer [x] autosave [x] unit/widget [x] docs [x] exact-SHA Flutter CI [ ] owner physical-device test [ ] PR review/merge [ ] final owner acceptance.
 - Status: Implemented on PR branch; not merged or owner-accepted.
@@ -156,4 +156,4 @@ The prior Phase 02 REOPENED/PENDING statements above are historical snapshots an
 
 ## Phase 03 latest execution reconciliation — 2026-11-07
 
-The owner authorized Phase 03 through submission of the final implementation prompt. Implementation is present on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`, implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head `43b82e132ed661157c753d0184cfc4a40b785203`. Exact-PR-head Flutter CI run `42332402241` passed formatting, analyzer and 119/119 tests. Owner physical-device testing, PR review/merge and final owner acceptance remain pending. Phase 04–09 remain unauthorized.
+The owner authorized Phase 03 through submission of the final implementation prompt. Implementation is present on PR [#2](https://github.com/squiraldot/Yamintto-Notes-App/pull/2), branch `phase-03/markdown-autosave`, implementation source SHA `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head `8748150721f2a262716cc3786c76932e6b1f53e3`. Exact-PR-head Flutter CI run `42333273779` passed formatting, analyzer and 120/120 tests. Owner physical-device testing, PR review/merge and final owner acceptance remain pending. Phase 04–09 remain unauthorized.

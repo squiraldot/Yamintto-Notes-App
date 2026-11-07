@@ -46,11 +46,11 @@ The lifecycle flush is best-effort. A process kill or OS termination before a de
 
 PR #2 branch: `phase-03/markdown-autosave`.
 
-Implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head: `43b82e132ed661157c753d0184cfc4a40b785203`.
+Implementation source SHA: `4af7577caf8bfeed06772c25693e4a9bce8fe629`; latest PR head: `8748150721f2a262716cc3786c76932e6b1f53e3`.
 
-Exact-PR-head Flutter CI run [#42332402241](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42332402241) passed:
+Exact-PR-head Flutter CI run [#42333273779](https://github.com/squiraldot/Yamintto-Notes-App/actions/runs/42333273779) passed:
 - Dart formatting.
 - `flutter analyze --fatal-infos`.
-- **119/119 unit and widget tests**.
+- **120/120 unit and widget tests**.
 
 The unit/widget tests cover parser syntax and limits, source preservation, v1/v2/future version behavior, debounce, serialized revisions, stale completions, failure/retry, editor/preview, inert links/images, navigation flush and lifecycle flush. The owner-run integration source additionally covers system back, lifecycle backgrounding and database reopen. Owner physical-device testing remains pending. No APK artifact or iOS native build/device pass is claimed for this PR SHA.
