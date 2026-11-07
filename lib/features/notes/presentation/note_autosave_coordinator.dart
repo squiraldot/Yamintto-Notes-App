@@ -88,6 +88,23 @@ class NoteAutosaveCoordinator {
     return operation;
   }
 
+  /// Replaces the local draft after an explicit reload of persisted data.
+  /// This is called only after a failed flush has completed.
+  void resetToSavedSnapshot({
+    required String title,
+    required String body,
+  }) {
+    if (_disposed || _flushFuture != null) return;
+    _timer?.cancel();
+    _timer = null;
+    _latest = NoteSaveSnapshot(title: title, body: body);
+    _editRevision++;
+    _savedRevision = _editRevision;
+    _saving = false;
+    _hasError = false;
+    _notify();
+  }
+
   Future<void> retry() {
     _hasError = false;
     _notify();

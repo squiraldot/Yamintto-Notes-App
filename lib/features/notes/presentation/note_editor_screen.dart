@@ -39,6 +39,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
   bool _bodyEdited = false;
   String? _savedNoteId;
   String? _activeFolderId;
+  int? _expectedUpdatedAt;
+  bool _staleConflict = false;
   String _initialBody = '';
   int _contentFormatVersion = NoteContentFormat.hybridMarkdown;
 
@@ -88,6 +90,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
     if (_initialized) return;
     _activeFolderId = note.folderId;
     _savedNoteId = note.id;
+    _expectedUpdatedAt = note.updatedAt;
     _title.text = note.title;
     _body.text = note.body;
     _initialBody = _body.text;
@@ -145,7 +148,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                 ),
               )
             else if (_saveError)
-              TextButton(onPressed: _retrySave, child: const Text('Retry'))
+              TextButton(
+                onPressed: _staleConflict ? _reloadLatest : _retrySave,
+                child: Text(_staleConflict ? 'Reload latest' : 'Retry'),
+              )
             else if (_autosave.isSaved)
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
@@ -209,7 +215,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                   const Spacer(),
                   if (_saveError)
                     Text(
-                      'Save error',
+                      _staleConflict ? 'Changed elsewhere' : 'Save error',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.error,
                       ),
@@ -294,26 +300,95 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
 
   Future<void> _persistSnapshot(NoteSaveSnapshot snapshot) async {
     final repository = await ref.read(noteRepositoryProvider.future);
-    final saved = _savedNoteId == null
-        ? await repository.createNote(
-            folderId: _activeFolderId,
-            title: snapshot.title,
-            body: snapshot.body,
-            contentFormatVersion: NoteContentFormat.hybridMarkdown,
-          )
-        : await repository.updateNote(
-            id: _savedNoteId!,
-            title: snapshot.title,
-            body: snapshot.body,
-          );
+    final Note saved;
+    if (_savedNoteId == null) {
+      saved = await repository.createNote(
+        folderId: _activeFolderId,
+        title: snapshot.title,
+        body: snapshot.body,
+        contentFormatVersion: NoteContentFormat.hybridMarkdown,
+      );
+    } else {
+      try {
+        saved = await repository.updateNote(
+          id: _savedNoteId!,
+          title: snapshot.title,
+          body: snapshot.body,
+          expectedUpdatedAt: _expectedUpdatedAt,
+        );
+      } on DomainFailure catch (error) {
+        if (error.code == DomainFailureCode.staleNoteEdit) {
+          _staleConflict = true;
+        }
+        rethrow;
+      }
+    }
 
     _savedNoteId = saved.id;
+    _expectedUpdatedAt = saved.updatedAt;
     _contentFormatVersion = saved.contentFormatVersion;
     _initialBody = snapshot.body;
     _bodyEdited = _body.text != _initialBody;
     if (mounted) {
       ref.invalidate(noteListProvider(_activeFolderId));
       ref.invalidate(noteDetailProvider(saved.id));
+    }
+  }
+
+  Future<void> _reloadLatest() async {
+    final noteId = _savedNoteId;
+    if (noteId == null || !_staleConflict || _isSaving) return;
+    final shouldReload = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Reload latest version?'),
+        content: const Text(
+          'This note was changed elsewhere. Reloading replaces your unsaved '
+          'draft with the latest saved version.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Keep my draft'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Reload'),
+          ),
+        ],
+      ),
+    );
+    if (shouldReload != true || !mounted) return;
+
+    try {
+      final repository = await ref.read(noteRepositoryProvider.future);
+      final latest = await repository.getNote(noteId);
+      _title.removeListener(_handleEdit);
+      _body.removeListener(_handleEdit);
+      _title.text = latest.title;
+      _body.text = latest.body;
+      _title.addListener(_handleEdit);
+      _body.addListener(_handleEdit);
+      _activeFolderId = latest.folderId;
+      _expectedUpdatedAt = latest.updatedAt;
+      _contentFormatVersion = latest.contentFormatVersion;
+      _initialBody = latest.body;
+      _bodyEdited = false;
+      _staleConflict = false;
+      _saveError = false;
+      _isDirty = false;
+      _autosave.resetToSavedSnapshot(title: latest.title, body: latest.body);
+      if (mounted) {
+        ref.invalidate(noteListProvider(_activeFolderId));
+        ref.invalidate(noteDetailProvider(noteId));
+        setState(() {});
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_message(error))),
+        );
+      }
     }
   }
 

@@ -76,4 +76,34 @@ void main() {
     expect(stored.data['body'], 'preserve me');
     expect(stored.data['content_format_version'], 99);
   });
+  test('rejects a stale editor revision without overwriting newer content', () async {
+    final note = await notes.createNote(title: 'Shared', body: 'original');
+    final firstWriter = await notes.updateNote(
+      id: note.id,
+      title: 'First writer',
+      body: 'newer source',
+      expectedUpdatedAt: note.updatedAt,
+    );
+    expect(firstWriter.updatedAt, greaterThan(note.updatedAt));
+
+    await expectLater(
+      notes.updateNote(
+        id: note.id,
+        title: 'Stale writer',
+        body: 'stale source',
+        expectedUpdatedAt: note.updatedAt,
+      ),
+      throwsA(
+        isA<DomainFailure>().having(
+          (failure) => failure.code,
+          'code',
+          DomainFailureCode.staleNoteEdit,
+        ),
+      ),
+    );
+    final stored = await notes.getNote(note.id);
+    expect(stored.title, 'First writer');
+    expect(stored.body, 'newer source');
+  });
+
 }

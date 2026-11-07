@@ -272,6 +272,48 @@ void main() {
     expect(find.text('literal **text**'), findsOneWidget);
     expect((await notes.getNote(note.id)).contentFormatVersion, 1);
   });
+
+  testWidgets('prevents stale editor overwrite and offers explicit reload', (
+    tester,
+  ) async {
+    final note = await notes.createNote(
+      title: 'Shared note',
+      body: 'original source',
+      contentFormatVersion: NoteContentFormat.hybridMarkdown,
+    );
+    await mount(tester, path: '/notes/\${note.id}/edit');
+
+    await notes.updateNote(
+      id: note.id,
+      title: 'Other editor',
+      body: 'latest saved source',
+      expectedUpdatedAt: note.updatedAt,
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('note-body-editor')),
+      'stale local draft',
+    );
+    await tester.pump(const Duration(milliseconds: 701));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Changed elsewhere'), findsOneWidget);
+    expect(find.text('Reload latest'), findsOneWidget);
+    expect((await notes.getNote(note.id)).body, 'latest saved source');
+
+    await tester.tap(find.text('Reload latest'));
+    await tester.pumpAndSettle();
+    expect(find.text('Reload latest version?'), findsOneWidget);
+    await tester.tap(find.text('Reload'));
+    await tester.pumpAndSettle();
+
+    final editor = tester.widget<TextField>(
+      find.byKey(const ValueKey('note-body-editor')),
+    );
+    expect(editor.controller!.text, 'latest saved source');
+    expect((await notes.getNote(note.id)).body, 'latest saved source');
+    expect(find.text('Changed elsewhere'), findsNothing);
+  });
+
 }
 
 class _FailingNoteRepository extends NoteRepository {

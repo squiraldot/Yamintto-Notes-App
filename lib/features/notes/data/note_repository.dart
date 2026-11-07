@@ -93,21 +93,32 @@ class NoteRepository {
     required String id,
     required String title,
     required String body,
+    int? expectedUpdatedAt,
   }) async {
     _validateTitle(title);
     return DatabaseBoundary.guard(
       () => _database.transaction(() async {
         final existing = await _requireActiveNote(id);
         _validateContentFormat(existing.contentFormatVersion);
+        if (expectedUpdatedAt != null &&
+            existing.updatedAt != expectedUpdatedAt) {
+          throw const DomainFailure(
+            DomainFailureCode.staleNoteEdit,
+            'This note changed elsewhere. Reload the latest version before saving.',
+          );
+        }
         final nextFormatVersion =
             existing.contentFormatVersion == NoteContentFormat.plainText &&
                 body != existing.body
             ? NoteContentFormat.hybridMarkdown
             : existing.contentFormatVersion;
+        final now = _now();
+        final updatedAt =
+            now > existing.updatedAt ? now : existing.updatedAt + 1;
         await _database.customStatement(
           'UPDATE notes SET title = ?, body = ?, content_format_version = ?, '
           'updated_at = ? WHERE id = ? AND deleted_at IS NULL',
-          <Object?>[title, body, nextFormatVersion, _now(), id],
+          <Object?>[title, body, nextFormatVersion, updatedAt, id],
         );
         return _requireActiveNote(id);
       }),
@@ -148,7 +159,7 @@ class NoteRepository {
   }
 
   void _validateTitle(String title) {
-    if (title.contains('\\u0000') ||
+    if (title.contains('\u0000') ||
         UnicodeCanonicalizer.codePointLength(title) > 255) {
       throw const DomainFailure(
         DomainFailureCode.invalidTitle,

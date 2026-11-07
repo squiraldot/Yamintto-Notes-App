@@ -161,7 +161,23 @@ void main() {
         );
         await expectLater(
           notes.createNote(title: 'a\u0000b'),
-          throwsA(isA<DomainFailure>()),
+          throwsA(
+            isA<DomainFailure>().having(
+              (failure) => failure.code,
+              'code',
+              DomainFailureCode.invalidTitle,
+            ),
+          ),
+        );
+        await expectLater(
+          notes.updateNote(id: note.id, title: 'a\u0000b', body: ''),
+          throwsA(
+            isA<DomainFailure>().having(
+              (failure) => failure.code,
+              'code',
+              DomainFailureCode.invalidTitle,
+            ),
+          ),
         );
         await notes.createNote(title: '😀' * 255);
       },
