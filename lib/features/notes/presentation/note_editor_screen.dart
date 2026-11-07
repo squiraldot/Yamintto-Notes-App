@@ -146,20 +146,20 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
                 ),
-              )
-            else if (_saveError && _staleConflict)
+              ),
+            if (_saveError && _staleConflict)
               TextButton(
                 onPressed: _reloadLatest,
                 child: const Text('Reload latest'),
-              )
-            else if (_saveError)
-              TextButton(onPressed: _retrySave, child: const Text('Retry'))
-            else if (_autosave.isSaved)
+              ),
+            if (_saveError && !_staleConflict)
+              TextButton(onPressed: _retrySave, child: const Text('Retry')),
+            if (!_isSaving && !_saveError && _autosave.isSaved)
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
                 child: Center(child: Text('Saved')),
-              )
-            else if (_isDirty)
+              ),
+            if (!_isSaving && !_saveError && _isDirty)
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
                 child: Center(child: Text('Saving soon')),
@@ -221,8 +221,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.error,
                       ),
-                    )
-                  else if (_saveError)
+                    ),
+                  if (_saveError && !_staleConflict)
                     Text(
                       'Save error',
                       style: TextStyle(
@@ -386,7 +386,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen>
       _staleConflict = false;
       _saveError = false;
       _isDirty = false;
-      _autosave.resetToSavedSnapshot(latest.title, latest.body);
+      _autosave.markCurrentRevisionSaved();
       if (mounted) {
         ref.invalidate(noteListProvider(_activeFolderId));
         ref.invalidate(noteDetailProvider(noteId));

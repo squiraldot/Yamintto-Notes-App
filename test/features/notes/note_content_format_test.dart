@@ -112,17 +112,16 @@ void main() {
   test(
     'rejects NUL characters in note titles at the domain boundary',
     () async {
-    await expectLater(
-      notes.createNote(title: 'a\u0000b'),
-      throwsA(
-        isA<DomainFailure>().having(
-          (failure) => failure.code,
-          'code',
-          DomainFailureCode.invalidTitle,
+      await expectLater(
+        notes.createNote(title: 'a\u0000b'),
+        throwsA(
+          isA<DomainFailure>().having(
+            (failure) => failure.code,
+            'code',
+            DomainFailureCode.invalidTitle,
+          ),
         ),
-      ),
-    );
-  });
-
-
+      );
+    },
+  );
 }
