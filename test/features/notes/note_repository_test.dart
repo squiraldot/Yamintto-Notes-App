@@ -184,9 +184,7 @@ void main() {
     );
 
 
-    test(
-      'metadata updates advance the revision token monotonically',
-      () async {
+    test('metadata updates advance the revision token monotonically', () async {
         final note = await notes.createNote(title: 'Move me');
         final destination = await folders.createFolder(name: 'Destination');
         now = note.updatedAt;
