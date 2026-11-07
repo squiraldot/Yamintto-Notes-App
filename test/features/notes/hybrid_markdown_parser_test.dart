@@ -62,6 +62,55 @@ void main() {}
       expect(containsTag(result.nodes, 'pre'), isTrue);
     });
 
+    test('supports ATX headings 1–6, paragraphs, hard breaks and rules', () {
+      const source = '''
+# one
+## two
+### three
+#### four
+##### five
+###### six
+
+First line  
+Second line
+
+---
+''';
+      final result = parser.parse(source);
+      for (final tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr']) {
+        expect(containsTag(result.nodes, tag), isTrue, reason: tag);
+      }
+      expect(result.source, source);
+    });
+
+    test('enforces AST node, details nesting and table row limits', () {
+      final manyInlineNodes = List<String>.filled(5001, '**x**').join(' ');
+      expect(
+        () => parser.parse(manyInlineNodes),
+        throwsA(isA<MarkdownParseException>()),
+      );
+
+      final nestedDetails = [
+        ...List<String>.filled(17, '<details>'),
+        '<summary>Nested</summary>',
+        ...List<String>.filled(17, '</details>'),
+      ].join('\n');
+      expect(
+        () => parser.parse(nestedDetails),
+        throwsA(isA<MarkdownParseException>()),
+      );
+
+      final rows = List<String>.generate(
+        101,
+        (index) => '| $index | value |',
+      ).join('\n');
+      final oversizedTable = '| id | value |\n| --- | --- |\n$rows';
+      expect(
+        () => parser.parse(oversizedTable),
+        throwsA(isA<MarkdownParseException>()),
+      );
+    });
+
     test('supports only verified safe legacy inline and details syntax', () {
       const source = '''
 <details>

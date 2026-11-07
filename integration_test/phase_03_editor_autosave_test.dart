@@ -49,6 +49,18 @@ void main() {
       title,
     );
     await tester.enterText(
+      find.byKey(const ValueKey('note-title-editor')),
+      'Intermediate device title',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('note-body-editor')),
+      '# Intermediate source',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('note-title-editor')),
+      title,
+    );
+    await tester.enterText(
       find.byKey(const ValueKey('note-body-editor')),
       '# Device Markdown\n\n**Saved before navigation**',
     );
