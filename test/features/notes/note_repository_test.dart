@@ -184,34 +184,37 @@ void main() {
     );
 
 
-    test('metadata updates advance the revision token monotonically', () async {
-      final note = await notes.createNote(title: 'Move me');
-      final destination = await folders.createFolder(name: 'Destination');
-      now = note.updatedAt;
+    test(
+      'metadata updates advance the revision token monotonically',
+      () async {
+        final note = await notes.createNote(title: 'Move me');
+        final destination = await folders.createFolder(name: 'Destination');
+        now = note.updatedAt;
 
-      final moved = await notes.moveNote(
-        note.id,
-        destinationFolderId: destination.id,
-      );
-      expect(moved.updatedAt, greaterThan(note.updatedAt));
+        final moved = await notes.moveNote(
+          note.id,
+          destinationFolderId: destination.id,
+        );
+        expect(moved.updatedAt, greaterThan(note.updatedAt));
 
-      await expectLater(
-        notes.updateNote(
-          id: note.id,
-          title: 'Stale editor',
-          body: 'must not overwrite',
-          expectedUpdatedAt: note.updatedAt,
-        ),
-        throwsA(
-          isA<DomainFailure>().having(
-            (failure) => failure.code,
-            'code',
-            DomainFailureCode.staleNoteEdit,
+        await expectLater(
+          notes.updateNote(
+            id: note.id,
+            title: 'Stale editor',
+            body: 'must not overwrite',
+            expectedUpdatedAt: note.updatedAt,
           ),
-        ),
-      );
-      expect((await notes.getNote(note.id)).folderId, destination.id);
-    });
+          throwsA(
+            isA<DomainFailure>().having(
+              (failure) => failure.code,
+              'code',
+              DomainFailureCode.staleNoteEdit,
+            ),
+          ),
+        );
+        expect((await notes.getNote(note.id)).folderId, destination.id);
+      },
+    );
 
     test('deleted notes still prevent empty-folder deletion', () async {
       final folder = await folders.createFolder(name: 'Has deleted note');
